@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шкільна Газета</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-container input, .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-container button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+        .articles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .article {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .article h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .article p {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .article .meta {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Шкільна Газета</h1>
+
+        <!-- Form to add new article -->
+        <div class="form-container">
+            <h2>Додати нову статтю</h2>
+            <input id="articleTitle" type="text" placeholder="Заголовок статті">
+            <textarea id="articleContent" placeholder="Текст статті" rows="5"></textarea>
+            <input id="articleAuthor" type="text" placeholder="Автор">
+            <button onclick="addArticle()">Опублікувати</button>
+        </div>
+
+        <!-- Articles display -->
+        <div id="articles" class="articles"></div>
+    </div>
+
+    <script>
+        // Function to add a new article
+        function addArticle() {
+            const title = document.getElementById('articleTitle').value;
+            const content = document.getElementById('articleContent').value;
+            const author = document.getElementById('articleAuthor').value;
+
+            if (title && content && author) {
+                const articles = JSON.parse(localStorage.getItem('articles') || '[]');
+                const newArticle = {
+                    title: title,
+                    content: content,
+                    author: author,
+                    timestamp: new Date().toISOString()
+                };
+                articles.push(newArticle);
+                localStorage.setItem('articles', JSON.stringify(articles));
+
+                document.getElementById('articleTitle').value = '';
+                document.getElementById('articleContent').value = '';
+                document.getElementById('articleAuthor').value = '';
+                alert('Статтю успішно додано!');
+                displayArticles();
+            } else {
+                alert('Будь ласка, заповніть усі поля!');
+            }
+        }
+
+        // Function to display articles
+        function displayArticles() {
+            const articlesDiv = document.getElementById('articles');
+            const articles = JSON.parse(localStorage.getItem('articles') || '[]');
+            articlesDiv.innerHTML = '';
+            articles.forEach(article => {
+                const articleElement = document.createElement('div');
+                articleElement.className = 'article';
+                articleElement.innerHTML = `
+                    <h3>${article.title}</h3>
+                    <p>${article.content}</p>
+                    <p class="meta">Автор: ${article.author}</p>
+                    <p class="meta">Дата: ${new Date(article.timestamp).toLocaleString('uk-UA')}</p>
+                `;
+                articlesDiv.appendChild(articleElement);
+            });
+        }
+
+        // Load articles on page load
+        displayArticles();
+    </script>
+</body>
+</html>
