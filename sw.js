@@ -1,10 +1,9 @@
 const CACHE_NAME = 'newspaper-cache-v1';
 const ARTICLES_CACHE = 'articles-cache';
 const STATIC_ASSETS = [
-  '/',
   '/index.html',
   '/favicon.ico',
-  '/.png',
+  'icon/.png',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap',
   'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js',
   'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js',
@@ -62,4 +61,5 @@ self.addEventListener('fetch', event => {
       })
     );
   }
+
 });
