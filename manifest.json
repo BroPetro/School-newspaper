@@ -2,7 +2,7 @@
   "name": "Електронна газета",
   "short_name": "Газета",
   "description": "Сучасна платформа для читання та створення новин",
-  "start_url": "/",
+  "start_url": "https://bropetro.github.io/School-newspaper/",
   "display": "standalone",
   "background_color": "#f4f4f9",
   "theme_color": "#1a1a2e",
@@ -20,4 +20,5 @@
   ],
   "lang": "uk",
   "dir": "ltr"
+
 }
