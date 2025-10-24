@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Шкільна Газета</title>
     <style>
-        /* Базові стилі */
         body {
             background: #f8fafc;
             min-height: 100vh;
@@ -21,14 +20,12 @@
             margin: 0 auto;
             padding: 0 16px;
         }
-        /* Випуклий ефект */
         .embossed {
             background: #ffffff;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3);
             border: 1px solid rgba(0, 0, 0, 0.05);
             border-radius: 10px;
         }
-        /* Заголовок */
         header {
             background: #18181b;
             color: #fff;
@@ -48,7 +45,6 @@
             margin: 0;
             letter-spacing: 0.5px;
         }
-        /* Профіль */
         .profile-container {
             position: relative;
         }
@@ -116,7 +112,6 @@
         .profile-dropdown button.sign-out:hover {
             background: #dc2626;
         }
-        /* Вкладки профілю */
         .profile-tabs {
             display: flex;
             gap: 8px;
@@ -151,7 +146,6 @@
             padding: 12px;
             margin-bottom: 8px;
         }
-        /* Вкладки навігації */
         .tabs {
             display: flex;
             gap: 8px;
@@ -179,7 +173,6 @@
         .tab.active:hover {
             background: #2563eb;
         }
-        /* Секція автентифікації */
         #auth-section {
             padding: 24px;
             margin: 24px 0;
@@ -237,7 +230,6 @@
         #login-form button.sign-up:hover {
             background: #4b5563;
         }
-        /* Секція газет */
         #articles-section {
             margin-bottom: 24px;
         }
@@ -259,7 +251,6 @@
         #search-form input::placeholder {
             color: #9ca3af;
         }
-        /* Кнопка створення (десктоп) */
         #create-article-btn {
             position: fixed;
             right: 24px;
@@ -430,7 +421,6 @@
         .article .edit-form button.cancel:hover {
             background: #4b5563;
         }
-        /* Модальне вікно */
         .modal {
             display: none;
             position: fixed;
@@ -504,7 +494,6 @@
         .modal-content button.like.liked:hover {
             background: #2563eb;
         }
-        /* Профіль автора */
         .author-profile {
             padding: 24px;
         }
@@ -527,18 +516,15 @@
         .author-profile button.subscribe.subscribed:hover {
             background: #4b5563;
         }
-        /* Порожній стан */
         #articles .empty,
         .profile-content .empty {
             text-align: center;
             font-size: 15px;
             color: #6b7280;
         }
-        /* Прихований клас */
         .hidden {
             display: none;
         }
-        /* Анімація появи */
         .fade-in {
             animation: fadeIn 0.4s ease-out;
         }
@@ -546,7 +532,6 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Стилі фокусу для доступності */
         input:focus,
         select:focus,
         textarea:focus,
@@ -554,7 +539,6 @@
             outline: 2px solid #3b82f6;
             outline-offset: 2px;
         }
-        /* Нижня навігаційна панель (мобільна) */
         .mobile-nav {
             display: none;
             position: fixed;
@@ -588,7 +572,29 @@
             height: 24px;
             fill: currentColor;
         }
-        /* Адаптивність */
+        #admin-panel {
+            padding: 24px;
+            margin: 24px 0;
+        }
+        #admin-panel h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0 0 16px;
+        }
+        #admin-panel button.approve {
+            background: #10b981;
+            color: #fff;
+        }
+        #admin-panel button.approve:hover {
+            background: #059669;
+        }
+        #admin-panel button.reject {
+            background: #ef4444;
+            color: #fff;
+        }
+        #admin-panel button.reject:hover {
+            background: #dc2626;
+        }
         @media (max-width: 600px) {
             .container {
                 padding: 0 12px;
@@ -608,7 +614,8 @@
             #auth-section h2,
             #article-form h2,
             .modal-content h2,
-            .author-profile h2 {
+            .author-profile h2,
+            #admin-panel h2 {
                 font-size: 18px;
             }
             #login-form .button-group {
@@ -641,7 +648,6 @@
     </style>
 </head>
 <body>
-    <!-- Заголовок -->
     <header>
         <div class="container header-content">
             <h1>Шкільна Газета</h1>
@@ -654,15 +660,14 @@
                     <p><span id="user-display-name"></span></p>
                     <p><span id="user-email"></span></p>
                     <button onclick="showProfile()">Мій профіль</button>
+                    <button id="admin-panel-btn" class="hidden" onclick="showAdminPanel()">Адмін-панель</button>
                     <button class="sign-out" onclick="signOut()">Вийти</button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Основний вміст -->
     <main class="container">
-        <!-- Вкладки -->
         <div class="tabs">
             <div class="tab active" onclick="filterArticles('recommended')">Рекомендації</div>
             <div class="tab" onclick="filterArticles('all')">Усі</div>
@@ -670,10 +675,10 @@
             <div class="tab" onclick="filterArticles('events')">Події</div>
         </div>
 
-        <!-- Секція автентифікації -->
         <section id="auth-section" class="embossed">
             <div id="login-form">
-                <h2>Увійти</h2>
+                <h2>Реєстрація / Вхід</h2>
+                <input type="text" id="login-display-name" placeholder="Ім'я користувача" required>
                 <input type="email" id="login-email" placeholder="Електронна пошта" required>
                 <input type="password" id="login-password" placeholder="Пароль" required>
                 <div class="button-group">
@@ -683,7 +688,12 @@
             </div>
         </section>
 
-        <!-- Секція газет -->
+        <section id="admin-panel" class="embossed hidden">
+            <h2>Адмін-панель</h2>
+            <div id="admin-articles"></div>
+            <div id="admin-users"></div>
+        </section>
+
         <section id="articles-section" class="hidden">
             <div id="search-form">
                 <input type="text" id="search-input" placeholder="Пошук газет...">
@@ -698,12 +708,11 @@
                 </select>
                 <input type="text" id="article-title" placeholder="Заголовок" required>
                 <textarea id="article-content" placeholder="Напишіть вашу статтю..." required></textarea>
-                <button onclick="addArticle()">Опублікувати</button>
+                <button onclick="addArticle()">Надіслати на перевірку</button>
             </div>
             <div id="articles"></div>
         </section>
 
-        <!-- Модальне вікно статті -->
         <div id="article-modal" class="modal">
             <div class="modal-content embossed">
                 <button class="close" onclick="closeModal()">Закрити</button>
@@ -714,7 +723,6 @@
             </div>
         </div>
 
-        <!-- Профіль користувача -->
         <div id="profile-modal" class="modal hidden">
             <div class="modal-content embossed">
                 <button class="close" onclick="closeModal()">Закрити</button>
@@ -730,7 +738,6 @@
             </div>
         </div>
 
-        <!-- Профіль автора -->
         <div id="author-modal" class="modal hidden">
             <div class="modal-content embossed author-profile">
                 <button class="close" onclick="closeModal()">Закрити</button>
@@ -740,11 +747,9 @@
             </div>
         </div>
 
-        <!-- Кнопка створення (десктоп) -->
         <div id="create-article-btn" onclick="toggleArticleForm()">+</div>
     </main>
 
-    <!-- Нижня навігаційна панель (мобільна) -->
     <nav class="mobile-nav">
         <div class="nav-items">
             <button class="nav-item active" onclick="goToHome()">
@@ -759,17 +764,18 @@
                 <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 <span>Профіль</span>
             </button>
+            <button class="nav-item hidden" id="admin-nav-btn" onclick="showAdminPanel()">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                <span>Адмін</span>
+            </button>
         </div>
     </nav>
 
-    <!-- Firebase SDK v9.6.1 Modular Imports -->
     <script type="module">
-        // Імпорт модулів Firebase
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
         import { getDatabase, ref, push, set, onValue, remove, get, update } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as signOutAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as signOutAuth, onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
-        // Конфігурація Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
             authDomain: "newpaper-6cb18.firebaseapp.com",
@@ -781,16 +787,14 @@
             measurementId: "G-0EMERY88FL"
         };
 
-        // Ініціалізація Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const auth = getAuth(app);
 
-        // Посилання на дані
         const articlesRef = ref(database, 'articles');
         const userDataRef = ref(database, 'userData');
+        const adminEmail = 'petro.hryhorenko@gmail.com';
 
-        // Слухач стану автентифікації
         onAuthStateChanged(auth, (user) => {
             const authSection = document.getElementById('auth-section');
             const articlesSection = document.getElementById('articles-section');
@@ -801,8 +805,11 @@
             const userEmail = document.getElementById('user-email');
             const profileName = document.getElementById('profile-name');
             const profileIcon = document.getElementById('profile-icon');
+            const adminPanel = document.getElementById('admin-panel');
+            const adminPanelBtn = document.getElementById('admin-panel-btn');
+            const adminNavBtn = document.getElementById('admin-nav-btn');
 
-            if (user && authSection && articlesSection && loginForm && profileToggle && profileDropdown && userDisplayName && userEmail && profileName && profileIcon) {
+            if (user && authSection && articlesSection && loginForm && profileToggle && profileDropdown && userDisplayName && userEmail && profileName && profileIcon && adminPanel && adminPanelBtn && adminNavBtn) {
                 authSection.classList.add('hidden');
                 articlesSection.classList.remove('hidden');
                 loginForm.classList.add('hidden');
@@ -811,20 +818,28 @@
                 userEmail.textContent = user.email;
                 profileName.textContent = user.displayName || user.email.split('@')[0];
                 profileIcon.textContent = (user.displayName || user.email.split('@')[0])[0].toUpperCase();
+                if (user.email === adminEmail) {
+                    adminPanelBtn.classList.remove('hidden');
+                    adminNavBtn.classList.remove('hidden');
+                } else {
+                    adminPanelBtn.classList.add('hidden');
+                    adminNavBtn.classList.add('hidden');
+                    adminPanel.classList.add('hidden');
+                }
                 loadArticles();
                 updateUserViewHistory(user.uid);
-            } else if (authSection && articlesSection && loginForm && profileToggle && profileDropdown) {
+            } else {
                 authSection.classList.remove('hidden');
                 articlesSection.classList.add('hidden');
                 loginForm.classList.remove('hidden');
                 profileToggle.classList.add('hidden');
                 profileDropdown.classList.remove('show');
-            } else {
-                console.error('Відсутні один або кілька елементів DOM.');
+                adminPanel.classList.add('hidden');
+                adminPanelBtn.classList.add('hidden');
+                adminNavBtn.classList.add('hidden');
             }
         });
 
-        // Оновлення історії переглядів
         function updateUserViewHistory(userId) {
             const userViewRef = ref(database, `userData/${userId}/views`);
             set(userViewRef, { lastActive: Date.now() }).catch((error) => {
@@ -832,7 +847,6 @@
             });
         }
 
-        // Перемикання випадаючого меню профілю
         window.toggleProfileDropdown = function() {
             const profileDropdown = document.getElementById('profile-dropdown');
             if (profileDropdown) {
@@ -840,7 +854,6 @@
             }
         };
 
-        // Перехід на головну
         window.goToHome = function() {
             const tabs = document.querySelectorAll('.tab');
             const navItems = document.querySelectorAll('.nav-item');
@@ -852,7 +865,6 @@
             closeModal();
         };
 
-        // Перемикання форми створення
         window.toggleArticleForm = function() {
             const articleForm = document.getElementById('article-form');
             if (articleForm) {
@@ -860,7 +872,6 @@
             }
         };
 
-        // Показ профілю
         window.showProfile = function() {
             const profileModal = document.getElementById('profile-modal');
             const profileTitle = document.getElementById('profile-title');
@@ -872,7 +883,14 @@
             }
         };
 
-        // Показ вкладки профілю
+        window.showAdminPanel = function() {
+            const adminPanel = document.getElementById('admin-panel');
+            if (adminPanel) {
+                adminPanel.classList.remove('hidden');
+                loadAdminPanel();
+            }
+        };
+
         window.showProfileTab = function(tab) {
             const tabs = document.querySelectorAll('.profile-tab');
             const contents = document.querySelectorAll('.profile-content');
@@ -892,7 +910,6 @@
             }
         };
 
-        // Завантаження лайків користувача
         function loadUserLikes() {
             const user = auth.currentUser;
             const likesDiv = document.getElementById('profile-likes');
@@ -906,14 +923,16 @@
                         get(ref(database, `articles/${articleId}`)).then((articleSnapshot) => {
                             if (articleSnapshot.exists()) {
                                 const article = articleSnapshot.val();
-                                const articleDiv = document.createElement('div');
-                                articleDiv.className = 'article embossed';
-                                articleDiv.innerHTML = `
-                                    <h2>${article.title}</h2>
-                                    <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • ${new Date(article.timestamp).toLocaleString()}</p>
-                                `;
-                                articleDiv.onclick = () => openArticleModal(articleId, article);
-                                likesDiv.appendChild(articleDiv);
+                                if (article.status === 'approved') {
+                                    const articleDiv = document.createElement('div');
+                                    articleDiv.className = 'article embossed';
+                                    articleDiv.innerHTML = `
+                                        <h2>${article.title}</h2>
+                                        <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • ${new Date(article.timestamp).toLocaleString()}</p>
+                                    `;
+                                    articleDiv.onclick = () => openArticleModal(articleId, article);
+                                    likesDiv.appendChild(articleDiv);
+                                }
                             }
                         });
                     });
@@ -925,7 +944,6 @@
             });
         }
 
-        // Завантаження статей користувача
         function loadUserArticles() {
             const user = auth.currentUser;
             const articlesDiv = document.getElementById('profile-articles');
@@ -941,7 +959,7 @@
                             articleDiv.className = 'article embossed';
                             articleDiv.innerHTML = `
                                 <h2>${article.title}</h2>
-                                <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • ${new Date(article.timestamp).toLocaleString()}</p>
+                                <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • Статус: ${article.status === 'pending' ? 'Очікує' : article.status === 'approved' ? 'Схвалено' : 'Відхилено'} • ${new Date(article.timestamp).toLocaleString()}</p>
                             `;
                             articleDiv.onclick = () => openArticleModal(articleId, article);
                             articlesDiv.appendChild(articleDiv);
@@ -957,7 +975,6 @@
             });
         }
 
-        // Завантаження підписок
         function loadUserSubscriptions() {
             const user = auth.currentUser;
             const subscriptionsDiv = document.getElementById('profile-subscriptions');
@@ -985,7 +1002,86 @@
             });
         }
 
-        // Показ профілю автора
+        function loadAdminPanel() {
+            const adminArticlesDiv = document.getElementById('admin-articles');
+            const adminUsersDiv = document.getElementById('admin-users');
+            if (!adminArticlesDiv || !adminUsersDiv) return;
+
+            get(articlesRef).then((snapshot) => {
+                adminArticlesDiv.innerHTML = '<h3>Керування статтями</h3>';
+                const articles = snapshot.val();
+                if (articles) {
+                    Object.entries(articles).forEach(([articleId, article]) => {
+                        const articleDiv = document.createElement('div');
+                        articleDiv.className = 'article embossed';
+                        articleDiv.innerHTML = `
+                            <h2>${article.title}</h2>
+                            <p class="meta">Автор: ${article.authorEmail} • Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • Статус: ${article.status === 'pending' ? 'Очікує' : article.status === 'approved' ? 'Схвалено' : 'Відхилено'} • ${new Date(article.timestamp).toLocaleString()}</p>
+                            <div class="actions">
+                                ${article.status === 'pending' ? `<button class="approve" onclick="approveArticle('${articleId}')">Схвалити</button>` : ''}
+                                ${article.status === 'pending' ? `<button class="reject" onclick="rejectArticle('${articleId}')">Відхилити</button>` : ''}
+                                <button class="delete" onclick="deleteArticle('${articleId}')">Видалити</button>
+                            </div>
+                        `;
+                        articleDiv.onclick = (e) => {
+                            if (!e.target.closest('.actions')) {
+                                openArticleModal(articleId, article);
+                            }
+                        };
+                        adminArticlesDiv.appendChild(articleDiv);
+                    });
+                } else {
+                    adminArticlesDiv.innerHTML += '<p class="empty">Немає статей для перевірки.</p>';
+                }
+            });
+
+            get(userDataRef).then((snapshot) => {
+                adminUsersDiv.innerHTML = '<h3>Користувачі</h3>';
+                const users = snapshot.val();
+                if (users) {
+                    Object.entries(users).forEach(([userId, userData]) => {
+                        const userDiv = document.createElement('div');
+                        userDiv.className = 'article embossed';
+                        userDiv.innerHTML = `
+                            <h2>${userData.profile?.displayName || 'Анонім'}</h2>
+                            <p class="meta">Електронна пошта: ${userData.profile?.email || 'Невідомо'}</p>
+                        `;
+                        adminUsersDiv.appendChild(userDiv);
+                    });
+                } else {
+                    adminUsersDiv.innerHTML += '<p class="empty">Немає користувачів.</p>';
+                }
+            });
+        }
+
+        window.approveArticle = function(articleId) {
+            const user = auth.currentUser;
+            if (!user || user.email !== adminEmail) {
+                alert('Тільки адміністратор може схвалювати статті.');
+                return;
+            }
+            update(ref(database, `articles/${articleId}`), { status: 'approved' })
+                .then(() => loadAdminPanel())
+                .catch((error) => {
+                    console.error('Помилка схвалення статті:', error);
+                    alert('Не вдалося схвалити статтю.');
+                });
+        };
+
+        window.rejectArticle = function(articleId) {
+            const user = auth.currentUser;
+            if (!user || user.email !== adminEmail) {
+                alert('Тільки адміністратор може відхиляти статті.');
+                return;
+            }
+            update(ref(database, `articles/${articleId}`), { status: 'rejected' })
+                .then(() => loadAdminPanel())
+                .catch((error) => {
+                    console.error('Помилка відхилення статті:', error);
+                    alert('Не вдалося відхилити статтю.');
+                });
+        };
+
         window.showAuthorProfile = function(authorId) {
             const authorModal = document.getElementById('author-modal');
             const authorTitle = document.getElementById('author-title');
@@ -1000,7 +1096,7 @@
                     authorArticles.innerHTML = '';
                     const articles = snapshot.val();
                     if (articles) {
-                        const authorArticles = Object.entries(articles).filter(([_, article]) => article.authorId === authorId);
+                        const authorArticles = Object.entries(articles).filter(([_, article]) => article.authorId === authorId && article.status === 'approved');
                         if (authorArticles.length > 0) {
                             authorArticles.forEach(([articleId, article]) => {
                                 const articleDiv = document.createElement('div');
@@ -1013,10 +1109,10 @@
                                 authorArticles.appendChild(articleDiv);
                             });
                         } else {
-                            authorArticles.innerHTML = '<p class="empty">Цей автор ще не опублікував статей.</p>';
+                            authorArticles.innerHTML = '<p class="empty">Цей автор ще не опублікував схвалених статей.</p>';
                         }
                     } else {
-                        authorArticles.innerHTML = '<p class="empty">Цей автор ще не опублікував статей.</p>';
+                        authorArticles.innerHTML = '<p class="empty">Цей автор ще не опублікував схвалених статей.</p>';
                     }
                 });
                 const user = auth.currentUser;
@@ -1032,7 +1128,6 @@
             });
         };
 
-        // Перемикання підписки
         window.toggleSubscribe = function(authorId) {
             const user = auth.currentUser;
             if (!user) {
@@ -1063,7 +1158,6 @@
             });
         };
 
-        // Відкриття модального вікна статті
         window.openArticleModal = function(articleId, article) {
             const modal = document.getElementById('article-modal');
             const modalTitle = document.getElementById('modal-title');
@@ -1074,7 +1168,7 @@
             modal.classList.add('show');
             modalTitle.textContent = article.title;
             modalContent.textContent = article.content;
-            modalMeta.innerHTML = `Автор: <span class="author" onclick="showAuthorProfile('${article.authorId}')">${article.authorEmail}</span> • ${new Date(article.timestamp).toLocaleString()} • Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'}`;
+            modalMeta.innerHTML = `Автор: <span class="author" onclick="showAuthorProfile('${article.authorId}')">${article.authorEmail}</span> • ${new Date(article.timestamp).toLocaleString()} • Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • Статус: ${article.status === 'pending' ? 'Очікує' : article.status === 'approved' ? 'Схвалено' : 'Відхилено'}`;
             modalLike.classList.toggle('liked', false);
             modalLike.onclick = () => toggleLike(articleId);
             const user = auth.currentUser;
@@ -1089,13 +1183,11 @@
             }
         };
 
-        // Закриття модального вікна
         window.closeModal = function() {
             const modals = document.querySelectorAll('.modal');
             modals.forEach(modal => modal.classList.remove('show'));
         };
 
-        // Лайк статті
         window.toggleLike = function(articleId) {
             const user = auth.currentUser;
             if (!user) {
@@ -1122,7 +1214,6 @@
             });
         };
 
-        // Оновлення кількості лайків
         function updateArticleLikes(articleId, delta) {
             const likesRef = ref(database, `articles/${articleId}/likes`);
             get(likesRef).then((snapshot) => {
@@ -1131,37 +1222,52 @@
             });
         }
 
-        // Реєстрація
         window.signUp = function() {
+            const displayNameInput = document.getElementById('login-display-name');
             const emailInput = document.getElementById('login-email');
             const passwordInput = document.getElementById('login-password');
-            if (!emailInput || !passwordInput) {
+            if (!displayNameInput || !emailInput || !passwordInput) {
                 alert('Відсутні елементи форми.');
                 return;
             }
-            const email = emailInput.value;
+            const displayName = displayNameInput.value.trim();
+            const email = emailInput.value.trim();
             const password = passwordInput.value;
 
-            if (email && password) {
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        console.log('Користувач зареєстрований:', userCredential.user);
-                        emailInput.value = '';
-                        passwordInput.value = '';
-                        set(ref(database, `userData/${userCredential.user.uid}/profile`), {
-                            displayName: email.split('@')[0]
-                        });
-                    })
-                    .catch((error) => {
-                        console.error('Помилка реєстрації:', error);
-                        alert('Помилка реєстрації: ' + error.message);
-                    });
-            } else {
-                alert('Будь ласка, заповніть електронну пошту та пароль.');
+            if (!displayName || displayName.length < 2) {
+                alert('Ім’я користувача має містити принаймні 2 символи.');
+                return;
             }
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('Введіть коректну електронну пошту.');
+                return;
+            }
+            if (!password || password.length < 6) {
+                alert('Пароль має містити принаймні 6 символів.');
+                return;
+            }
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    return updateProfile(user, { displayName: displayName });
+                })
+                .then(() => {
+                    set(ref(database, `userData/${auth.currentUser.uid}/profile`), {
+                        displayName: displayName,
+                        email: email
+                    });
+                    displayNameInput.value = '';
+                    emailInput.value = '';
+                    passwordInput.value = '';
+                    alert('Реєстрація успішна!');
+                })
+                .catch((error) => {
+                    console.error('Помилка реєстрації:', error);
+                    alert('Помилка реєстрації: ' + error.message);
+                });
         };
 
-        // Вхід
         window.signIn = function() {
             const emailInput = document.getElementById('login-email');
             const passwordInput = document.getElementById('login-password');
@@ -1169,26 +1275,30 @@
                 alert('Відсутні елементи форми.');
                 return;
             }
-            const email = emailInput.value;
+            const email = emailInput.value.trim();
             const password = passwordInput.value;
 
-            if (email && password) {
-                signInWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        console.log('Користувач увійшов:', userCredential.user);
-                        emailInput.value = '';
-                        passwordInput.value = '';
-                    })
-                    .catch((error) => {
-                        console.error('Помилка входу:', error);
-                        alert('Помилка входу: ' + error.message);
-                    });
-            } else {
-                alert('Будь ласка, заповніть електронну пошту та пароль.');
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert('Введіть коректну електронну пошту.');
+                return;
             }
+            if (!password || password.length < 6) {
+                alert('Пароль має містити принаймні 6 символів.');
+                return;
+            }
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    console.log('Користувач увійшов:', userCredential.user);
+                    emailInput.value = '';
+                    passwordInput.value = '';
+                })
+                .catch((error) => {
+                    console.error('Помилка входу:', error);
+                    alert('Помилка входу: ' + error.message);
+                });
         };
 
-        // Вихід
         window.signOut = function() {
             signOutAuth(auth).then(() => {
                 console.log('Користувач вийшов');
@@ -1198,7 +1308,6 @@
             });
         };
 
-        // Додавання нової статті
         window.addArticle = function() {
             const titleInput = document.getElementById('article-title');
             const contentInput = document.getElementById('article-content');
@@ -1207,48 +1316,72 @@
                 alert('Відсутні елементи форми.');
                 return;
             }
-            const title = titleInput.value;
-            const content = contentInput.value;
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
             const category = categoryInput.value;
             const user = auth.currentUser;
 
-            if (title && content && category && user) {
-                const newArticleRef = push(articlesRef);
-                set(newArticleRef, {
-                    title: title,
-                    content: content,
-                    category: category,
-                    authorId: user.uid,
-                    authorEmail: user.email,
-                    timestamp: Date.now(),
-                    likes: 0
-                }).then(() => {
-                    titleInput.value = '';
-                    contentInput.value = '';
-                    categoryInput.value = '';
-                    toggleArticleForm();
-                }).catch((error) => {
-                    console.error('Помилка додавання статті:', error);
-                    alert('Не вдалося додати статтю.');
-                });
-            } else {
-                alert('Будь ласка, заповніть заголовок, вміст, категорію та переконайтеся, що ви увійшли.');
+            if (!title || title.length < 3) {
+                alert('Заголовок має містити принаймні 3 символи.');
+                return;
             }
+            if (!content || content.length < 10) {
+                alert('Вміст статті має містити принаймні 10 символів.');
+                return;
+            }
+            if (!category) {
+                alert('Оберіть категорію.');
+                return;
+            }
+            if (!user) {
+                alert('Ви повинні увійти, щоб створювати статті.');
+                return;
+            }
+
+            const newArticleRef = push(articlesRef);
+            set(newArticleRef, {
+                title: title,
+                content: content,
+                category: category,
+                authorId: user.uid,
+                authorEmail: user.email,
+                timestamp: Date.now(),
+                likes: 0,
+                status: 'pending'
+            }).then(() => {
+                titleInput.value = '';
+                contentInput.value = '';
+                categoryInput.value = '';
+                toggleArticleForm();
+                alert('Стаття надіслана на перевірку.');
+            }).catch((error) => {
+                console.error('Помилка додавання статті:', error);
+                alert('Не вдалося додати статтю.');
+            });
         };
 
-        // Редагування статті
         window.editArticle = function(articleId, title, content, category) {
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Ви повинні увійти, щоб редагувати статті.');
+                return;
+            }
             const articleDiv = document.getElementById(`article-${articleId}`);
             if (!articleDiv) return;
-            const editForm = articleDiv.querySelector('.edit-form');
-            const contentDisplay = articleDiv.querySelector('.content-display');
-            if (editForm && contentDisplay) {
-                editForm.classList.toggle('show');
-                contentDisplay.classList.toggle('hidden');
-            }
+            get(ref(database, `articles/${articleId}/authorId`)).then((snapshot) => {
+                if (snapshot.exists() && (snapshot.val() === user.uid || user.email === adminEmail)) {
+                    const editForm = articleDiv.querySelector('.edit-form');
+                    const contentDisplay = articleDiv.querySelector('.content-display');
+                    if (editForm && contentDisplay) {
+                        editForm.classList.toggle('show');
+                        contentDisplay.classList.toggle('hidden');
+                    }
+                } else {
+                    alert('Ви можете редагувати лише власні статті.');
+                }
+            });
         };
 
-        // Збереження відредагованої статті
         window.saveArticle = function(articleId) {
             const user = auth.currentUser;
             if (!user) {
@@ -1257,7 +1390,7 @@
             }
             const articleRef = ref(database, `articles/${articleId}`);
             get(ref(database, `articles/${articleId}/authorId`)).then((snapshot) => {
-                if (snapshot.exists() && snapshot.val() === user.uid) {
+                if (snapshot.exists() && (snapshot.val() === user.uid || user.email === adminEmail)) {
                     const titleInput = document.getElementById(`edit-title-${articleId}`);
                     const contentInput = document.getElementById(`edit-content-${articleId}`);
                     const categoryInput = document.getElementById(`edit-category-${articleId}`);
@@ -1265,34 +1398,41 @@
                         alert('Відсутні елементи форми.');
                         return;
                     }
-                    const title = titleInput.value;
-                    const content = contentInput.value;
+                    const title = titleInput.value.trim();
+                    const content = contentInput.value.trim();
                     const category = categoryInput.value;
-                    if (title && content && category) {
-                        get(ref(database, `articles/${articleId}/likes`)).then((snapshot) => {
-                            const likes = snapshot.val() || 0;
-                            set(articleRef, {
-                                title: title,
-                                content: content,
-                                category: category,
-                                authorId: user.uid,
-                                authorEmail: user.email,
-                                timestamp: Date.now(),
-                                likes: likes
-                            }).then(() => {
-                                const articleDiv = document.getElementById(`article-${articleId}`);
-                                if (articleDiv) {
-                                    articleDiv.querySelector('.edit-form').classList.remove('show');
-                                    articleDiv.querySelector('.content-display').classList.remove('hidden');
-                                }
-                            }).catch((error) => {
-                                console.error('Помилка збереження статті:', error);
-                                alert('Не вдалося зберегти статтю.');
-                            });
-                        });
-                    } else {
-                        alert('Будь ласка, заповніть заголовок, вміст та категорію.');
+                    if (!title || title.length < 3) {
+                        alert('Заголовок має містити принаймні 3 символи.');
+                        return;
                     }
+                    if (!content || content.length < 10) {
+                        alert('Вміст статті має містити принаймні 10 символів.');
+                        return;
+                    }
+                    if (!category) {
+                        alert('Оберіть категорію.');
+                        return;
+                    }
+                    get(ref(database, `articles/${articleId}/likes`)).then((snapshot) => {
+                        const likes = snapshot.val() || 0;
+                        update(articleRef, {
+                            title: title,
+                            content: content,
+                            category: category,
+                            timestamp: Date.now(),
+                            status: user.email === adminEmail ? 'approved' : 'pending'
+                        }).then(() => {
+                            const articleDiv = document.getElementById(`article-${articleId}`);
+                            if (articleDiv) {
+                                articleDiv.querySelector('.edit-form').classList.remove('show');
+                                articleDiv.querySelector('.content-display').classList.remove('hidden');
+                            }
+                            alert(user.email === adminEmail ? 'Стаття збережена.' : 'Стаття надіслана на перевірку.');
+                        }).catch((error) => {
+                            console.error('Помилка збереження статті:', error);
+                            alert('Не вдалося зберегти статтю.');
+                        });
+                    });
                 } else {
                     alert('Ви можете редагувати лише власні статті.');
                 }
@@ -1301,7 +1441,6 @@
             });
         };
 
-        // Скасування редагування
         window.cancelEdit = function(articleId) {
             const articleDiv = document.getElementById(`article-${articleId}`);
             if (articleDiv) {
@@ -1310,7 +1449,6 @@
             }
         };
 
-        // Видалення статті
         window.deleteArticle = function(articleId) {
             const user = auth.currentUser;
             if (!user) {
@@ -1319,8 +1457,10 @@
             }
             const articleRef = ref(database, `articles/${articleId}`);
             get(ref(database, `articles/${articleId}/authorId`)).then((snapshot) => {
-                if (snapshot.exists() && snapshot.val() === user.uid) {
-                    remove(articleRef).catch((error) => {
+                if (snapshot.exists() && (snapshot.val() === user.uid || user.email === adminEmail)) {
+                    remove(articleRef).then(() => {
+                        if (user.email === adminEmail) loadAdminPanel();
+                    }).catch((error) => {
                         console.error('Помилка видалення статті:', error);
                         alert('Не вдалося видалити статтю.');
                     });
@@ -1332,7 +1472,6 @@
             });
         };
 
-        // Завантаження статей
         let allArticles = [];
         let currentFilter = 'recommended';
         function loadArticles(searchQuery = '') {
@@ -1351,6 +1490,11 @@
                     });
                     let filteredArticles = allArticles;
                     const user = auth.currentUser;
+                    if (user && user.email === adminEmail) {
+                        filteredArticles = allArticles;
+                    } else {
+                        filteredArticles = allArticles.filter(article => article.status === 'approved');
+                    }
                     if (user && currentFilter === 'recommended') {
                         get(ref(database, `userData/${user.uid}/views`)).then((snapshot) => {
                             const views = snapshot.val() || {};
@@ -1362,23 +1506,23 @@
                                     topCategory = category;
                                 }
                             });
-                            filteredArticles = allArticles
+                            filteredArticles = filteredArticles
                                 .filter(article => article.category === topCategory)
                                 .sort((a, b) => (b.likes || 0) - (a.likes || 0));
                             if (filteredArticles.length === 0) {
-                                filteredArticles = allArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+                                filteredArticles = allArticles.filter(article => article.status === 'approved').sort((a, b) => (b.likes || 0) - (a.likes || 0));
                             }
                             renderArticles(filteredArticles, searchQuery);
                         });
                     } else {
                         if (currentFilter !== 'all') {
-                            filteredArticles = allArticles.filter(article => article.category === currentFilter);
+                            filteredArticles = filteredArticles.filter(article => article.category === currentFilter);
                         }
                         filteredArticles = filteredArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
                         renderArticles(filteredArticles, searchQuery);
                     }
                 } else {
-                    articlesDiv.innerHTML = '<p class="empty">Ще немає газет. Почніть писати!</p>';
+                    articlesDiv.innerHTML = '<p class="empty">Ще немає схвалених газет. Почніть писати!</p>';
                 }
             }, (error) => {
                 console.error('Помилка завантаження статей:', error);
@@ -1386,7 +1530,6 @@
             });
         }
 
-        // Рендеринг статей
         function renderArticles(articles, searchQuery) {
             const articlesDiv = document.getElementById('articles');
             if (!articlesDiv) return;
@@ -1404,20 +1547,24 @@
                     articleDiv.className = 'article embossed fade-in';
                     articleDiv.id = `article-${article.id}`;
                     const categoryLabel = article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше';
-                    const deleteButton = article.authorId === auth.currentUser?.uid 
+                    const statusLabel = article.status === 'pending' ? 'Очікує' : article.status === 'approved' ? 'Схвалено' : 'Відхилено';
+                    const user = auth.currentUser;
+                    const isAdmin = user && user.email === adminEmail;
+                    const isAuthor = article.authorId === user?.uid;
+                    const deleteButton = isAuthor || isAdmin
                         ? `<button class="delete" onclick="deleteArticle('${article.id}')">Видалити</button>`
                         : '';
-                    const editButton = article.authorId === auth.currentUser?.uid 
+                    const editButton = isAuthor || isAdmin
                         ? `<button class="edit" onclick="editArticle('${article.id}', '${article.title.replace(/'/g, "\\'")}', '${article.content.replace(/'/g, "\\'")}', '${article.category}')">Редагувати</button>`
                         : '';
-                    const likeButton = auth.currentUser 
+                    const likeButton = user
                         ? `<button class="like" id="like-${article.id}" onclick="toggleLike('${article.id}')">Лайк (${article.likes || 0})</button>`
                         : '';
                     articleDiv.innerHTML = `
                         <div class="content-display">
                             <h2>${article.title}</h2>
                             <p class="content">${article.content.substring(0, 100)}${article.content.length > 100 ? '...' : ''}</p>
-                            <p class="meta">Автор: <span class="author" onclick="showAuthorProfile('${article.authorId}')">${article.authorEmail}</span> • ${new Date(article.timestamp).toLocaleString()} • ${categoryLabel}</p>
+                            <p class="meta">Автор: <span class="author" onclick="showAuthorProfile('${article.authorId}')">${article.authorEmail}</span> • ${new Date(article.timestamp).toLocaleString()} • ${categoryLabel} • Статус: ${statusLabel}</p>
                             <div class="actions">${likeButton}${editButton}${deleteButton}</div>
                         </div>
                         <div class="edit-form hidden">
@@ -1440,19 +1587,18 @@
                         }
                     };
                     articlesDiv.appendChild(articleDiv);
-                    if (auth.currentUser) {
-                        get(ref(database, `userData/${auth.currentUser.uid}/likes/${article.id}`)).then((snapshot) => {
+                    if (user) {
+                        get(ref(database, `userData/${user.uid}/likes/${article.id}`)).then((snapshot) => {
                             const likeButton = document.getElementById(`like-${article.id}`);
                             if (likeButton) likeButton.classList.toggle('liked', snapshot.exists());
                         });
                     }
                 });
             } else {
-                articlesDiv.innerHTML = '<p class="empty">Ще немає газет. Почніть писати!</p>';
+                articlesDiv.innerHTML = '<p class="empty">Ще немає схвалених газет. Почніть писати!</p>';
             }
         }
 
-        // Фільтрація статей
         window.filterArticles = function(category) {
             currentFilter = category;
             const tabs = document.querySelectorAll('.tab');
@@ -1467,7 +1613,6 @@
             loadArticles(searchInput ? searchInput.value : '');
         };
 
-        // Пошук статей
         window.searchArticles = function() {
             const searchInput = document.getElementById('search-input');
             if (!searchInput) {
@@ -1478,7 +1623,6 @@
             loadArticles(searchQuery);
         };
 
-        // Ініціалізація слухачів подій
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('search-input');
             const profileToggle = document.getElementById('profile-toggle');
