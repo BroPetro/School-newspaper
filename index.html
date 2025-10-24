@@ -1,1127 +1,1499 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1a1a2e">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="Електронна газета - сучасна платформа для читання та створення новин">
-  <title>Електронна газета</title>
-  <link rel="manifest" href="/manifest.json">
-  <link rel="icon" href="/favicon.ico">
-  <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f4f4f9;
-      color: #333;
-      min-height: 100vh;
-      display: flex;
-      transition: background 0.3s, color 0.3s;
-    }
-    body.dark {
-      background: #121212;
-      color: #e0e0e0;
-    }
-    .container {
-      display: flex;
-      width: 100%;
-      min-height: 100vh;
-    }
-    .sidebar {
-      width: 220px;
-      background: #1a1a2e;
-      color: #fff;
-      padding: 20px;
-      position: fixed;
-      height: 100%;
-      transition: transform 0.3s ease;
-      z-index: 1000;
-    }
-    .sidebar.dark { background: #0a0a0a; }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-    .sidebar li {
-      padding: 12px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .sidebar li:hover { background: #2e2e4e; }
-    .sidebar li.active { background: #1976d2; }
-    .main-content {
-      margin-left: 220px;
-      padding: 20px;
-      width: calc(100% - 220px);
-      flex-grow: 1;
-    }
-    header {
-      background: #1a1a2e;
-      color: #fff;
-      padding: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      margin-bottom: 20px;
-    }
-    header.dark { background: #0a0a0a; }
-    header h1 {
-      font-size: clamp(18px, 4vw, 22px);
-      font-weight: 700;
-    }
-    .header-buttons {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    .button {
-      background: #1976d2;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: clamp(12px, 3vw, 14px);
-      transition: background 0.2s;
-    }
-    .button:hover { background: #115293; }
-    .button.secondary { background: #ff9800; }
-    .button.secondary:hover { background: #e68a00; }
-    .button.favorite { background: #4caf50; }
-    .button.favorite:hover { background: #388e3c; }
-    .button.logout { background: #ff4d4d; }
-    .button.logout:hover { background: #d32f2f; }
-    .install-button {
-      background: #4caf50;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: clamp(12px, 3vw, 14px);
-      transition: background 0.2s;
-      display: block;
-      width: 100%;
-      text-align: left;
-    }
-    .install-button:hover { background: #388e3c; }
-    .auth-box, .form-box, .admin-box, .profile-box {
-      background: #fff;
-      padding: 15px;
-      margin: 15px 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .auth-box.dark, .form-box.dark, .admin-box.dark, .profile-box.dark {
-      background: #1e1e2f;
-      color: #e0e0e0;
-    }
-    .profile-box {
-      max-width: 700px;
-      margin: 15px auto;
-    }
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 10px;
-      background: #f5f5f5;
-      border-radius: 6px;
-    }
-    .profile-header.dark { background: #2b2b3a; }
-    .profile-header .avatar {
-      width: 50px;
-      height: 50px;
-      background: #ccc;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      color: #fff;
-    }
-    .profile-header.dark .avatar { background: #444; }
-    .profile-sections {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-    .profile-section {
-      padding: 10px;
-      background: #f9f9f9;
-      border-radius: 6px;
-    }
-    .profile-section.dark { background: #2b2b3a; }
-    .profile-section h4 { margin: 0 0 8px; font-size: clamp(14px, 3vw, 16px); }
-    .profile-section.dark h4 { color: #bbb; }
-    .article-card {
-      background: #fff;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .article-card:hover { transform: translateY(-3px); }
-    .article-card.dark { background: #1e1e2f; }
-    .article-card h3 { font-size: clamp(16px, 4vw, 18px); margin: 0 0 8px; }
-    .article-card small { color: #666; font-size: clamp(12px, 3vw, 13px); }
-    .article-card.dark small { color: #aaa; }
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      overflow-y: auto;
-    }
-    .modal-content {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 90%;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-content.dark { background: #1e1e2f; color: #e0e0e0; }
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      cursor: pointer;
-      font-size: 18px;
-      color: #ff4d4d;
-    }
-    img.article-img {
-      max-width: 100%;
-      max-height: 300px;
-      object-fit: contain;
-      border-radius: 8px;
-      margin: 10px 0;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 8px;
-      margin: 8px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: clamp(13px, 3vw, 14px);
-    }
-    input.dark, textarea.dark, select.dark {
-      background: #2b2b3a;
-      border-color: #444;
-      color: #e0e0e0;
-    }
-    textarea { resize: vertical; min-height: 80px; }
-    .reactions button {
-      background: #e3f2fd;
-      color: #1976d2;
-      border: none;
-      border-radius: 6px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: clamp(12px, 3vw, 13px);
-    }
-    .reactions button:hover { background: #bbdefb; }
-    .reactions button.dark { background: #2b2b3a; color: #90caf9; }
-    .alert-box {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #4caf50;
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 6px;
-      z-index: 1001;
-      display: none;
-      font-size: clamp(12px, 3vw, 13px);
-    }
-    .alert-box.error { background: #ff4d4d; }
-    .alert-box button { background: none; border: none; color: #fff; cursor: pointer; }
-    .search-box input, .category-filter select {
-      padding: 8px;
-      font-size: clamp(13px, 3vw, 14px);
-    }
-    .comments-section { margin-top: 15px; }
-    .comment {
-      border-top: 1px solid #eee;
-      padding: 8px 0;
-      display: flex;
-      justify-content: space-between;
-    }
-    .comment.dark { border-top-color: #444; }
-    .comment small { color: #666; font-size: clamp(11px, 3vw, 12px); }
-    .comment.dark small { color: #aaa; }
-    .comment .delete-comment {
-      background: #ff4d4d;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 5px 8px;
-      cursor: pointer;
-    }
-    .error-message {
-      color: #ff4d4d;
-      font-size: clamp(11px, 3vw, 12px);
-      margin: 5px 0;
-      display: none;
-    }
-    .input-error { border-color: #ff4d4d; }
-    .auth-toggle {
-      text-align: center;
-      margin-top: 10px;
-      color: #1976d2;
-      cursor: pointer;
-      font-size: clamp(12px, 3vw, 14px);
-    }
-    .auth-toggle:hover { text-decoration: underline; }
-    .offline-message {
-      background: #ff4d4d;
-      color: #fff;
-      text-align: center;
-      padding: 10px;
-      display: none;
-      font-size: clamp(12px, 3vw, 14px);
-    }
-    @media (max-width: 768px) {
-      .container { flex-direction: column; }
-      .sidebar {
-        width: 100%;
-        position: fixed;
-        transform: translateX(-100%);
-      }
-      .sidebar.active { transform: translateX(0); }
-      .main-content { margin-left: 0; width: 100%; padding: 15px; }
-      header { flex-direction: column; align-items: flex-start; }
-      .header-buttons { flex-direction: column; width: 100%; gap: 8px; }
-      .button, .install-button { width: 100%; text-align: center; }
-      .modal-content { max-width: 95%; padding: 15px; }
-      .profile-sections { grid-template-columns: 1fr; }
-      .sidebar-toggle {
-        display: block;
-        position: fixed;
-        top: 10px;
-        left: 10px;
-        background: #1976d2;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        padding: 8px;
-        cursor: pointer;
-        z-index: 1001;
-      }
-      img.article-img { max-height: 200px; }
-    }
-    @media (min-width: 769px) {
-      .sidebar-toggle { display: none; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шкільна Газета</title>
+    <style>
+        /* Базові стилі */
+        body {
+            background: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            color: #1f2937;
+        }
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        /* Випуклий ефект */
+        .embossed {
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+        /* Заголовок */
+        header {
+            background: #18181b;
+            color: #fff;
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        header .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        /* Профіль */
+        .profile-container {
+            position: relative;
+        }
+        .profile-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 20px;
+            transition: background 0.2s;
+        }
+        .profile-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .profile-icon {
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #fff;
+        }
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 48px;
+            right: 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 12px;
+            min-width: 200px;
+            z-index: 20;
+        }
+        .profile-dropdown.show {
+            display: block;
+        }
+        .profile-dropdown p {
+            font-size: 14px;
+            color: #1f2937;
+            margin: 0 0 8px;
+        }
+        .profile-dropdown p span {
+            font-weight: 500;
+        }
+        .profile-dropdown button {
+            width: 100%;
+            background: #6b7280;
+            color: #fff;
+            padding: 8px;
+            font-size: 14px;
+            text-align: left;
+            margin-bottom: 4px;
+        }
+        .profile-dropdown button:hover {
+            background: #4b5563;
+        }
+        .profile-dropdown button.sign-out {
+            background: #ef4444;
+        }
+        .profile-dropdown button.sign-out:hover {
+            background: #dc2626;
+        }
+        /* Вкладки профілю */
+        .profile-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .profile-tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #e5e7eb;
+            color: #1f2937;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+        .profile-tab.active {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .profile-tab:hover {
+            background: #d1d5db;
+        }
+        .profile-tab.active:hover {
+            background: #2563eb;
+        }
+        .profile-content {
+            display: none;
+        }
+        .profile-content.active {
+            display: block;
+        }
+        .profile-content .article {
+            padding: 12px;
+            margin-bottom: 8px;
+        }
+        /* Вкладки навігації */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding-bottom: 4px;
+        }
+        .tab {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #e5e7eb;
+            color: #1f2937;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+        .tab.active {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .tab:hover {
+            background: #d1d5db;
+        }
+        .tab.active:hover {
+            background: #2563eb;
+        }
+        /* Секція автентифікації */
+        #auth-section {
+            padding: 24px;
+            margin: 24px 0;
+        }
+        #auth-section h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0 0 16px;
+            text-align: center;
+        }
+        #login-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 15px;
+            background: #f9fafb;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        #login-form input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        #login-form input::placeholder {
+            color: #9ca3af;
+        }
+        #login-form .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+        button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-1px);
+        }
+        #login-form button.sign-in {
+            background: #3b82f6;
+            color: #fff;
+        }
+        #login-form button.sign-in:hover {
+            background: #2563eb;
+        }
+        #login-form button.sign-up {
+            background: #6b7280;
+            color: #fff;
+        }
+        #login-form button.sign-up:hover {
+            background: #4b5563;
+        }
+        /* Секція газет */
+        #articles-section {
+            margin-bottom: 24px;
+        }
+        #search-form {
+            margin-bottom: 16px;
+        }
+        #search-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 15px;
+            background: #f9fafb;
+        }
+        #search-form input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        #search-form input::placeholder {
+            color: #9ca3af;
+        }
+        /* Кнопка створення (десктоп) */
+        #create-article-btn {
+            position: fixed;
+            right: 24px;
+            top: 80px;
+            background: #3b82f6;
+            color: #fff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+        #create-article-btn:hover {
+            background: #2563eb;
+            transform: scale(1.1);
+        }
+        #article-form {
+            padding: 24px;
+            margin-bottom: 24px;
+            display: none;
+        }
+        #article-form.show {
+            display: block;
+        }
+        #article-form h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0 0 16px;
+        }
+        #article-form select,
+        #article-form input,
+        #article-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 15px;
+            background: #f9fafb;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        #article-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        #article-form select:focus,
+        #article-form input:focus,
+        #article-form textarea:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        #article-form select::placeholder,
+        #article-form input::placeholder,
+        #article-form textarea::placeholder {
+            color: #9ca3af;
+        }
+        #article-form button {
+            background: #3b82f6;
+            color: #fff;
+        }
+        #article-form button:hover {
+            background: #2563eb;
+        }
+        .article {
+            padding: 20px;
+            margin-bottom: 16px;
+            position: relative;
+            cursor: pointer;
+        }
+        .article h2 {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0 0 10px;
+        }
+        .article p.content {
+            font-size: 15px;
+            color: #4b5563;
+            margin: 0 0 10px;
+            line-height: 1.6;
+        }
+        .article p.meta {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        .article p.meta .author {
+            color: #3b82f6;
+            cursor: pointer;
+        }
+        .article p.meta .author:hover {
+            text-decoration: underline;
+        }
+        .article .actions {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            gap: 8px;
+        }
+        .article button {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        .article button.like {
+            background: #f3f4f6;
+            color: #1f2937;
+        }
+        .article button.like.liked {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .article button.like:hover {
+            background: #e5e7eb;
+        }
+        .article button.like.liked:hover {
+            background: #2563eb;
+        }
+        .article button.edit {
+            background: #10b981;
+            color: #fff;
+        }
+        .article button.edit:hover {
+            background: #059669;
+        }
+        .article button.delete {
+            background: #ef4444;
+            color: #fff;
+        }
+        .article button.delete:hover {
+            background: #dc2626;
+        }
+        .article .edit-form {
+            margin-top: 12px;
+            display: none;
+        }
+        .article .edit-form.show {
+            display: block;
+        }
+        .article .edit-form select,
+        .article .edit-form input,
+        .article .edit-form textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #f9fafb;
+        }
+        .article .edit-form textarea {
+            min-height: 80px;
+        }
+        .article .edit-form button.save {
+            background: #10b981;
+            color: #fff;
+        }
+        .article .edit-form button.save:hover {
+            background: #059669;
+        }
+        .article .edit-form button.cancel {
+            background: #6b7280;
+            color: #fff;
+        }
+        .article .edit-form button.cancel:hover {
+            background: #4b5563;
+        }
+        /* Модальне вікно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: #fff;
+            border-radius: 10px;
+            padding: 24px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            font-size: 24px;
+            font-weight: 500;
+            margin: 0 0 16px;
+        }
+        .modal-content p.content {
+            font-size: 16px;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+        .modal-content p.meta {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 16px;
+        }
+        .modal-content p.meta .author {
+            color: #3b82f6;
+            cursor: pointer;
+        }
+        .modal-content p.meta .author:hover {
+            text-decoration: underline;
+        }
+        .modal-content button.close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #6b7280;
+            color: #fff;
+            padding: 8px;
+            font-size: 14px;
+        }
+        .modal-content button.close:hover {
+            background: #4b5563;
+        }
+        .modal-content button.like {
+            background: #f3f4f6;
+            color: #1f2937;
+            margin-top: 12px;
+        }
+        .modal-content button.like.liked {
+            background: #3b82f6;
+            color: #fff;
+        }
+        .modal-content button.like:hover {
+            background: #e5e7eb;
+        }
+        .modal-content button.like.liked:hover {
+            background: #2563eb;
+        }
+        /* Профіль автора */
+        .author-profile {
+            padding: 24px;
+        }
+        .author-profile h2 {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0 0 16px;
+        }
+        .author-profile button.subscribe {
+            background: #3b82f6;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+        .author-profile button.subscribe.subscribed {
+            background: #6b7280;
+        }
+        .author-profile button.subscribe:hover {
+            background: #2563eb;
+        }
+        .author-profile button.subscribe.subscribed:hover {
+            background: #4b5563;
+        }
+        /* Порожній стан */
+        #articles .empty,
+        .profile-content .empty {
+            text-align: center;
+            font-size: 15px;
+            color: #6b7280;
+        }
+        /* Прихований клас */
+        .hidden {
+            display: none;
+        }
+        /* Анімація появи */
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Стилі фокусу для доступності */
+        input:focus,
+        select:focus,
+        textarea:focus,
+        button:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+        /* Нижня навігаційна панель (мобільна) */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #18181b;
+            padding: 8px 0;
+            z-index: 10;
+        }
+        .mobile-nav .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .mobile-nav button {
+            background: none;
+            color: #fff;
+            font-size: 14px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .mobile-nav button.active {
+            color: #3b82f6;
+        }
+        .mobile-nav button svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        /* Адаптивність */
+        @media (max-width: 600px) {
+            .container {
+                padding: 0 12px;
+            }
+            header h1 {
+                font-size: 20px;
+            }
+            .profile-icon {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+            .profile-dropdown {
+                min-width: 160px;
+                top: 44px;
+            }
+            #auth-section h2,
+            #article-form h2,
+            .modal-content h2,
+            .author-profile h2 {
+                font-size: 18px;
+            }
+            #login-form .button-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .article h2 {
+                font-size: 16px;
+            }
+            .article p.content {
+                font-size: 14px;
+            }
+            .article p.meta {
+                font-size: 12px;
+            }
+            #create-article-btn {
+                display: none;
+            }
+            .tabs {
+                margin: 12px 0;
+            }
+            .mobile-nav {
+                display: block;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="offline-message" id="offlineMessage">Ви офлайн. Деякі функції недоступні.</div>
-  <div class="container">
-    <div class="sidebar">
-      <ul>
-        <li id="homeBtn" class="active">🏠 Головна</li>
-        <li id="createBtn">✍️ Створити статтю</li>
-        <li id="adminBtn" style="display:none;">🛡️ Адмін-панель</li>
-        <li id="accountBtn">👤 Увійти</li>
-        <li id="themeBtn">🌓 Темна тема</li>
-        <li><button id="installBtn" class="install-button">📱 Встановити додаток</button></li>
-      </ul>
-    </div>
-    <div class="main-content">
-      <header>
-        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-        <h1>Електронна газета</h1>
-        <div class="header-buttons">
-          <select id="categoryFilter" class="category-filter dark">
-            <option value="">Усі категорії</option>
-            <option value="Новини">Новини</option>
-            <option value="Спорт">Спорт</option>
-            <option value="Технології">Технології</option>
-            <option value="Культура">Культура</option>
-          </select>
-          <input type="text" id="searchInput" class="search-box" placeholder="Пошук за заголовком">
+    <!-- Заголовок -->
+    <header>
+        <div class="container header-content">
+            <h1>Шкільна Газета</h1>
+            <div class="profile-container">
+                <div id="profile-toggle" class="profile-toggle hidden">
+                    <div class="profile-icon" id="profile-icon"></div>
+                    <span id="profile-name"></span>
+                </div>
+                <div id="profile-dropdown" class="profile-dropdown hidden">
+                    <p><span id="user-display-name"></span></p>
+                    <p><span id="user-email"></span></p>
+                    <button onclick="showProfile()">Мій профіль</button>
+                    <button class="sign-out" onclick="signOut()">Вийти</button>
+                </div>
+            </div>
         </div>
-      </header>
-      <div class="alert-box" id="alertBox"><span id="alertMessage"></span><button onclick="this.parentElement.style.display='none'">✖</button></div>
-      <div class="auth-box" id="authBox" style="display:none;">
-        <div id="registerForm">
-          <h3>Реєстрація</h3>
-          <input type="text" id="registerNickname" placeholder="Ваш нікнейм">
-          <div class="error-message" id="registerNicknameError"></div>
-          <input type="email" id="registerEmail" placeholder="Електронна пошта">
-          <div class="error-message" id="registerEmailError"></div>
-          <input type="password" id="registerPassword" placeholder="Пароль (мін. 6 символів)">
-          <div class="error-message" id="registerPasswordError"></div>
-          <button class="button" onclick="register()">Зареєструватися</button>
-          <div class="auth-toggle" onclick="toggleAuthForm()">Вже маєте акаунт? Увійти</div>
+    </header>
+
+    <!-- Основний вміст -->
+    <main class="container">
+        <!-- Вкладки -->
+        <div class="tabs">
+            <div class="tab active" onclick="filterArticles('recommended')">Рекомендації</div>
+            <div class="tab" onclick="filterArticles('all')">Усі</div>
+            <div class="tab" onclick="filterArticles('games')">Ігри</div>
+            <div class="tab" onclick="filterArticles('events')">Події</div>
         </div>
-        <div id="loginForm" style="display:none;">
-          <h3>Вхід</h3>
-          <input type="email" id="loginEmail" placeholder="Електронна пошта">
-          <div class="error-message" id="loginEmailError"></div>
-          <input type="password" id="loginPassword" placeholder="Пароль">
-          <div class="error-message" id="loginPasswordError"></div>
-          <button class="button" onclick="login()">Увійти</button>
-          <div class="auth-toggle" onclick="toggleAuthForm()">Немає акаунта? Зареєструватися</div>
+
+        <!-- Секція автентифікації -->
+        <section id="auth-section" class="embossed">
+            <div id="login-form">
+                <h2>Увійти</h2>
+                <input type="email" id="login-email" placeholder="Електронна пошта" required>
+                <input type="password" id="login-password" placeholder="Пароль" required>
+                <div class="button-group">
+                    <button class="sign-in" onclick="signIn()">Увійти</button>
+                    <button class="sign-up" onclick="signUp()">Зареєструватися</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Секція газет -->
+        <section id="articles-section" class="hidden">
+            <div id="search-form">
+                <input type="text" id="search-input" placeholder="Пошук газет...">
+            </div>
+            <div id="article-form" class="embossed">
+                <h2>Нова газета</h2>
+                <select id="article-category" required>
+                    <option value="" disabled selected>Оберіть категорію</option>
+                    <option value="games">Ігри</option>
+                    <option value="events">Події</option>
+                    <option value="other">Інше</option>
+                </select>
+                <input type="text" id="article-title" placeholder="Заголовок" required>
+                <textarea id="article-content" placeholder="Напишіть вашу статтю..." required></textarea>
+                <button onclick="addArticle()">Опублікувати</button>
+            </div>
+            <div id="articles"></div>
+        </section>
+
+        <!-- Модальне вікно статті -->
+        <div id="article-modal" class="modal">
+            <div class="modal-content embossed">
+                <button class="close" onclick="closeModal()">Закрити</button>
+                <h2 id="modal-title"></h2>
+                <p id="modal-content" class="content"></p>
+                <p id="modal-meta" class="meta"></p>
+                <button id="modal-like" class="like" onclick="toggleLike()">Лайк</button>
+            </div>
         </div>
-      </div>
-      <div class="profile-box" id="profileBox" style="display:none;">
-        <h3>Ваш профіль</h3>
-        <div class="profile-header">
-          <div class="avatar dark">👤</div>
-          <div>
-            <h4 id="profileName"></h4>
-            <button class="button logout" onclick="logout()">Вийти</button>
-          </div>
+
+        <!-- Профіль користувача -->
+        <div id="profile-modal" class="modal hidden">
+            <div class="modal-content embossed">
+                <button class="close" onclick="closeModal()">Закрити</button>
+                <h2 id="profile-title"></h2>
+                <div class="profile-tabs">
+                    <div class="profile-tab active" onclick="showProfileTab('likes')">Лайки</div>
+                    <div class="profile-tab" onclick="showProfileTab('articles')">Мої статті</div>
+                    <div class="profile-tab" onclick="showProfileTab('subscriptions')">Підписки</div>
+                </div>
+                <div id="profile-likes" class="profile-content active"></div>
+                <div id="profile-articles" class="profile-content"></div>
+                <div id="profile-subscriptions" class="profile-content"></div>
+            </div>
         </div>
-        <div class="profile-sections">
-          <div class="profile-section dark">
-            <h4>Нікнейм</h4>
-            <input type="text" id="profileNickname" placeholder="Ваш нікнейм">
-            <button class="button" onclick="updateNickname()">Оновити</button>
-          </div>
-          <div class="profile-section dark">
-            <h4>Ваші статті</h4>
-            <div id="userArticles"></div>
-          </div>
-          <div class="profile-section dark">
-            <h4>Обрані статті</h4>
-            <div id="userFavorites"></div>
-          </div>
+
+        <!-- Профіль автора -->
+        <div id="author-modal" class="modal hidden">
+            <div class="modal-content embossed author-profile">
+                <button class="close" onclick="closeModal()">Закрити</button>
+                <h2 id="author-title"></h2>
+                <button id="author-subscribe" class="subscribe" onclick="toggleSubscribe()">Підписатися</button>
+                <div id="author-articles"></div>
+            </div>
         </div>
-      </div>
-      <div class="form-box" id="articleForm" style="display:none;">
-        <h3>Створити статтю</h3>
-        <input type="text" id="title" placeholder="Заголовок">
-        <textarea id="content" rows="5" placeholder="Текст статті"></textarea>
-        <input type="text" id="tags" placeholder="Теги через кому">
-        <select id="category" class="dark">
-          <option value="">Оберіть категорію</option>
-          <option value="Новини">Новини</option>
-          <option value="Спорт">Спорт</option>
-          <option value="Технології">Технології</option>
-          <option value="Культура">Культура</option>
-        </select>
-        <label><input type="checkbox" id="includeImage" onclick="toggleImageInput()"> Додати зображення</label>
-        <input type="text" id="image" placeholder="URL зображення" style="display:none;">
-        <button class="button" onclick="previewArticle()">Попередній перегляд</button>
-        <button class="button" onclick="addArticle()">Опублікувати</button>
-        <div id="previewBox" class="preview-box" style="display:none;"></div>
-      </div>
-      <div id="adminPanel" class="admin-box" style="display:none;">
-        <h3>Адмін-панель</h3>
-        <div id="pendingArticles"></div>
-      </div>
-      <div id="articles"></div>
-      <div class="modal" id="modal">
-        <div class="modal-content">
-          <span class="close" onclick="closeModal()">✖</span>
-          <div id="modalBody"></div>
+
+        <!-- Кнопка створення (десктоп) -->
+        <div id="create-article-btn" onclick="toggleArticleForm()">+</div>
+    </main>
+
+    <!-- Нижня навігаційна панель (мобільна) -->
+    <nav class="mobile-nav">
+        <div class="nav-items">
+            <button class="nav-item active" onclick="goToHome()">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span>Головна</span>
+            </button>
+            <button class="nav-item" onclick="toggleArticleForm()">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>
+                <span>Створити</span>
+            </button>
+            <button class="nav-item" onclick="showProfile()">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                <span>Профіль</span>
+            </button>
         </div>
-      </div>
-    </div>
-  </div>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, increment, getDoc, arrayUnion, arrayRemove, deleteDoc, setDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+    </nav>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCS_jrZxtztQeArogU8yfCm4BIiNphapsE",
-      authDomain: "party-8c521.firebaseapp.com",
-      projectId: "party-8c521",
-      storageBucket: "party-8c521.firebasestorage.app",
-      messagingSenderId: "630338352175",
-      appId: "1:630338352175:web:96367f9e3223677b58c2da",
-      measurementId: "G-L76NX1ZBWX"
-    };
+    <!-- Firebase SDK v9.6.1 Modular Imports -->
+    <script type="module">
+        // Імпорт модулів Firebase
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getDatabase, ref, push, set, onValue, remove, get, update } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as signOutAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+        // Конфігурація Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
+            authDomain: "newpaper-6cb18.firebaseapp.com",
+            databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "newpaper-6cb18",
+            storageBucket: "newpaper-6cb18.firebasestorage.app",
+            messagingSenderId: "284037128087",
+            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
+            measurementId: "G-0EMERY88FL"
+        };
 
-    const accountBtn = document.getElementById("accountBtn");
-    const createBtn = document.getElementById("createBtn");
-    const adminBtn = document.getElementById("adminBtn");
-    const homeBtn = document.getElementById("homeBtn");
-    const themeBtn = document.getElementById("themeBtn");
-    const installBtn = document.getElementById("installBtn");
-    const articleForm = document.getElementById("articleForm");
-    const adminPanel = document.getElementById("adminPanel");
-    const articlesDiv = document.getElementById("articles");
-    const authBox = document.getElementById("authBox");
-    const profileBox = document.getElementById("profileBox");
-    const pendingDiv = document.getElementById("pendingArticles");
-    const searchInput = document.getElementById("searchInput");
-    const categoryFilter = document.getElementById("categoryFilter");
-    const registerForm = document.getElementById("registerForm");
-    const loginForm = document.getElementById("loginForm");
-    const previewBox = document.getElementById("previewBox");
-    const alertBox = document.getElementById("alertBox");
-    const alertMessage = document.getElementById("alertMessage");
-    const offlineMessage = document.getElementById("offlineMessage");
+        // Ініціалізація Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth(app);
 
-    // PWA Install Prompt
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = 'block';
-    });
+        // Посилання на дані
+        const articlesRef = ref(database, 'articles');
+        const userDataRef = ref(database, 'userData');
 
-    window.addEventListener('appinstalled', () => {
-      showAlert('Додаток успішно встановлено!');
-      installBtn.style.display = 'none';
-    });
+        // Слухач стану автентифікації
+        onAuthStateChanged(auth, (user) => {
+            const authSection = document.getElementById('auth-section');
+            const articlesSection = document.getElementById('articles-section');
+            const loginForm = document.getElementById('login-form');
+            const profileToggle = document.getElementById('profile-toggle');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            const userDisplayName = document.getElementById('user-display-name');
+            const userEmail = document.getElementById('user-email');
+            const profileName = document.getElementById('profile-name');
+            const profileIcon = document.getElementById('profile-icon');
 
-    function triggerInstallPrompt() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(choiceResult => {
-          if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the install prompt');
-          } else {
-            console.log('User dismissed the install prompt');
-          }
-          deferredPrompt = null;
-        });
-        if (window.innerWidth <= 768) toggleSidebar();
-      } else {
-        showAlert('Встановлення недоступне. Спробуйте через меню браузера.', true);
-      }
-    }
-
-    installBtn.onclick = triggerInstallPrompt;
-
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('Service Worker registered'))
-          .catch(err => console.error('Service Worker registration failed:', err));
-      });
-    }
-
-    // Detect offline status
-    window.addEventListener('online', () => offlineMessage.style.display = 'none');
-    window.addEventListener('offline', () => offlineMessage.style.display = 'block');
-
-    function toggleSidebar() {
-      document.querySelector('.sidebar').classList.toggle('active');
-    }
-
-    async function setThemePreference(user, theme) {
-      if (!user) return;
-      await setDoc(doc(db, "preferences", user.uid), { theme }, { merge: true });
-    }
-
-    async function getThemePreference(user) {
-      if (!user) return "light";
-      const prefSnap = await getDoc(doc(db, "preferences", user.uid));
-      return prefSnap.exists() && prefSnap.data().theme ? prefSnap.data().theme : "light";
-    }
-
-    themeBtn.onclick = async () => {
-      document.body.classList.toggle("dark");
-      document.querySelectorAll('.modal-content, .article-card, .auth-box, .form-box, .admin-box, .profile-box, .profile-header, .profile-section, .preview-box, .sidebar').forEach(e => e.classList.toggle('dark'));
-      document.querySelectorAll('input, textarea, select, .reactions button').forEach(e => e.classList.toggle('dark'));
-      document.querySelectorAll('.avatar').forEach(e => e.classList.toggle('dark'));
-      const theme = document.body.classList.contains("dark") ? "dark" : "light";
-      if (auth.currentUser) await setThemePreference(auth.currentUser, theme);
-      if (window.innerWidth <= 768) toggleSidebar();
-    };
-
-    function showAlert(message, isError = false) {
-      alertMessage.textContent = message;
-      alertBox.className = `alert-box ${isError ? 'error' : ''}`;
-      alertBox.style.display = 'block';
-      setTimeout(() => alertBox.style.display = 'none', 3000);
-    }
-
-    function showError(elementId, message) {
-      const errorElement = document.getElementById(elementId);
-      errorElement.textContent = message;
-      errorElement.style.display = "block";
-      document.getElementById(elementId.replace("Error", "")).classList.add("input-error");
-    }
-
-    function clearErrors(formType) {
-      document.querySelectorAll(`#${formType}Form .error-message`).forEach(e => { e.style.display = "none"; e.textContent = ""; });
-      document.querySelectorAll(`#${formType}Form input`).forEach(i => i.classList.remove("input-error"));
-    }
-
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    async function register() {
-      if (!navigator.onLine) { showAlert("Реєстрація недоступна в офлайн режимі", true); return; }
-      clearErrors("register");
-      const nickname = document.getElementById("registerNickname").value.trim();
-      const email = document.getElementById("registerEmail").value.trim();
-      const password = document.getElementById("registerPassword").value;
-      if (!nickname) { showError("registerNicknameError", "Введіть нікнейм"); return; }
-      if (!validateEmail(email)) { showError("registerEmailError", "Некоректна пошта"); return; }
-      if (password.length < 6) { showError("registerPasswordError", "Пароль ≥ 6 символів"); return; }
-      try {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        await updateProfile(userCred.user, { displayName: nickname });
-        await setDoc(doc(db, "preferences", userCred.user.uid), { theme: "light" });
-        showAlert("Реєстрація успішна!");
-        authBox.style.display = "none";
-        if (window.innerWidth <= 768) toggleSidebar();
-      } catch (error) {
-        showError("registerEmailError", error.code === "auth/email-already-in-use" ? "Пошта вже зареєстрована" : "Помилка: " + error.message);
-      }
-    }
-
-    async function login() {
-      if (!navigator.onLine) { showAlert("Вхід недоступний в офлайн режимі", true); return; }
-      clearErrors("login");
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-      if (!validateEmail(email)) { showError("loginEmailError", "Некоректна пошта"); return; }
-      if (!password) { showError("loginPasswordError", "Введіть пароль"); return; }
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        showAlert("Вхід успішний!");
-        authBox.style.display = "none";
-        if (window.innerWidth <= 768) toggleSidebar();
-      } catch (error) {
-        showError("loginEmailError", error.code === "auth/wrong-password" || error.code === "auth/user-not-found" ? "Неправильна пошта/пароль" : "Помилка: " + error.message);
-      }
-    }
-
-    function toggleAuthForm() {
-      registerForm.style.display = registerForm.style.display === "none" ? "block" : "none";
-      loginForm.style.display = loginForm.style.display === "none" ? "block" : "none";
-      clearErrors("register");
-      clearErrors("login");
-      if (window.innerWidth <= 768) toggleSidebar();
-    }
-
-    async function logout() {
-      if (!navigator.onLine) { showAlert("Вихід недоступний в офлайн режимі", true); return; }
-      try {
-        await signOut(auth);
-        showAlert("Ви вийшли з акаунта");
-        articleForm.style.display = "none";
-        adminPanel.style.display = "none";
-        profileBox.style.display = "none";
-        if (window.innerWidth <= 768) toggleSidebar();
-      } catch (error) {
-        showAlert("Помилка виходу: " + error.message, true);
-      }
-    }
-
-    async function updateNickname() {
-      if (!navigator.onLine) { showAlert("Оновлення недоступне в офлайн режимі", true); return; }
-      const nickname = document.getElementById("profileNickname").value.trim();
-      const user = auth.currentUser;
-      if (!nickname) { showAlert("Введіть нікнейм", true); return; }
-      try {
-        await updateProfile(user, { displayName: nickname });
-        document.getElementById("profileName").textContent = nickname;
-        showAlert("Нікнейм оновлено");
-      } catch (error) {
-        showAlert("Помилка оновлення: " + error.message, true);
-      }
-    }
-
-    async function loadUserProfile(user) {
-      if (!user) return;
-      document.getElementById("profileNickname").value = user.displayName || "";
-      document.getElementById("profileName").textContent = user.displayName || "Користувач";
-      const articlesQuery = query(collection(db, "articles"), where("uid", "==", user.uid));
-      const favoritesQuery = query(collection(db, "favorites"), where("uid", "==", user.uid));
-      const userArticles = document.getElementById("userArticles");
-      const userFavorites = document.getElementById("userFavorites");
-      userArticles.innerHTML = "";
-      userFavorites.innerHTML = "";
-      try {
-        const articlesSnap = await getDocs(articlesQuery);
-        articlesSnap.forEach(doc => {
-          const article = doc.data();
-          const div = document.createElement("div");
-          div.classList.add("article-card");
-          let imgHTML = article.image ? `<img class="article-img" src="${article.image}">` : "";
-          div.innerHTML = `<h3>${article.title}</h3><small>${article.date} | ${article.status}</small>${imgHTML}<p>${article.content.substring(0, 80)}...</p>`;
-          div.onclick = () => openModal(doc.id, article);
-          userArticles.appendChild(div);
-        });
-        const favoritesSnap = await getDocs(favoritesQuery);
-        for (const favDoc of favoritesSnap.docs) {
-          const fav = favDoc.data();
-          const articleDoc = await getDoc(doc(db, "articles", fav.articleId));
-          if (articleDoc.exists()) {
-            const article = articleDoc.data();
-            const div = document.createElement("div");
-            div.classList.add("article-card");
-            let imgHTML = article.image ? `<img class="article-img" src="${article.image}">` : "";
-            div.innerHTML = `<h3>${article.title}</h3><small>${article.date} | ${article.author}</small>${imgHTML}<p>${article.content.substring(0, 80)}...</p>`;
-            div.onclick = () => openModal(fav.articleId, article);
-            userFavorites.appendChild(div);
-          }
-        }
-      } catch (error) {
-        showAlert("Помилка профілю: " + error.message, true);
-      }
-    }
-
-    function toggleImageInput() {
-      document.getElementById("image").style.display = document.getElementById("includeImage").checked ? "block" : "none";
-    }
-
-    function previewArticle() {
-      const title = document.getElementById("title").value.trim();
-      const content = document.getElementById("content").value.trim();
-      const image = document.getElementById("includeImage").checked ? document.getElementById("image").value.trim() : "";
-      const tags = document.getElementById("tags").value.trim().split(",").map(t => t.trim()).filter(t => t);
-      const category = document.getElementById("category").value;
-      if (title || content) {
-        let imgHTML = image ? `<img class="article-img" src="${image}">` : "";
-        previewBox.innerHTML = `
-          <h2>${title || "Попередній перегляд"}</h2>
-          <p>${content || "Введіть текст..."}</p>
-          ${imgHTML}
-          <div>Теги: ${(tags.length ? tags.join(", ") : "Немає тегів")}</div>
-          <div>Категорія: ${category || "Без категорії"}</div>
-        `;
-        previewBox.style.display = "block";
-      } else {
-        showAlert("Введіть заголовок або текст", true);
-      }
-    }
-
-    async function addArticle() {
-      if (!navigator.onLine) { showAlert("Публікація недоступна в офлайн режимі", true); return; }
-      const title = document.getElementById("title").value.trim();
-      const content = document.getElementById("content").value.trim();
-      const image = document.getElementById("includeImage").checked ? document.getElementById("image").value.trim() : "";
-      const tags = document.getElementById("tags").value.trim().split(",").map(t => t.trim()).filter(t => t);
-      const category = document.getElementById("category").value;
-      const user = auth.currentUser;
-      if (!user) { showAlert("Увійдіть, щоб створити статтю", true); return; }
-      if (title && content) {
-        try {
-          await addDoc(collection(db, "articles"), {
-            title, content, image, tags, category,
-            author: user.displayName || user.email,
-            uid: user.uid,
-            date: new Date().toLocaleString(),
-            likes: 0, dislikes: 0, hearts: 0,
-            likedBy: [], dislikedBy: [], heartedBy: [],
-            comments: [],
-            status: "pending"
-          });
-          showAlert("Стаття надіслана на перевірку");
-          document.getElementById("title").value = "";
-          document.getElementById("content").value = "";
-          document.getElementById("image").value = "";
-          document.getElementById("tags").value = "";
-          document.getElementById("includeImage").checked = false;
-          toggleImageInput();
-          document.getElementById("category").value = "";
-          previewBox.style.display = "none";
-          if (window.innerWidth <= 768) toggleSidebar();
-        } catch (error) {
-          showAlert("Помилка створення статті: " + error.message, true);
-        }
-      } else {
-        showAlert("Заповніть заголовок і текст", true);
-      }
-    }
-
-    async function editArticle(id) {
-      if (!navigator.onLine) { showAlert("Редагування недоступне в офлайн режимі", true); return; }
-      const articleRef = doc(db, "articles", id);
-      const docSnap = await getDoc(articleRef);
-      const article = docSnap.data();
-      if (article.uid !== auth.currentUser.uid && auth.currentUser.email !== "petro.hryhorenko@gmail.com") return;
-      document.getElementById("modalBody").innerHTML = `
-        <h2>Редагувати статтю</h2>
-        <input type="text" id="editTitle" value="${article.title}">
-        <textarea id="editContent" rows="5">${article.content}</textarea>
-        <input type="text" id="editTags" value="${article.tags.join(', ')}">
-        <select id="editCategory" class="dark">
-          <option value="">Оберіть категорію</option>
-          <option value="Новини" ${article.category === "Новини" ? "selected" : ""}>Новини</option>
-          <option value="Спорт" ${article.category === "Спорт" ? "selected" : ""}>Спорт</option>
-          <option value="Технології" ${article.category === "Технології" ? "selected" : ""}>Технології</option>
-          <option value="Культура" ${article.category === "Культура" ? "selected" : ""}>Культура</option>
-        </select>
-        <label><input type="checkbox" id="editIncludeImage" ${article.image ? 'checked' : ''} onclick="toggleEditImageInput()"> Додати зображення</label>
-        <input type="text" id="editImage" value="${article.image}" style="display:${article.image ? 'block' : 'none'};">
-        <button class="button" onclick="saveEditedArticle('${id}')">Зберегти</button>
-      `;
-    }
-
-    function toggleEditImageInput() {
-      document.getElementById("editImage").style.display = document.getElementById("editIncludeImage").checked ? "block" : "none";
-    }
-
-    async function saveEditedArticle(id) {
-      if (!navigator.onLine) { showAlert("Збереження недоступне в офлайн режимі", true); return; }
-      const title = document.getElementById("editTitle").value.trim();
-      const content = document.getElementById("editContent").value.trim();
-      const image = document.getElementById("editIncludeImage").checked ? document.getElementById("editImage").value.trim() : "";
-      const tags = document.getElementById("editTags").value.trim().split(",").map(t => t.trim()).filter(t => t);
-      const category = document.getElementById("editCategory").value;
-      if (title && content) {
-        try {
-          await updateDoc(doc(db, "articles", id), {
-            title, content, image, tags, category,
-            status: auth.currentUser.email === "petro.hryhorenko@gmail.com" ? "approved" : "pending"
-          });
-          closeModal();
-          showAlert("Статтю оновлено");
-        } catch (error) {
-          showAlert("Помилка оновлення: " + error.message, true);
-        }
-      } else {
-        showAlert("Заповніть заголовок і текст", true);
-      }
-    }
-
-    async function deleteArticle(id) {
-      if (!navigator.onLine) { showAlert("Видалення недоступне в офлайн режимі", true); return; }
-      if (confirm("Ви впевнені, що хочете видалити статтю?")) {
-        try {
-          await deleteDoc(doc(db, "articles", id));
-          closeModal();
-          showAlert("Статтю видалено");
-        } catch (error) {
-          showAlert("Помилка видалення: " + error.message, true);
-        }
-      }
-    }
-
-    async function addComment(id) {
-      if (!navigator.onLine) { showAlert("Коментування недоступне в офлайн режимі", true); return; }
-      const commentInput = document.getElementById("commentInput");
-      const commentText = commentInput.value.trim();
-      const user = auth.currentUser;
-      if (!user) { showAlert("Увійдіть, щоб коментувати", true); return; }
-      if (commentText) {
-        try {
-          await updateDoc(doc(db, "articles", id), {
-            comments: arrayUnion({
-              text: commentText,
-              author: user.displayName || user.email,
-              date: new Date().toLocaleString()
-            })
-          });
-          commentInput.value = "";
-          showAlert("Коментар додано");
-        } catch (error) {
-          showAlert("Помилка коментаря: " + error.message, true);
-        }
-      } else {
-        showAlert("Введіть текст коментаря", true);
-      }
-    }
-
-    async function deleteComment(id, comment) {
-      if (!navigator.onLine) { showAlert("Видалення коментаря недоступне в офлайн режимі", true); return; }
-      const user = auth.currentUser;
-      if (!user || (comment.author !== (user.displayName || user.email) && user.email !== "petro.hryhorenko@gmail.com")) {
-        showAlert("Ви не можете видалити цей коментар", true);
-        return;
-      }
-      try {
-        await updateDoc(doc(db, "articles", id), { comments: arrayRemove(comment) });
-        showAlert("Коментар видалено");
-      } catch (error) {
-        showAlert("Помилка видалення: " + error.message, true);
-      }
-    }
-
-    async function toggleFavorite(id) {
-      if (!navigator.onLine) { showAlert("Додавання до обраного недоступне в офлайн режимі", true); return; }
-      const user = auth.currentUser;
-      if (!user) { showAlert("Увійдіть, щоб додати до обраного", true); return; }
-      try {
-        const favQuery = query(collection(db, "favorites"), where("uid", "==", user.uid), where("articleId", "==", id));
-        const favSnap = await getDocs(favQuery);
-        if (favSnap.empty) {
-          await addDoc(collection(db, "favorites"), { uid: user.uid, articleId: id, date: new Date().toLocaleString() });
-          showAlert("Додано до обраного");
-        } else {
-          favSnap.forEach(doc => deleteDoc(doc.ref));
-          showAlert("Видалено з обраного");
-        }
-        openModal(id, (await getDoc(doc(db, "articles", id))).data());
-      } catch (error) {
-        showAlert("Помилка: " + error.message, true);
-      }
-    }
-
-    async function renderArticles(snapshot) {
-      articlesDiv.innerHTML = "";
-      pendingDiv.innerHTML = "";
-      const user = auth.currentUser;
-      const searchTerm = searchInput.value.toLowerCase().trim();
-      const selectedCategory = categoryFilter.value;
-
-      // Cache articles for offline use
-      if (navigator.onLine) {
-        const articlesData = [];
-        snapshot.forEach(doc => {
-          articlesData.push({ id: doc.id, ...doc.data() });
-        });
-        caches.open('articles-cache').then(cache => {
-          cache.put('/articles.json', new Response(JSON.stringify(articlesData)));
-        });
-      }
-
-      // Render articles
-      snapshot.forEach(doc => {
-        const article = doc.data();
-        const matchesSearch = !searchTerm || article.title.toLowerCase().includes(searchTerm);
-        const matchesCategory = !selectedCategory || article.category === selectedCategory;
-
-        if (article.status === "approved" && matchesSearch && matchesCategory) {
-          const div = document.createElement("div");
-          div.classList.add("article-card");
-          let imgHTML = article.image ? `<img class="article-img" src="${article.image}">` : "";
-          div.innerHTML = `<h3>${article.title}</h3><small>${article.date} | ${article.author}</small>${imgHTML}<p>${article.content.substring(0, 80)}...</p><div>Категорія: ${article.category || "Без категорії"}</div>`;
-          div.onclick = () => openModal(doc.id, article);
-          articlesDiv.appendChild(div);
-        } else if (user?.email === "petro.hryhorenko@gmail.com" && matchesSearch && matchesCategory) {
-          const div = document.createElement("div");
-          div.classList.add("article-card");
-          let imgHTML = article.image ? `<img class="article-img" src="${article.image}">` : "";
-          div.innerHTML = `<h3>${article.title}</h3><small>${article.date} | ${article.author} | Статус: Очікує</small>${imgHTML}<p>${article.content.substring(0, 80)}...</p>`;
-          const approveBtn = document.createElement("button");
-          approveBtn.textContent = "✅ Підтвердити";
-          approveBtn.className = "button";
-          approveBtn.onclick = async (e) => {
-            e.stopPropagation();
-            if (!navigator.onLine) { showAlert("Підтвердження недоступне в офлайн режимі", true); return; }
-            await updateDoc(doc(db, "articles", doc.id), { status: "approved" });
-            showAlert("Стаття підтверджена");
-          };
-          const rejectBtn = document.createElement("button");
-          rejectBtn.textContent = "❌ Відхилити";
-          rejectBtn.className = "button secondary";
-          rejectBtn.onclick = async (e) => {
-            e.stopPropagation();
-            if (!navigator.onLine) { showAlert("Відхилення недоступне в офлайн режимі", true); return; }
-            if (confirm("Відхилити статтю?")) {
-              await deleteDoc(doc(db, "articles", doc.id));
-              showAlert("Стаття відхилена");
+            if (user && authSection && articlesSection && loginForm && profileToggle && profileDropdown && userDisplayName && userEmail && profileName && profileIcon) {
+                authSection.classList.add('hidden');
+                articlesSection.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+                profileToggle.classList.remove('hidden');
+                userDisplayName.textContent = user.displayName || user.email.split('@')[0];
+                userEmail.textContent = user.email;
+                profileName.textContent = user.displayName || user.email.split('@')[0];
+                profileIcon.textContent = (user.displayName || user.email.split('@')[0])[0].toUpperCase();
+                loadArticles();
+                updateUserViewHistory(user.uid);
+            } else if (authSection && articlesSection && loginForm && profileToggle && profileDropdown) {
+                authSection.classList.remove('hidden');
+                articlesSection.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+                profileToggle.classList.add('hidden');
+                profileDropdown.classList.remove('show');
+            } else {
+                console.error('Відсутні один або кілька елементів DOM.');
             }
-          };
-          div.appendChild(approveBtn);
-          div.appendChild(rejectBtn);
-          pendingDiv.appendChild(div);
-        }
-      });
+        });
 
-      // Offline fallback rendering
-      if (!navigator.onLine) {
-        caches.match('/articles.json').then(response => {
-          if (response) {
-            response.json().then(articlesData => {
-              articlesDiv.innerHTML = "";
-              articlesData.forEach(article => {
-                const matchesSearch = !searchTerm || article.title.toLowerCase().includes(searchTerm);
-                const matchesCategory = !selectedCategory || article.category === selectedCategory;
-                if (article.status === "approved" && matchesSearch && matchesCategory) {
-                  const div = document.createElement("div");
-                  div.classList.add("article-card");
-                  let imgHTML = article.image ? `<img class="article-img" src="${article.image}">` : "";
-                  div.innerHTML = `<h3>${article.title}</h3><small>${article.date} | ${article.author}</small>${imgHTML}<p>${article.content.substring(0, 80)}...</p><div>Категорія: ${article.category || "Без категорії"}</div>`;
-                  div.onclick = () => openModal(article.id, article);
-                  articlesDiv.appendChild(div);
-                }
-              });
+        // Оновлення історії переглядів
+        function updateUserViewHistory(userId) {
+            const userViewRef = ref(database, `userData/${userId}/views`);
+            set(userViewRef, { lastActive: Date.now() }).catch((error) => {
+                console.error('Помилка оновлення історії переглядів:', error);
             });
-          }
+        }
+
+        // Перемикання випадаючого меню профілю
+        window.toggleProfileDropdown = function() {
+            const profileDropdown = document.getElementById('profile-dropdown');
+            if (profileDropdown) {
+                profileDropdown.classList.toggle('show');
+            }
+        };
+
+        // Перехід на головну
+        window.goToHome = function() {
+            const tabs = document.querySelectorAll('.tab');
+            const navItems = document.querySelectorAll('.nav-item');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            navItems.forEach(item => item.classList.remove('active'));
+            tabs[0].classList.add('active');
+            navItems[0].classList.add('active');
+            filterArticles('recommended');
+            closeModal();
+        };
+
+        // Перемикання форми створення
+        window.toggleArticleForm = function() {
+            const articleForm = document.getElementById('article-form');
+            if (articleForm) {
+                articleForm.classList.toggle('show');
+            }
+        };
+
+        // Показ профілю
+        window.showProfile = function() {
+            const profileModal = document.getElementById('profile-modal');
+            const profileTitle = document.getElementById('profile-title');
+            const user = auth.currentUser;
+            if (profileModal && profileTitle && user) {
+                profileModal.classList.add('show');
+                profileTitle.textContent = user.displayName || user.email.split('@')[0];
+                showProfileTab('likes');
+            }
+        };
+
+        // Показ вкладки профілю
+        window.showProfileTab = function(tab) {
+            const tabs = document.querySelectorAll('.profile-tab');
+            const contents = document.querySelectorAll('.profile-content');
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
+            document.querySelector(`.profile-tab[onclick="showProfileTab('${tab}')"]`).classList.add('active');
+            const contentDiv = document.getElementById(`profile-${tab}`);
+            if (contentDiv) {
+                contentDiv.classList.add('active');
+                if (tab === 'likes') {
+                    loadUserLikes();
+                } else if (tab === 'articles') {
+                    loadUserArticles();
+                } else if (tab === 'subscriptions') {
+                    loadUserSubscriptions();
+                }
+            }
+        };
+
+        // Завантаження лайків користувача
+        function loadUserLikes() {
+            const user = auth.currentUser;
+            const likesDiv = document.getElementById('profile-likes');
+            if (!user || !likesDiv) return;
+            const userLikesRef = ref(database, `userData/${user.uid}/likes`);
+            get(userLikesRef).then((snapshot) => {
+                likesDiv.innerHTML = '';
+                const likes = snapshot.val();
+                if (likes) {
+                    Object.keys(likes).forEach((articleId) => {
+                        get(ref(database, `articles/${articleId}`)).then((articleSnapshot) => {
+                            if (articleSnapshot.exists()) {
+                                const article = articleSnapshot.val();
+                                const articleDiv = document.createElement('div');
+                                articleDiv.className = 'article embossed';
+                                articleDiv.innerHTML = `
+                                    <h2>${article.title}</h2>
+                                    <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • ${new Date(article.timestamp).toLocaleString()}</p>
+                                `;
+                                articleDiv.onclick = () => openArticleModal(articleId, article);
+                                likesDiv.appendChild(articleDiv);
+                            }
+                        });
+                    });
+                } else {
+                    likesDiv.innerHTML = '<p class="empty">Ви ще не лайкнули жодної статті.</p>';
+                }
+            }).catch((error) => {
+                console.error('Помилка завантаження лайків:', error);
+            });
+        }
+
+        // Завантаження статей користувача
+        function loadUserArticles() {
+            const user = auth.currentUser;
+            const articlesDiv = document.getElementById('profile-articles');
+            if (!user || !articlesDiv) return;
+            get(articlesRef).then((snapshot) => {
+                articlesDiv.innerHTML = '';
+                const articles = snapshot.val();
+                if (articles) {
+                    const userArticles = Object.entries(articles).filter(([_, article]) => article.authorId === user.uid);
+                    if (userArticles.length > 0) {
+                        userArticles.forEach(([articleId, article]) => {
+                            const articleDiv = document.createElement('div');
+                            articleDiv.className = 'article embossed';
+                            articleDiv.innerHTML = `
+                                <h2>${article.title}</h2>
+                                <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • ${new Date(article.timestamp).toLocaleString()}</p>
+                            `;
+                            articleDiv.onclick = () => openArticleModal(articleId, article);
+                            articlesDiv.appendChild(articleDiv);
+                        });
+                    } else {
+                        articlesDiv.innerHTML = '<p class="empty">Ви ще не створили жодної статті.</p>';
+                    }
+                } else {
+                    articlesDiv.innerHTML = '<p class="empty">Ви ще не створили жодної статті.</p>';
+                }
+            }).catch((error) => {
+                console.error('Помилка завантаження статей:', error);
+            });
+        }
+
+        // Завантаження підписок
+        function loadUserSubscriptions() {
+            const user = auth.currentUser;
+            const subscriptionsDiv = document.getElementById('profile-subscriptions');
+            if (!user || !subscriptionsDiv) return;
+            const userSubscriptionsRef = ref(database, `userData/${user.uid}/subscriptions`);
+            get(userSubscriptionsRef).then((snapshot) => {
+                subscriptionsDiv.innerHTML = '';
+                const subscriptions = snapshot.val();
+                if (subscriptions) {
+                    Object.keys(subscriptions).forEach((authorId) => {
+                        get(ref(database, `userData/${authorId}/profile`)).then((profileSnapshot) => {
+                            const profile = profileSnapshot.val() || { displayName: 'Анонім' };
+                            const authorDiv = document.createElement('div');
+                            authorDiv.className = 'article embossed';
+                            authorDiv.innerHTML = `<h2>${profile.displayName}</h2>`;
+                            authorDiv.onclick = () => showAuthorProfile(authorId);
+                            subscriptionsDiv.appendChild(authorDiv);
+                        });
+                    });
+                } else {
+                    subscriptionsDiv.innerHTML = '<p class="empty">Ви ще не підписані на жодного автора.</p>';
+                }
+            }).catch((error) => {
+                console.error('Помилка завантаження підписок:', error);
+            });
+        }
+
+        // Показ профілю автора
+        window.showAuthorProfile = function(authorId) {
+            const authorModal = document.getElementById('author-modal');
+            const authorTitle = document.getElementById('author-title');
+            const authorArticles = document.getElementById('author-articles');
+            const subscribeButton = document.getElementById('author-subscribe');
+            if (!authorModal || !authorTitle || !authorArticles || !subscribeButton) return;
+            authorModal.classList.add('show');
+            get(ref(database, `userData/${authorId}/profile`)).then((profileSnapshot) => {
+                const profile = profileSnapshot.val() || { displayName: 'Анонім' };
+                authorTitle.textContent = profile.displayName;
+                get(articlesRef).then((snapshot) => {
+                    authorArticles.innerHTML = '';
+                    const articles = snapshot.val();
+                    if (articles) {
+                        const authorArticles = Object.entries(articles).filter(([_, article]) => article.authorId === authorId);
+                        if (authorArticles.length > 0) {
+                            authorArticles.forEach(([articleId, article]) => {
+                                const articleDiv = document.createElement('div');
+                                articleDiv.className = 'article embossed';
+                                articleDiv.innerHTML = `
+                                    <h2>${article.title}</h2>
+                                    <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • ${new Date(article.timestamp).toLocaleString()}</p>
+                                `;
+                                articleDiv.onclick = () => openArticleModal(articleId, article);
+                                authorArticles.appendChild(articleDiv);
+                            });
+                        } else {
+                            authorArticles.innerHTML = '<p class="empty">Цей автор ще не опублікував статей.</p>';
+                        }
+                    } else {
+                        authorArticles.innerHTML = '<p class="empty">Цей автор ще не опублікував статей.</p>';
+                    }
+                });
+                const user = auth.currentUser;
+                if (user) {
+                    get(ref(database, `userData/${user.uid}/subscriptions/${authorId}`)).then((snapshot) => {
+                        subscribeButton.classList.toggle('subscribed', snapshot.exists());
+                        subscribeButton.textContent = snapshot.exists() ? 'Відписатися' : 'Підписатися';
+                        subscribeButton.onclick = () => toggleSubscribe(authorId);
+                    });
+                }
+            }).catch((error) => {
+                console.error('Помилка завантаження профілю автора:', error);
+            });
+        };
+
+        // Перемикання підписки
+        window.toggleSubscribe = function(authorId) {
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Ви повинні увійти, щоб підписуватися.');
+                return;
+            }
+            const subscribeButton = document.getElementById('author-subscribe');
+            const subscriptionRef = ref(database, `userData/${user.uid}/subscriptions/${authorId}`);
+            get(subscriptionRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    remove(subscriptionRef).then(() => {
+                        if (subscribeButton) {
+                            subscribeButton.classList.remove('subscribed');
+                            subscribeButton.textContent = 'Підписатися';
+                        }
+                    });
+                } else {
+                    set(subscriptionRef, { subscribedAt: Date.now() }).then(() => {
+                        if (subscribeButton) {
+                            subscribeButton.classList.add('subscribed');
+                            subscribeButton.textContent = 'Відписатися';
+                        }
+                    });
+                }
+            }).catch((error) => {
+                console.error('Помилка підписки:', error);
+                alert('Не вдалося змінити статус підписки.');
+            });
+        };
+
+        // Відкриття модального вікна статті
+        window.openArticleModal = function(articleId, article) {
+            const modal = document.getElementById('article-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            const modalMeta = document.getElementById('modal-meta');
+            const modalLike = document.getElementById('modal-like');
+            if (!modal || !modalTitle || !modalContent || !modalMeta || !modalLike) return;
+            modal.classList.add('show');
+            modalTitle.textContent = article.title;
+            modalContent.textContent = article.content;
+            modalMeta.innerHTML = `Автор: <span class="author" onclick="showAuthorProfile('${article.authorId}')">${article.authorEmail}</span> • ${new Date(article.timestamp).toLocaleString()} • Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'}`;
+            modalLike.classList.toggle('liked', false);
+            modalLike.onclick = () => toggleLike(articleId);
+            const user = auth.currentUser;
+            if (user) {
+                get(ref(database, `userData/${user.uid}/likes/${articleId}`)).then((snapshot) => {
+                    modalLike.classList.toggle('liked', snapshot.exists());
+                });
+                get(ref(database, `userData/${user.uid}/views/${article.category}`)).then((snapshot) => {
+                    const count = snapshot.val() ? snapshot.val().count + 1 : 1;
+                    set(ref(database, `userData/${user.uid}/views/${article.category}`), { count });
+                });
+            }
+        };
+
+        // Закриття модального вікна
+        window.closeModal = function() {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => modal.classList.remove('show'));
+        };
+
+        // Лайк статті
+        window.toggleLike = function(articleId) {
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Ви повинні увійти, щоб лайкати статті.');
+                return;
+            }
+            const likeRef = ref(database, `userData/${user.uid}/likes/${articleId}`);
+            const modalLike = document.getElementById('modal-like');
+            get(likeRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    remove(likeRef).then(() => {
+                        if (modalLike) modalLike.classList.remove('liked');
+                        updateArticleLikes(articleId, -1);
+                    });
+                } else {
+                    set(likeRef, { likedAt: Date.now() }).then(() => {
+                        if (modalLike) modalLike.classList.add('liked');
+                        updateArticleLikes(articleId, 1);
+                    });
+                }
+            }).catch((error) => {
+                console.error('Помилка лайка:', error);
+                alert('Не вдалося змінити статус лайка.');
+            });
+        };
+
+        // Оновлення кількості лайків
+        function updateArticleLikes(articleId, delta) {
+            const likesRef = ref(database, `articles/${articleId}/likes`);
+            get(likesRef).then((snapshot) => {
+                const currentLikes = snapshot.val() || 0;
+                set(likesRef, currentLikes + delta);
+            });
+        }
+
+        // Реєстрація
+        window.signUp = function() {
+            const emailInput = document.getElementById('login-email');
+            const passwordInput = document.getElementById('login-password');
+            if (!emailInput || !passwordInput) {
+                alert('Відсутні елементи форми.');
+                return;
+            }
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            if (email && password) {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        console.log('Користувач зареєстрований:', userCredential.user);
+                        emailInput.value = '';
+                        passwordInput.value = '';
+                        set(ref(database, `userData/${userCredential.user.uid}/profile`), {
+                            displayName: email.split('@')[0]
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('Помилка реєстрації:', error);
+                        alert('Помилка реєстрації: ' + error.message);
+                    });
+            } else {
+                alert('Будь ласка, заповніть електронну пошту та пароль.');
+            }
+        };
+
+        // Вхід
+        window.signIn = function() {
+            const emailInput = document.getElementById('login-email');
+            const passwordInput = document.getElementById('login-password');
+            if (!emailInput || !passwordInput) {
+                alert('Відсутні елементи форми.');
+                return;
+            }
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            if (email && password) {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then((userCredential) => {
+                        console.log('Користувач увійшов:', userCredential.user);
+                        emailInput.value = '';
+                        passwordInput.value = '';
+                    })
+                    .catch((error) => {
+                        console.error('Помилка входу:', error);
+                        alert('Помилка входу: ' + error.message);
+                    });
+            } else {
+                alert('Будь ласка, заповніть електронну пошту та пароль.');
+            }
+        };
+
+        // Вихід
+        window.signOut = function() {
+            signOutAuth(auth).then(() => {
+                console.log('Користувач вийшов');
+                closeModal();
+            }).catch((error) => {
+                console.error('Помилка виходу:', error);
+            });
+        };
+
+        // Додавання нової статті
+        window.addArticle = function() {
+            const titleInput = document.getElementById('article-title');
+            const contentInput = document.getElementById('article-content');
+            const categoryInput = document.getElementById('article-category');
+            if (!titleInput || !contentInput || !categoryInput) {
+                alert('Відсутні елементи форми.');
+                return;
+            }
+            const title = titleInput.value;
+            const content = contentInput.value;
+            const category = categoryInput.value;
+            const user = auth.currentUser;
+
+            if (title && content && category && user) {
+                const newArticleRef = push(articlesRef);
+                set(newArticleRef, {
+                    title: title,
+                    content: content,
+                    category: category,
+                    authorId: user.uid,
+                    authorEmail: user.email,
+                    timestamp: Date.now(),
+                    likes: 0
+                }).then(() => {
+                    titleInput.value = '';
+                    contentInput.value = '';
+                    categoryInput.value = '';
+                    toggleArticleForm();
+                }).catch((error) => {
+                    console.error('Помилка додавання статті:', error);
+                    alert('Не вдалося додати статтю.');
+                });
+            } else {
+                alert('Будь ласка, заповніть заголовок, вміст, категорію та переконайтеся, що ви увійшли.');
+            }
+        };
+
+        // Редагування статті
+        window.editArticle = function(articleId, title, content, category) {
+            const articleDiv = document.getElementById(`article-${articleId}`);
+            if (!articleDiv) return;
+            const editForm = articleDiv.querySelector('.edit-form');
+            const contentDisplay = articleDiv.querySelector('.content-display');
+            if (editForm && contentDisplay) {
+                editForm.classList.toggle('show');
+                contentDisplay.classList.toggle('hidden');
+            }
+        };
+
+        // Збереження відредагованої статті
+        window.saveArticle = function(articleId) {
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Ви повинні увійти, щоб редагувати статті.');
+                return;
+            }
+            const articleRef = ref(database, `articles/${articleId}`);
+            get(ref(database, `articles/${articleId}/authorId`)).then((snapshot) => {
+                if (snapshot.exists() && snapshot.val() === user.uid) {
+                    const titleInput = document.getElementById(`edit-title-${articleId}`);
+                    const contentInput = document.getElementById(`edit-content-${articleId}`);
+                    const categoryInput = document.getElementById(`edit-category-${articleId}`);
+                    if (!titleInput || !contentInput || !categoryInput) {
+                        alert('Відсутні елементи форми.');
+                        return;
+                    }
+                    const title = titleInput.value;
+                    const content = contentInput.value;
+                    const category = categoryInput.value;
+                    if (title && content && category) {
+                        get(ref(database, `articles/${articleId}/likes`)).then((snapshot) => {
+                            const likes = snapshot.val() || 0;
+                            set(articleRef, {
+                                title: title,
+                                content: content,
+                                category: category,
+                                authorId: user.uid,
+                                authorEmail: user.email,
+                                timestamp: Date.now(),
+                                likes: likes
+                            }).then(() => {
+                                const articleDiv = document.getElementById(`article-${articleId}`);
+                                if (articleDiv) {
+                                    articleDiv.querySelector('.edit-form').classList.remove('show');
+                                    articleDiv.querySelector('.content-display').classList.remove('hidden');
+                                }
+                            }).catch((error) => {
+                                console.error('Помилка збереження статті:', error);
+                                alert('Не вдалося зберегти статтю.');
+                            });
+                        });
+                    } else {
+                        alert('Будь ласка, заповніть заголовок, вміст та категорію.');
+                    }
+                } else {
+                    alert('Ви можете редагувати лише власні статті.');
+                }
+            }).catch((error) => {
+                console.error('Помилка перевірки власника статті:', error);
+            });
+        };
+
+        // Скасування редагування
+        window.cancelEdit = function(articleId) {
+            const articleDiv = document.getElementById(`article-${articleId}`);
+            if (articleDiv) {
+                articleDiv.querySelector('.edit-form').classList.remove('show');
+                articleDiv.querySelector('.content-display').classList.remove('hidden');
+            }
+        };
+
+        // Видалення статті
+        window.deleteArticle = function(articleId) {
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Ви повинні увійти, щоб видаляти статті.');
+                return;
+            }
+            const articleRef = ref(database, `articles/${articleId}`);
+            get(ref(database, `articles/${articleId}/authorId`)).then((snapshot) => {
+                if (snapshot.exists() && snapshot.val() === user.uid) {
+                    remove(articleRef).catch((error) => {
+                        console.error('Помилка видалення статті:', error);
+                        alert('Не вдалося видалити статтю.');
+                    });
+                } else {
+                    alert('Ви можете видаляти лише власні статті.');
+                }
+            }).catch((error) => {
+                console.error('Помилка перевірки власника статті:', error);
+            });
+        };
+
+        // Завантаження статей
+        let allArticles = [];
+        let currentFilter = 'recommended';
+        function loadArticles(searchQuery = '') {
+            const articlesDiv = document.getElementById('articles');
+            if (!articlesDiv) {
+                console.error('Контейнер для статей відсутній.');
+                return;
+            }
+            onValue(articlesRef, (snapshot) => {
+                articlesDiv.innerHTML = '';
+                const articles = snapshot.val();
+                allArticles = [];
+                if (articles) {
+                    Object.entries(articles).forEach(([key, article]) => {
+                        allArticles.push({ id: key, ...article });
+                    });
+                    let filteredArticles = allArticles;
+                    const user = auth.currentUser;
+                    if (user && currentFilter === 'recommended') {
+                        get(ref(database, `userData/${user.uid}/views`)).then((snapshot) => {
+                            const views = snapshot.val() || {};
+                            let topCategory = 'other';
+                            let maxCount = 0;
+                            Object.entries(views).forEach(([category, data]) => {
+                                if (category !== 'lastActive' && data.count > maxCount) {
+                                    maxCount = data.count;
+                                    topCategory = category;
+                                }
+                            });
+                            filteredArticles = allArticles
+                                .filter(article => article.category === topCategory)
+                                .sort((a, b) => (b.likes || 0) - (a.likes || 0));
+                            if (filteredArticles.length === 0) {
+                                filteredArticles = allArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+                            }
+                            renderArticles(filteredArticles, searchQuery);
+                        });
+                    } else {
+                        if (currentFilter !== 'all') {
+                            filteredArticles = allArticles.filter(article => article.category === currentFilter);
+                        }
+                        filteredArticles = filteredArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+                        renderArticles(filteredArticles, searchQuery);
+                    }
+                } else {
+                    articlesDiv.innerHTML = '<p class="empty">Ще немає газет. Почніть писати!</p>';
+                }
+            }, (error) => {
+                console.error('Помилка завантаження статей:', error);
+                alert('Не вдалося завантажити статті.');
+            });
+        }
+
+        // Рендеринг статей
+        function renderArticles(articles, searchQuery) {
+            const articlesDiv = document.getElementById('articles');
+            if (!articlesDiv) return;
+            articlesDiv.innerHTML = '';
+            let filteredArticles = articles;
+            if (searchQuery) {
+                filteredArticles = articles.filter(article =>
+                    article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    article.content.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+            if (filteredArticles.length > 0) {
+                filteredArticles.forEach((article) => {
+                    const articleDiv = document.createElement('div');
+                    articleDiv.className = 'article embossed fade-in';
+                    articleDiv.id = `article-${article.id}`;
+                    const categoryLabel = article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше';
+                    const deleteButton = article.authorId === auth.currentUser?.uid 
+                        ? `<button class="delete" onclick="deleteArticle('${article.id}')">Видалити</button>`
+                        : '';
+                    const editButton = article.authorId === auth.currentUser?.uid 
+                        ? `<button class="edit" onclick="editArticle('${article.id}', '${article.title.replace(/'/g, "\\'")}', '${article.content.replace(/'/g, "\\'")}', '${article.category}')">Редагувати</button>`
+                        : '';
+                    const likeButton = auth.currentUser 
+                        ? `<button class="like" id="like-${article.id}" onclick="toggleLike('${article.id}')">Лайк (${article.likes || 0})</button>`
+                        : '';
+                    articleDiv.innerHTML = `
+                        <div class="content-display">
+                            <h2>${article.title}</h2>
+                            <p class="content">${article.content.substring(0, 100)}${article.content.length > 100 ? '...' : ''}</p>
+                            <p class="meta">Автор: <span class="author" onclick="showAuthorProfile('${article.authorId}')">${article.authorEmail}</span> • ${new Date(article.timestamp).toLocaleString()} • ${categoryLabel}</p>
+                            <div class="actions">${likeButton}${editButton}${deleteButton}</div>
+                        </div>
+                        <div class="edit-form hidden">
+                            <select id="edit-category-${article.id}" required>
+                                <option value="games" ${article.category === 'games' ? 'selected' : ''}>Ігри</option>
+                                <option value="events" ${article.category === 'events' ? 'selected' : ''}>Події</option>
+                                <option value="other" ${article.category === 'other' ? 'selected' : ''}>Інше</option>
+                            </select>
+                            <input type="text" id="edit-title-${article.id}" value="${article.title.replace(/"/g, '&quot;')}" required>
+                            <textarea id="edit-content-${article.id}" required>${article.content}</textarea>
+                            <div class="button-group">
+                                <button class="save" onclick="saveArticle('${article.id}')">Зберегти</button>
+                                <button class="cancel" onclick="cancelEdit('${article.id}')">Скасувати</button>
+                            </div>
+                        </div>
+                    `;
+                    articleDiv.onclick = (e) => {
+                        if (!e.target.closest('.actions, .edit-form')) {
+                            openArticleModal(article.id, article);
+                        }
+                    };
+                    articlesDiv.appendChild(articleDiv);
+                    if (auth.currentUser) {
+                        get(ref(database, `userData/${auth.currentUser.uid}/likes/${article.id}`)).then((snapshot) => {
+                            const likeButton = document.getElementById(`like-${article.id}`);
+                            if (likeButton) likeButton.classList.toggle('liked', snapshot.exists());
+                        });
+                    }
+                });
+            } else {
+                articlesDiv.innerHTML = '<p class="empty">Ще немає газет. Почніть писати!</p>';
+            }
+        }
+
+        // Фільтрація статей
+        window.filterArticles = function(category) {
+            currentFilter = category;
+            const tabs = document.querySelectorAll('.tab');
+            const navItems = document.querySelectorAll('.nav-item');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            navItems.forEach(item => item.classList.remove('active'));
+            document.querySelector(`.tab[onclick="filterArticles('${category}')"]`).classList.add('active');
+            if (category === 'recommended') {
+                navItems[0].classList.add('active');
+            }
+            const searchInput = document.getElementById('search-input');
+            loadArticles(searchInput ? searchInput.value : '');
+        };
+
+        // Пошук статей
+        window.searchArticles = function() {
+            const searchInput = document.getElementById('search-input');
+            if (!searchInput) {
+                console.error('Поле пошуку відсутнє.');
+                return;
+            }
+            const searchQuery = searchInput.value;
+            loadArticles(searchQuery);
+        };
+
+        // Ініціалізація слухачів подій
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input');
+            const profileToggle = document.getElementById('profile-toggle');
+            if (searchInput) {
+                searchInput.addEventListener('input', () => window.searchArticles());
+            }
+            if (profileToggle) {
+                profileToggle.addEventListener('click', () => window.toggleProfileDropdown());
+            }
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.modal-content, .profile-toggle, .tabs, .nav-item, .article, .author')) {
+                    closeModal();
+                }
+            });
         });
-      }
-    }
-
-    let debounceTimeout;
-    function updateArticleList() {
-      clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(() => {
-        const q = query(collection(db, "articles"), orderBy("date", "desc"));
-        onSnapshot(q, renderArticles, () => {
-          if (!navigator.onLine) {
-            showAlert("Оновлення статей недоступне в офлайн режимі", true);
-            renderArticles([]);
-          }
-        });
-      }, 300);
-    }
-
-    searchInput.oninput = updateArticleList;
-    categoryFilter.onchange = updateArticleList;
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        accountBtn.textContent = "👤 Акаунт";
-        accountBtn.onclick = () => {
-          profileBox.style.display = profileBox.style.display === "block" ? "none" : "block";
-          authBox.style.display = "none";
-          articleForm.style.display = "none";
-          adminPanel.style.display = "none";
-          if (profileBox.style.display === "block") loadUserProfile(user);
-          if (window.innerWidth <= 768) toggleSidebar();
-        };
-        createBtn.style.display = "block";
-        createBtn.onclick = () => {
-          articleForm.style.display = articleForm.style.display === "block" ? "none" : "block";
-          profileBox.style.display = "none";
-          adminPanel.style.display = "none";
-          authBox.style.display = "none";
-          previewBox.style.display = "none";
-          if (window.innerWidth <= 768) toggleSidebar();
-        };
-        adminBtn.style.display = user.email === "petro.hryhorenko@gmail.com" ? "block" : "none";
-        adminBtn.onclick = () => {
-          adminPanel.style.display = adminPanel.style.display === "block" ? "none" : "block";
-          articleForm.style.display = "none";
-          profileBox.style.display = "none";
-          authBox.style.display = "none";
-          if (window.innerWidth <= 768) toggleSidebar();
-        };
-        const theme = await getThemePreference(user);
-        if (theme === "dark") {
-          document.body.classList.add("dark");
-          document.querySelectorAll('.modal-content, .article-card, .auth-box, .form-box, .admin-box, .profile-box, .profile-header, .profile-section, .preview-box, .sidebar').forEach(e => e.classList.add('dark'));
-          document.querySelectorAll('input, textarea, select, .reactions button').forEach(e => e.classList.add('dark'));
-          document.querySelectorAll('.avatar').forEach(e => e.classList.add('dark'));
-        }
-      } else {
-        accountBtn.textContent = "👤 Увійти";
-        accountBtn.onclick = () => {
-          authBox.style.display = authBox.style.display === "block" ? "none" : "block";
-          registerForm.style.display = "block";
-          loginForm.style.display = "none";
-          clearErrors("register");
-          clearErrors("login");
-          articleForm.style.display = "none";
-          adminPanel.style.display = "none";
-          profileBox.style.display = "none";
-          if (window.innerWidth <= 768) toggleSidebar();
-        };
-        createBtn.style.display = "none";
-        adminBtn.style.display = "none";
-      }
-      homeBtn.onclick = () => {
-        articleForm.style.display = "none";
-        adminPanel.style.display = "none";
-        profileBox.style.display = "none";
-        authBox.style.display = "none";
-        if (window.innerWidth <= 768) toggleSidebar();
-      };
-      updateArticleList();
-    });
-
-    async function react(id, type) {
-      if (!navigator.onLine) { showAlert("Реакції недоступні в офлайн режимі", true); return; }
-      const user = auth.currentUser;
-      if (!user) { showAlert("Увійдіть, щоб залишити реакцію", true); return; }
-      const articleRef = doc(db, "articles", id);
-      try {
-        const docSnap = await getDoc(articleRef);
-        const data = docSnap.data();
-        const arrs = { likes: "likedBy", dislikes: "dislikedBy", hearts: "heartedBy" };
-        const currentArr = arrs[type];
-        for (let key in arrs) {
-          if (key !== type && data[arrs[key]].includes(user.uid)) {
-            await updateDoc(articleRef, { [key]: increment(-1), [arrs[key]]: arrayRemove(user.uid) });
-          }
-        }
-        if (!data[currentArr].includes(user.uid)) {
-          await updateDoc(articleRef, { [type]: increment(1), [currentArr]: arrayUnion(user.uid) });
-        }
-        showAlert("Реакція додана");
-      } catch (error) {
-        showAlert("Помилка реакції: " + error.message, true);
-      }
-    }
-
-    async function openModal(id, article) {
-      document.getElementById("modal").style.display = "flex";
-      let imgHTML = article.image ? `<img class="article-img" src="${article.image}">` : "";
-      let editButton = (auth.currentUser && (article.uid === auth.currentUser.uid || auth.currentUser.email === "petro.hryhorenko@gmail.com")) ?
-        `<button class="button" onclick="editArticle('${id}')">✏️ Редагувати</button>` : "";
-      let deleteButton = (auth.currentUser && (article.uid === auth.currentUser.uid || auth.currentUser.email === "petro.hryhorenko@gmail.com")) ?
-        `<button class="button" onclick="deleteArticle('${id}')">🗑 Видалити</button>` : "";
-      let favoriteButton = auth.currentUser ? `<button class="button favorite" onclick="toggleFavorite('${id}')">⭐ Додати до обраного</button>` : "";
-      let commentsHTML = (article.comments || []).map(comment => `
-        <div class="comment">
-          <div>
-            <p>${comment.text}</p>
-            <small>${comment.date} | ${comment.author}</small>
-          </div>
-          ${(auth.currentUser && (comment.author === (auth.currentUser.displayName || auth.currentUser.email) || auth.currentUser.email === "petro.hryhorenko@gmail.com")) ?
-            `<button class="delete-comment" onclick='deleteComment("${id}", ${JSON.stringify(comment)})'>🗑</button>` : ""}
-        </div>
-      `).join('');
-      document.getElementById("modalBody").innerHTML = `
-        <h2>${article.title}</h2>
-        <small>${article.date} | ${article.author}</small>
-        ${imgHTML}
-        <p>${article.content}</p>
-        <div class="reactions">
-          <button class="${document.body.classList.contains('dark') ? 'dark' : ''}" onclick="react('${id}','likes')">👍 ${article.likes || 0}</button>
-          <button class="${document.body.classList.contains('dark') ? 'dark' : ''}" onclick="react('${id}','dislikes')">👎 ${article.dislikes || 0}</button>
-          <button class="${document.body.classList.contains('dark') ? 'dark' : ''}" onclick="react('${id}','hearts')">❤️ ${article.hearts || 0}</button>
-        </div>
-        <div>Теги: ${(article.tags || []).join(", ")}</div>
-        <div>Категорія: ${article.category || "Без категорії"}</div>
-        ${editButton}
-        ${deleteButton}
-        ${favoriteButton}
-        <div class="comments-section">
-          <h3>Коментарі</h3>
-          ${commentsHTML}
-          ${auth.currentUser ? `
-            <textarea id="commentInput" rows="3" placeholder="Додати коментар" class="${document.body.classList.contains('dark') ? 'dark' : ''}"></textarea>
-            <button class="button" onclick="addComment('${id}')">Коментувати</button>
-          ` : '<p>Увійдіть, щоб залишити коментар</p>'}
-        </div>
-      `;
-    }
-
-    function closeModal() { document.getElementById("modal").style.display = "none"; }
-
-    // Expose functions to the global scope
-    window.register = register;
-    window.login = login;
-    window.logout = logout;
-    window.addArticle = addArticle;
-    window.openModal = openModal;
-    window.closeModal = closeModal;
-    window.react = react;
-    window.editArticle = editArticle;
-    window.saveEditedArticle = saveEditedArticle;
-    window.deleteArticle = deleteArticle;
-    window.addComment = addComment;
-    window.deleteComment = deleteComment;
-    window.toggleImageInput = toggleImageInput;
-    window.toggleEditImageInput = toggleEditImageInput;
-    window.previewArticle = previewArticle;
-    window.toggleSidebar = toggleSidebar;
-    window.updateNickname = updateNickname;
-    window.toggleFavorite = toggleFavorite;
-    window.toggleAuthForm = toggleAuthForm;
-    window.triggerInstallPrompt = triggerInstallPrompt;
-  </script>
+    </script>
 </body>
 </html>
