@@ -412,7 +412,7 @@
             }
 
             .install-prompt {
-                bottom: 60px;
+                bottom: 60px; /* Щоб уникнути перекриття з mobile-nav */
                 left: 5px;
                 right: 5px;
                 padding: 8px;
@@ -441,7 +441,6 @@
             <button class="active" onclick="window.location.href='index.html'">Головна</button>
             <button id="createArticleBtn" style="display: none;" onclick="window.location.href='word.html'">+</button>
             <button onclick="window.location.href='account.html'">Акаунт</button>
-            <button id="downloadAppBtn" style="display: none;" onclick="installPWA()">Скачати додаток</button>
             <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін-панель</button>
             <button id="loginBtn" onclick="window.location.href='login.html'">Увійти</button>
             <button id="registerBtn" onclick="window.location.href='register.html'">Зареєструватися</button>
@@ -487,7 +486,6 @@
             <button class="nav-button active" onclick="window.location.href='index.html'">Головна</button>
             <button class="nav-button" id="navCreateArticle" style="display: none;" onclick="window.location.href='word.html'">+</button>
             <button class="nav-button" onclick="window.location.href='account.html'">Акаунт</button>
-            <button class="nav-button" id="navDownloadApp" style="display: none;" onclick="installPWA()">Скачати</button>
             <button class="nav-button" id="navAdminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін</button>
         </div>
     </div>
@@ -522,8 +520,6 @@
             const navCreateArticle = document.getElementById('navCreateArticle');
             const adminBtn = document.getElementById('adminBtn');
             const navAdminBtn = document.getElementById('navAdminBtn');
-            const downloadAppBtn = document.getElementById('downloadAppBtn');
-            const navDownloadApp = document.getElementById('navDownloadApp');
             const errorDiv = document.getElementById('error');
             const fullscreenLikeButton = document.getElementById('fullscreenLikeButton');
             const tutorialModal = document.getElementById('tutorialModal');
@@ -541,8 +537,6 @@
                     logoutBtn.style.display = 'block';
                     createArticleBtn.style.display = 'block';
                     navCreateArticle.style.display = 'block';
-                    downloadAppBtn.style.display = 'block';
-                    navDownloadApp.style.display = 'block';
                     fullscreenLikeButton.style.display = 'block';
                     if (user.email === 'petro.hryhorenko@gmail.com') {
                         adminBtn.style.display = 'block';
@@ -564,8 +558,6 @@
                 logoutBtn.style.display = 'none';
                 createArticleBtn.style.display = 'none';
                 navCreateArticle.style.display = 'none';
-                downloadAppBtn.style.display = 'none';
-                navDownloadApp.style.display = 'none';
                 adminBtn.style.display = 'none';
                 navAdminBtn.style.display = 'none';
                 fullscreenLikeButton.style.display = 'none';
@@ -576,7 +568,7 @@
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
-                if (!localStorage.getItem('installPromptShown') && user) {
+                if (!localStorage.getItem('installPromptShown')) {
                     installPrompt.style.display = 'block';
                     localStorage.setItem('installPromptShown', 'true');
                 }
@@ -706,6 +698,7 @@
             }
         };
 
+        // Реєстрація сервіс-воркера
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('/sw.js')
                 .then(() => console.log('Service Worker registered'))
