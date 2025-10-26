@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Адмін-панель</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .topbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3182ce;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 16px;
+            color: #1a202c;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar button:hover {
+            background-color: #f1f5f9;
+        }
+
+        .sidebar button.active {
+            background-color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .content {
+            margin-left: 240px;
+            padding: 80px 20px 20px;
+            width: calc(100% - 240px);
+        }
+
+        .admin-panel {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .admin-panel h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        .stats {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #4a5568;
+        }
+
+        .filter {
+            margin-bottom: 20px;
+        }
+
+        .filter select {
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .articles-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .articles-table th, .articles-table td {
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        .articles-table th {
+            background-color: #f1f5f9;
+            font-weight: 500;
+        }
+
+        .articles-table tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .articles-table button {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .articles-table .view {
+            background-color: #3182ce;
+            color: #fff;
+        }
+
+        .articles-table .view:hover {
+            background-color: #2b6cb0;
+        }
+
+        .articles-table .approve {
+            background-color: #38a169;
+            color: #fff;
+        }
+
+        .articles-table .approve:hover {
+            background-color: #2f855a;
+        }
+
+        .articles-table .reject {
+            background-color: #e53e3e;
+            color: #fff;
+        }
+
+        .articles-table .reject:hover {
+            background-color: #c53030;
+        }
+
+        .articles-table .delete {
+            background-color: #718096;
+            color: #fff;
+        }
+
+        .articles-table .delete:hover {
+            background-color: #5a6268;
+        }
+
+        .error {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .article-preview {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .article-preview-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .article-preview-content h2 {
+            font-size: 24px;
+            color: #2b6cb0;
+            margin-bottom: 15px;
+        }
+
+        .article-preview-content p {
+            font-size: 16px;
+            color: #4a5568;
+        }
+
+        .article-preview-content .author {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .close-button {
+            background-color: #e53e3e;
+            margin-top: 15px;
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            background-color: #c53030;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .mobile-nav .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .mobile-nav button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #3182ce;
+            cursor: pointer;
+        }
+
+        .mobile-nav button.active {
+            color: #2b6cb0;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .topbar .logo {
+                font-size: 20px;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 70px 15px 70px;
+            }
+
+            .admin-panel {
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: none;
+            }
+
+            .admin-panel h1 {
+                font-size: 24px;
+                color: #2b6cb0;
+            }
+
+            .stats, .filter select {
+                font-size: 14px;
+            }
+
+            .articles-table th, .articles-table td {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            .articles-table button {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .error {
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            .article-preview-content {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="logo">Газета</div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <button onclick="window.location.href='index.html'">Головна</button>
+            <button onclick="window.location.href='word.html'">+</button>
+            <button onclick="window.location.href='account.html'">Акаунт</button>
+            <button class="active" onclick="window.location.href='admin.html'">Адмін-панель</button>
+            <button id="logoutBtn" onclick="logout()">Вийти</button>
+        </div>
+        <div class="content">
+            <div class="admin-panel">
+                <h1>Адмін-панель</h1>
+                <div class="stats" id="stats"></div>
+                <div class="filter">
+                    <select id="statusFilter" onchange="filterArticles()">
+                        <option value="all">Усі статуси</option>
+                        <option value="pending">Очікує</option>
+                        <option value="approved">Схвалено</option>
+                        <option value="rejected">Відхилено</option>
+                    </select>
+                </div>
+                <table class="articles-table">
+                    <thead>
+                        <tr>
+                            <th>Заголовок</th>
+                            <th>Автор</th>
+                            <th>Статус</th>
+                            <th>Дії</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articlesTableBody"></tbody>
+                </table>
+                <div id="error" class="error"></div>
+            </div>
+        </div>
+    </div>
+    <div id="articlePreview" class="article-preview">
+        <div class="article-preview-content">
+            <h2 id="previewTitle"></h2>
+            <p id="previewContent"></p>
+            <p id="previewAuthor" class="author"></p>
+            <button class="close-button" onclick="closePreview()">Закрити</button>
+        </div>
+    </div>
+    <div class="mobile-nav">
+        <div class="nav-buttons">
+            <button class="nav-button" onclick="window.location.href='index.html'">Головна</button>
+            <button class="nav-button" onclick="window.location.href='word.html'">+</button>
+            <button class="nav-button" onclick="window.location.href='account.html'">Акаунт</button>
+            <button class="nav-button active" onclick="window.location.href='admin.html'">Адмін</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, set, get, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
+            authDomain: "newpaper-6cb18.firebaseapp.com",
+            databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "newpaper-6cb18",
+            storageBucket: "newpaper-6cb18.firebasestorage.app",
+            messagingSenderId: "284037128087",
+            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
+            measurementId: "G-0EMERY88FL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user || user.email !== 'petro.hryhorenko@gmail.com') {
+                window.location.href = 'index.html';
+            }
+        });
+
+        let allArticles = [];
+        const pendingArticlesRef = ref(db, 'pending_articles');
+        onValue(pendingArticlesRef, (snapshot) => {
+            allArticles = [];
+            const tableBody = document.getElementById('articlesTableBody');
+            tableBody.innerHTML = '';
+            const articles = snapshot.val();
+            if (articles) {
+                allArticles = Object.entries(articles).map(([id, article]) => ({ id, ...article }));
+                updateStats();
+                filterArticles();
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="4">Немає статей на перевірку</td></tr>';
+                updateStats();
+            }
+        });
+
+        function updateStats() {
+            const stats = {
+                pending: allArticles.filter(a => a.status === 'pending').length,
+                approved: allArticles.filter(a => a.status === 'approved').length,
+                rejected: allArticles.filter(a => a.status === 'rejected').length
+            };
+            document.getElementById('stats').textContent = `Очікує: ${stats.pending} | Схвалено: ${stats.approved} | Відхилено: ${stats.rejected}`;
+        }
+
+        function filterArticles() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const tableBody = document.getElementById('articlesTableBody');
+            tableBody.innerHTML = '';
+            const filteredArticles = statusFilter === 'all' ? allArticles : allArticles.filter(article => article.status === statusFilter);
+            if (filteredArticles.length > 0) {
+                filteredArticles.forEach(article => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${article.title}</td>
+                        <td>${article.author}</td>
+                        <td>${article.status}</td>
+                        <td>
+                            <button class="view" onclick="viewArticle('${article.id}')">Переглянути</button>
+                            <button class="approve" onclick="approveArticle('${article.id}')">Схвалити</button>
+                            <button class="reject" onclick="rejectArticle('${article.id}')">Відхилити</button>
+                            <button class="delete" onclick="deleteArticle('${article.id}')">Видалити</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="4">Немає статей для цього статусу</td></tr>';
+            }
+        }
+
+        window.filterArticles = filterArticles;
+
+        window.viewArticle = async (articleId) => {
+            try {
+                const articleRef = ref(db, `pending_articles/${articleId}`);
+                const snapshot = await get(articleRef);
+                const article = snapshot.val();
+                if (!article) {
+                    throw new Error('Стаття не знайдена');
+                }
+                document.getElementById('previewTitle').textContent = article.title;
+                document.getElementById('previewContent').textContent = article.content;
+                document.getElementById('previewAuthor').textContent = `Автор: ${article.author}`;
+                document.getElementById('articlePreview').style.display = 'flex';
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка перегляду: ' + error.message;
+            }
+        };
+
+        window.approveArticle = async (articleId) => {
+            try {
+                const articleRef = ref(db, `pending_articles/${articleId}`);
+                const snapshot = await get(articleRef);
+                const article = snapshot.val();
+                if (!article) {
+                    throw new Error('Стаття не знайдена');
+                }
+                await set(ref(db, `articles/${articleId}`), {
+                    ...article,
+                    status: 'approved'
+                });
+                await set(articleRef, null);
+                alert('Статтю схвалено!');
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка схвалення: ' + error.message;
+            }
+        };
+
+        window.rejectArticle = async (articleId) => {
+            try {
+                const articleRef = ref(db, `pending_articles/${articleId}`);
+                const snapshot = await get(articleRef);
+                if (!snapshot.exists()) {
+                    throw new Error('Стаття не знайдена');
+                }
+                await set(ref(db, `pending_articles/${articleId}/status`), 'rejected');
+                alert('Статтю відхилено!');
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка відхилення: ' + error.message;
+            }
+        };
+
+        window.deleteArticle = async (articleId) => {
+            if (!confirm('Ви впевнені, що хочете видалити цю статтю?')) return;
+            try {
+                const articleRef = ref(db, `pending_articles/${articleId}`);
+                await remove(articleRef);
+                alert('Статтю видалено!');
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка видалення: ' + error.message;
+            }
+        };
+
+        window.closePreview = () => {
+            document.getElementById('articlePreview').style.display = 'none';
+        };
+
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                alert('Вихід успішний!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка виходу: ' + error.message;
+            }
+        };
+    </script>
+</body>
+</html>

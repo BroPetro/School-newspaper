@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Електронна газета</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 16px;
+            color: #1a202c;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar button:hover {
+            background-color: #f1f5f9;
+        }
+
+        .sidebar button.active {
+            background-color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .topbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3182ce;
+            margin-right: 20px;
+        }
+
+        .topbar .search-bar {
+            flex-grow: 1;
+            max-width: 600px;
+        }
+
+        .topbar .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 16px;
+            background-color: #f9fafb;
+        }
+
+        .topbar .search-bar input:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        .content {
+            margin-left: 240px;
+            padding: 80px 20px 20px;
+            width: calc(100% - 240px);
+        }
+
+        .articles {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .article {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .article:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .article h2 {
+            font-size: 20px;
+            color: #2b6cb0;
+            margin-bottom: 10px;
+        }
+
+        .article div {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .article .author {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .article .likes {
+            font-size: 14px;
+            color: #3182ce;
+            margin-top: 10px;
+        }
+
+        .article .like-button {
+            background: none;
+            border: none;
+            color: #3182ce;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .article .like-button:hover {
+            color: #2b6cb0;
+        }
+
+        .error {
+            color: #e53e3e;
+            font-size: 14px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .article-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .article-fullscreen-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .article-fullscreen-content h2 {
+            font-size: 24px;
+            color: #2b6cb0;
+            margin-bottom: 15px;
+        }
+
+        .article-fullscreen-content div {
+            font-size: 16px;
+            color: #4a5568;
+        }
+
+        .article-fullscreen-content .author {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .article-fullscreen-content .likes {
+            font-size: 14px;
+            color: #3182ce;
+            margin-top: 10px;
+        }
+
+        .article-fullscreen-content .like-button {
+            background: none;
+            border: none;
+            color: #3182ce;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+
+        .article-fullscreen-content .like-button:hover {
+            background-color: #e6f0fa;
+            color: #2b6cb0;
+        }
+
+        .close-button {
+            background-color: #e53e3e;
+            margin-top: 15px;
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            background-color: #c53030;
+        }
+
+        .tutorial-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .tutorial-content {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .tutorial-content h2 {
+            font-size: 24px;
+            color: #2b6cb0;
+            margin-bottom: 15px;
+        }
+
+        .tutorial-content p {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .tutorial-content ul {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .tutorial-content button {
+            padding: 10px 20px;
+            background-color: #3182ce;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .tutorial-content button:hover {
+            background-color: #2b6cb0;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .mobile-nav .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .mobile-nav button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #3182ce;
+            cursor: pointer;
+        }
+
+        .mobile-nav button.active {
+            color: #2b6cb0;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .topbar .logo {
+                font-size: 20px;
+            }
+
+            .topbar .search-bar input {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 70px 15px 70px;
+            }
+
+            .articles {
+                grid-template-columns: 1fr;
+            }
+
+            .article {
+                border-radius: 10px;
+                padding: 10px;
+            }
+
+            .article h2 {
+                font-size: 18px;
+            }
+
+            .article div, .article .author, .article .likes, .article .like-button {
+                font-size: 14px;
+            }
+
+            .article-fullscreen-content {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .article-fullscreen-content h2 {
+                font-size: 22px;
+            }
+
+            .article-fullscreen-content div, .article-fullscreen-content .author, .article-fullscreen-content .likes {
+                font-size: 14px;
+            }
+
+            .article-fullscreen-content .like-button {
+                font-size: 16px;
+            }
+
+            .tutorial-content {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .tutorial-content h2 {
+                font-size: 20px;
+            }
+
+            .tutorial-content p, .tutorial-content ul {
+                font-size: 14px;
+            }
+
+            .tutorial-content button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="logo">Газета</div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Пошук статей...">
+        </div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <button class="active" onclick="window.location.href='index.html'">Головна</button>
+            <button id="createArticleBtn" style="display: none;" onclick="window.location.href='word.html'">+</button>
+            <button onclick="window.location.href='account.html'">Акаунт</button>
+            <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін-панель</button>
+            <button id="loginBtn" onclick="window.location.href='login.html'">Увійти</button>
+            <button id="registerBtn" onclick="window.location.href='register.html'">Зареєструватися</button>
+            <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
+        </div>
+        <div class="content">
+            <h1 id="welcomeMessage">Електронна газета</h1>
+            <div id="articles" class="articles"></div>
+            <div id="error" class="error"></div>
+        </div>
+    </div>
+    <div id="articleFullscreen" class="article-fullscreen">
+        <div class="article-fullscreen-content">
+            <h2 id="fullscreenTitle"></h2>
+            <div id="fullscreenContent"></div>
+            <p id="fullscreenAuthor" class="author"></p>
+            <p id="fullscreenLikes" class="likes"></p>
+            <button id="fullscreenLikeButton" class="like-button" style="display: none;" onclick="toggleLike()">👍</button>
+            <button class="close-button" onclick="closeFullscreen()">Закрити</button>
+        </div>
+    </div>
+    <div id="tutorialModal" class="tutorial-modal">
+        <div class="tutorial-content">
+            <h2>Ласкаво просимо до Електронної газети!</h2>
+            <p>Це ваш перший візит? Ознайомтеся з основними функціями:</p>
+            <ul>
+                <li>Переглядайте статті, натискаючи на картки у головному розділі.</li>
+                <li>Натисніть кнопку "Лайкнути" (👍), щоб оцінити статтю (потрібен вхід).</li>
+                <li>Створюйте власні статті через кнопку "+" у бічній панелі (після входу).</li>
+                <li>Увійдіть або зареєструйтесь, щоб отримати доступ до всіх функцій.</li>
+                <li>Перейдіть до "Акаунт", щоб редагувати свій профіль.</li>
+            </ul>
+            <button onclick="closeTutorial()">Розумію</button>
+        </div>
+    </div>
+    <div class="mobile-nav">
+        <div class="nav-buttons">
+            <button class="nav-button active" onclick="window.location.href='index.html'">Головна</button>
+            <button class="nav-button" id="navCreateArticle" style="display: none;" onclick="window.location.href='word.html'">+</button>
+            <button class="nav-button" onclick="window.location.href='account.html'">Акаунт</button>
+            <button class="nav-button" id="navAdminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getDatabase, ref, onValue, get, set, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
+            authDomain: "newpaper-6cb18.firebaseapp.com",
+            databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "newpaper-6cb18",
+            storageBucket: "newpaper-6cb18.firebasestorage.app",
+            messagingSenderId: "284037128087",
+            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
+            measurementId: "G-0EMERY88FL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        let currentArticleId = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const createArticleBtn = document.getElementById('createArticleBtn');
+            const navCreateArticle = document.getElementById('navCreateArticle');
+            const adminBtn = document.getElementById('adminBtn');
+            const navAdminBtn = document.getElementById('navAdminBtn');
+            const errorDiv = document.getElementById('error');
+            const fullscreenLikeButton = document.getElementById('fullscreenLikeButton');
+            const tutorialModal = document.getElementById('tutorialModal');
+
+            if (user) {
+                try {
+                    const userRef = ref(db, 'users/' + user.uid);
+                    const snapshot = await get(userRef);
+                    const userData = snapshot.val();
+                    const username = userData?.username || 'Користувач';
+                    welcomeMessage.textContent = `Вітаємо, ${username}!`;
+                    loginBtn.style.display = 'none';
+                    registerBtn.style.display = 'none';
+                    logoutBtn.style.display = 'block';
+                    createArticleBtn.style.display = 'block';
+                    navCreateArticle.style.display = 'block';
+                    fullscreenLikeButton.style.display = 'block';
+                    if (user.email === 'petro.hryhorenko@gmail.com') {
+                        adminBtn.style.display = 'block';
+                        navAdminBtn.style.display = 'block';
+                    }
+
+                    // Перевірка першого входу
+                    if (!localStorage.getItem('tutorialShown')) {
+                        tutorialModal.style.display = 'flex';
+                        localStorage.setItem('tutorialShown', 'true');
+                    }
+                } catch (error) {
+                    errorDiv.textContent = 'Помилка завантаження даних: ' + error.message;
+                }
+            } else {
+                welcomeMessage.textContent = 'Електронна газета';
+                loginBtn.style.display = 'block';
+                registerBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                createArticleBtn.style.display = 'none';
+                navCreateArticle.style.display = 'none';
+                adminBtn.style.display = 'none';
+                navAdminBtn.style.display = 'none';
+                fullscreenLikeButton.style.display = 'none';
+            }
+        });
+
+        let allArticles = [];
+        const articlesRef = ref(db, 'articles');
+        onValue(articlesRef, (snapshot) => {
+            const articlesDiv = document.getElementById('articles');
+            articlesDiv.innerHTML = '';
+            allArticles = [];
+            const articles = snapshot.val();
+            if (articles) {
+                allArticles = Object.entries(articles)
+                    .filter(([_, article]) => article.status === 'approved')
+                    .map(([id, article]) => ({ id, ...article }));
+                renderArticles(allArticles);
+            } else {
+                articlesDiv.innerHTML = '<p>Статей поки немає.</p>';
+            }
+        });
+
+        function renderArticles(articles) {
+            const articlesDiv = document.getElementById('articles');
+            articlesDiv.innerHTML = '';
+            articles.forEach(article => {
+                const articleElement = document.createElement('div');
+                articleElement.className = 'article';
+                articleElement.innerHTML = `
+                    <h2>${article.title}</h2>
+                    <div>${article.content}</div>
+                    <p class="author">Автор: ${article.author}</p>
+                    <p class="likes">Лайки: ${article.likes || 0}</p>
+                    <button class="like-button" onclick="toggleLike('${article.id}')">👍</button>
+                `;
+                articleElement.addEventListener('click', () => openFullscreen(article));
+                articlesDiv.appendChild(articleElement);
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const articlesDiv = document.getElementById('articles');
+            articlesDiv.innerHTML = '';
+            const filteredArticles = allArticles.filter(article =>
+                article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query)
+            );
+            if (filteredArticles.length > 0) {
+                renderArticles(filteredArticles);
+            } else {
+                articlesDiv.innerHTML = '<p>Нічого не знайдено.</p>';
+            }
+        });
+
+        async function toggleLike(articleId) {
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Увійдіть, щоб поставити лайк!');
+                return;
+            }
+            try {
+                const likesRef = ref(db, `articles/${articleId}/likes`);
+                const userLikesRef = ref(db, `user_likes/${user.uid}/${articleId}`);
+                const snapshot = await get(userLikesRef);
+                if (snapshot.exists()) {
+                    alert('Ви вже лайкнули цю статтю!');
+                    return;
+                }
+                const articleSnapshot = await get(ref(db, `articles/${articleId}`));
+                const currentLikes = articleSnapshot.val()?.likes || 0;
+                await set(likesRef, currentLikes + 1);
+                await set(userLikesRef, true);
+                // Оновлення відображення лайків
+                const updatedArticle = { ...articleSnapshot.val(), likes: currentLikes + 1 };
+                openFullscreen(updatedArticle);
+                renderArticles(allArticles.map(a => a.id === articleId ? { ...a, likes: currentLikes + 1 } : a));
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка лайку: ' + error.message;
+            }
+        }
+
+        window.toggleLike = async () => {
+            await toggleLike(currentArticleId);
+            const articleSnapshot = await get(ref(db, `articles/${currentArticleId}`));
+            const article = articleSnapshot.val();
+            document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
+        };
+
+        function openFullscreen(article) {
+            currentArticleId = article.id;
+            document.getElementById('fullscreenTitle').textContent = article.title;
+            document.getElementById('fullscreenContent').innerHTML = article.content;
+            document.getElementById('fullscreenAuthor').textContent = `Автор: ${article.author}`;
+            document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
+            document.getElementById('articleFullscreen').style.display = 'flex';
+        }
+
+        window.closeFullscreen = () => {
+            document.getElementById('articleFullscreen').style.display = 'none';
+            currentArticleId = null;
+        };
+
+        window.closeTutorial = () => {
+            document.getElementById('tutorialModal').style.display = 'none';
+        };
+
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                alert('Вихід успішний!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка виходу: ' + error.message;
+            }
+        };
+    </script>
+</body>
+</html>

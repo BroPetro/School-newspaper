@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Реєстрація</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        .registration-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .license-link {
+            font-size: 14px;
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-top: 10px;
+        }
+
+        .license-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .registration-container {
+                background-color: #e8ecef;
+                padding: 25px;
+                width: 100%;
+                border-radius: 15px;
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            h1 {
+                font-size: 22px;
+                color: #004085;
+            }
+
+            input {
+                font-size: 18px;
+                padding: 15px;
+                border: 2px solid #b0bec5;
+                background-color: #fff;
+            }
+
+            button {
+                font-size: 18px;
+                padding: 15px;
+                background-color: #0288d1;
+                border-radius: 8px;
+            }
+
+            button:hover {
+                background-color: #01579b;
+            }
+
+            .error {
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .license-link {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <h1>Реєстрація</h1>
+        <form id="registrationForm">
+            <input type="text" id="username" placeholder="Ім'я користувача" required>
+            <input type="email" id="email" placeholder="Електронна пошта" required>
+            <input type="password" id="password" placeholder="Пароль" required>
+            <div id="error" class="error"></div>
+            <button type="submit">Зареєструватися</button>
+        </form>
+        <a href="licenseagreement.html" class="license-link">Ліцензійна угода</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
+            authDomain: "newpaper-6cb18.firebaseapp.com",
+            databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "newpaper-6cb18",
+            storageBucket: "newpaper-6cb18.firebasestorage.app",
+            messagingSenderId: "284037128087",
+            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
+            measurementId: "G-0EMERY88FL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '';
+
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (username.length < 3) {
+                errorDiv.textContent = 'Ім’я користувача має містити щонайменше 3 символи';
+                return;
+            }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorDiv.textContent = 'Введіть коректну електронну пошту';
+                return;
+            }
+            if (password.length < 6) {
+                errorDiv.textContent = 'Пароль має містити щонайменше 6 символів';
+                return;
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                await set(ref(db, 'users/' + user.uid), {
+                    username,
+                    createdAt: new Date().toISOString()
+                });
+
+                alert('Реєстрація успішна!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                errorDiv.textContent = 'Помилка реєстрації: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

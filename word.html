@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Створити статтю</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .topbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3182ce;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 240px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            overflow-y: auto;
+        }
+
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 16px;
+            color: #1a202c;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar button:hover {
+            background-color: #f1f5f9;
+        }
+
+        .sidebar button.active {
+            background-color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .content {
+            margin-left: 240px;
+            padding: 80px 20px 20px;
+            width: calc(100% - 240px);
+        }
+
+        .create-article {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            transition: transform 0.2s;
+        }
+
+        .create-article:hover {
+            transform: translateY(-3px);
+        }
+
+        .create-article h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        .create-article input, .create-article textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #f9fafb;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .create-article textarea {
+            height: 200px;
+            resize: vertical;
+        }
+
+        .create-article input:focus, .create-article textarea:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        .create-article .toolbar {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .create-article .toolbar button {
+            padding: 5px 10px;
+            background-color: #3182ce;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .create-article .toolbar button:hover {
+            background-color: #2b6cb0;
+        }
+
+        .create-article button[type="submit"], .create-article button[type="button"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #3182ce;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .create-article button[type="submit"]:hover, .create-article button[type="button"]:hover {
+            background-color: #2b6cb0;
+        }
+
+        .preview {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .preview h2 {
+            font-size: 20px;
+            color: #2b6cb0;
+            margin-bottom: 10px;
+        }
+
+        .preview p {
+            font-size: 16px;
+            color: #4a5568;
+        }
+
+        .preview .author {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .error {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .mobile-nav .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .mobile-nav button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #3182ce;
+            cursor: pointer;
+        }
+
+        .mobile-nav button.active {
+            color: #2b6cb0;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .topbar .logo {
+                font-size: 20px;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 70px 15px 70px;
+            }
+
+            .create-article {
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: none;
+            }
+
+            .create-article h1 {
+                font-size: 24px;
+                color: #2b6cb0;
+            }
+
+            .create-article input, .create-article textarea {
+                font-size: 16px;
+                padding: 10px;
+                border: 2px solid #e2e8f0;
+                background-color: #fff;
+            }
+
+            .create-article .toolbar {
+                padding: 5px;
+                gap: 5px;
+            }
+
+            .create-article .toolbar button {
+                font-size: 12px;
+                padding: 3px 6px;
+            }
+
+            .create-article button[type="submit"], .create-article button[type="button"] {
+                font-size: 16px;
+                padding: 10px;
+                background-color: #4299e1;
+                border-radius: 10px;
+            }
+
+            .create-article button[type="submit"]:hover, .create-article button[type="button"]:hover {
+                background-color: #2b6cb0;
+            }
+
+            .preview h2 {
+                font-size: 18px;
+            }
+
+            .preview p, .preview .author {
+                font-size: 14px;
+            }
+
+            .error {
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="logo">Газета</div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <button onclick="window.location.href='index.html'">Головна</button>
+            <button class="active" onclick="window.location.href='word.html'">+</button>
+            <button onclick="window.location.href='account.html'">Акаунт</button>
+            <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін-панель</button>
+            <button id="loginBtn" onclick="window.location.href='login.html'">Увійти</button>
+            <button id="registerBtn" onclick="window.location.href='register.html'">Зареєструватися</button>
+            <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
+        </div>
+        <div class="content">
+            <div class="create-article">
+                <h1>Створити нову статтю</h1>
+                <form id="articleForm">
+                    <input type="text" id="articleTitle" placeholder="Заголовок статті" required>
+                    <div class="toolbar">
+                        <button type="button" onclick="formatText('bold')">Жирний</button>
+                        <button type="button" onclick="formatText('italic')">Курсив</button>
+                        <button type="button" onclick="formatText('underline')">Підкреслення</button>
+                        <button type="button" onclick="formatText('h2')">Заголовок 2</button>
+                        <button type="button" onclick="formatText('h3')">Заголовок 3</button>
+                    </div>
+                    <textarea id="articleContent" placeholder="Текст статті" required></textarea>
+                    <button type="button" onclick="previewArticle()">Попередній перегляд</button>
+                    <button type="submit">Відправити на перевірку</button>
+                </form>
+                <div id="preview" class="preview" style="display: none;">
+                    <h2 id="previewTitle"></h2>
+                    <div id="previewContent"></div>
+                    <p id="previewAuthor" class="author"></p>
+                </div>
+                <div id="error" class="error"></div>
+            </div>
+        </div>
+    </div>
+    <div class="mobile-nav">
+        <div class="nav-buttons">
+            <button class="nav-button" onclick="window.location.href='index.html'">Головна</button>
+            <button class="nav-button active" onclick="window.location.href='word.html'">+</button>
+            <button class="nav-button" onclick="window.location.href='account.html'">Акаунт</button>
+            <button class="nav-button" id="navAdminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
+            authDomain: "newpaper-6cb18.firebaseapp.com",
+            databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "newpaper-6cb18",
+            storageBucket: "newpaper-6cb18.firebasestorage.app",
+            messagingSenderId: "284037128087",
+            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
+            measurementId: "G-0EMERY88FL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+
+        onAuthStateChanged(auth, async (user) => {
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const adminBtn = document.getElementById('adminBtn');
+            const navAdminBtn = document.getElementById('navAdminBtn');
+
+            if (user) {
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                if (user.email === 'petro.hryhorenko@gmail.com') {
+                    adminBtn.style.display = 'block';
+                    navAdminBtn.style.display = 'block';
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+
+        document.getElementById('articleForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '';
+
+            const title = document.getElementById('articleTitle').value;
+            const content = document.getElementById('articleContent').value;
+            const user = auth.currentUser;
+
+            if (!user) {
+                errorDiv.textContent = 'Ви повинні увійти, щоб створити статтю';
+                return;
+            }
+
+            try {
+                const userRef = ref(db, 'users/' + user.uid);
+                const snapshot = await get(userRef);
+                const userData = snapshot.val();
+                const username = userData?.username || 'Користувач';
+
+                const articleId = Date.now().toString();
+                await set(ref(db, 'pending_articles/' + articleId), {
+                    title,
+                    content, // Зберігаємо текст із HTML-тегами
+                    author: username,
+                    createdAt: new Date().toISOString(),
+                    status: 'pending',
+                    likes: 0 // Додано поле для лайків
+                });
+
+                alert('Статтю відправлено на перевірку!');
+                document.getElementById('articleForm').reset();
+                document.getElementById('preview').style.display = 'none';
+            } catch (error) {
+                errorDiv.textContent = 'Помилка відправлення статті: ' + error.message;
+            }
+        });
+
+        window.previewArticle = () => {
+            const title = document.getElementById('articleTitle').value;
+            const content = document.getElementById('articleContent').value;
+            const user = auth.currentUser;
+
+            if (!title || !content) {
+                document.getElementById('error').textContent = 'Заповніть усі поля для попереднього перегляду';
+                return;
+            }
+
+            // Оновлюємо заголовок і автора
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewAuthor').textContent = `Автор: ${user ? user.email : 'Користувач'}`;
+
+            // Створюємо HTML-версію контенту для попереднього перегляду
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content.replace(/\n/g, '<br>');
+            document.getElementById('previewContent').innerHTML = tempDiv.innerHTML;
+            document.getElementById('preview').style.display = 'block';
+        };
+
+        window.formatText = (command) => {
+            const textarea = document.getElementById('articleContent');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let formattedText = '';
+
+            if (selectedText) {
+                switch (command) {
+                    case 'bold':
+                        formattedText = `<b>${selectedText}</b>`;
+                        break;
+                    case 'italic':
+                        formattedText = `<i>${selectedText}</i>`;
+                        break;
+                    case 'underline':
+                        formattedText = `<u>${selectedText}</u>`;
+                        break;
+                    case 'h2':
+                        formattedText = `<h2>${selectedText}</h2>`;
+                        break;
+                    case 'h3':
+                        formattedText = `<h3>${selectedText}</h3>`;
+                        break;
+                }
+
+                const newText = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+                textarea.value = newText;
+
+                // Оновлюємо курсор
+                const newCursorPos = start + formattedText.length - selectedText.length;
+                textarea.setSelectionRange(newCursorPos, newCursorPos);
+                textarea.focus();
+            }
+        };
+
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                alert('Вихід успішний!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка виходу: ' + error.message;
+            }
+        };
+    </script>
+</body>
+</html>
