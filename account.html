@@ -1,635 +1,186 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Акаунт</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: #f9fafb;
-            color: #1a202c;
-            min-height: 100vh;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Акаунт</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', Arial, sans-serif;
+      background-color: #f9fafb;
+      color: #1a202c;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
 
-        .topbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 1000;
-        }
+    .account-panel {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
 
-        .topbar .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #3182ce;
-        }
+    .account-panel h1 {
+      color: #3182ce;
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
 
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
+    .account-panel p {
+      font-size: 16px;
+      color: #4a5568;
+      margin-bottom: 20px;
+    }
 
-        .sidebar {
-            width: 240px;
-            background-color: #ffffff;
-            padding: 20px;
-            border-right: 1px solid #e2e8f0;
-            position: fixed;
-            top: 60px;
-            bottom: 0;
-            overflow-y: auto;
-        }
+    .account-panel input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
 
-        .sidebar button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin: 5px 0;
-            background: none;
-            border: none;
-            text-align: left;
-            font-size: 16px;
-            color: #1a202c;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.2s;
-        }
+    .account-panel button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
 
-        .sidebar button:hover {
-            background-color: #f1f5f9;
-        }
+    #saveNameBtn {
+      background-color: #3182ce;
+      color: white;
+    }
 
-        .sidebar button.active {
-            background-color: #e2e8f0;
-            font-weight: 500;
-        }
+    #saveNameBtn:hover {
+      background-color: #2b6cb0;
+    }
 
-        .content {
-            margin-left: 240px;
-            padding: 80px 20px 20px;
-            width: calc(100% - 240px);
-        }
+    #logoutBtn, #loginBtn {
+      background-color: #e53e3e;
+      color: #fff;
+    }
 
-        .account-panel {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            margin: 0 auto;
-        }
+    #logoutBtn:hover, #loginBtn:hover {
+      background-color: #c53030;
+    }
 
-        .account-panel h1 {
-            font-size: 28px;
-            margin-bottom: 20px;
-            color: #1a202c;
-            font-weight: 600;
-        }
-
-        .account-panel p {
-            font-size: 16px;
-            color: #4a5568;
-            margin-bottom: 10px;
-        }
-
-        .account-panel .subscriptions {
-            margin-top: 20px;
-        }
-
-        .account-panel .subscriptions h3 {
-            font-size: 18px;
-            color: #1a202c;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .account-panel .subscription {
-            display: flex;
-            align-items: center;
-            padding: 8px 0;
-            font-size: 14px;
-            color: #4a5568;
-        }
-
-        .account-panel .subscription button {
-            margin-left: 10px;
-            padding: 4px 10px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            background-color: #3182ce;
-            color: #fff;
-            font-size: 12px;
-        }
-
-        .account-panel .subscription button.unsubscribe {
-            background-color: #e53e3e;
-        }
-
-        .filter {
-            margin-bottom: 20px;
-        }
-
-        .filter select {
-            padding: 10px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .articles-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .articles-table th, .articles-table td {
-            padding: 12px;
-            border: 1px solid #e2e8f0;
-            text-align: left;
-        }
-
-        .articles-table th {
-            background-color: #f1f5f9;
-            font-weight: 500;
-        }
-
-        .articles-table tr:hover {
-            background-color: #f9fafb;
-        }
-
-        .articles-table .pending {
-            background-color: #fff3cd;
-        }
-
-        .articles-table .approved {
-            background-color: #d4edda;
-        }
-
-        .articles-table .rejected {
-            background-color: #f8d7da;
-        }
-
-        .articles-table button {
-            padding: 8px 12px;
-            margin: 0 5px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .articles-table .view {
-            background-color: #3182ce;
-            color: #fff;
-        }
-
-        .articles-table .view:hover {
-            background-color: #2b6cb0;
-        }
-
-        .articles-table .delete {
-            background-color: #e53e3e;
-            color: #fff;
-        }
-
-        .articles-table .delete:hover {
-            background-color: #c53030;
-        }
-
-        .error {
-            color: #e53e3e;
-            font-size: 14px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .article-preview {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .article-preview-content {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 700px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .article-preview-content h2 {
-            font-size: 24px;
-            color: #2b6cb0;
-            margin-bottom: 15px;
-        }
-
-        .article-preview-content p {
-            font-size: 16px;
-            color: #4a5568;
-        }
-
-        .article-preview-content .author {
-            font-size: 14px;
-            color: #718096;
-            font-style: italic;
-            margin-top: 10px;
-        }
-
-        .close-button {
-            background-color: #e53e3e;
-            margin-top: 15px;
-            padding: 10px 20px;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .close-button:hover {
-            background-color: #c53030;
-        }
-
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: #ffffff;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-            padding: 10px 0;
-            z-index: 1000;
-        }
-
-        .mobile-nav .nav-buttons {
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .mobile-nav button {
-            background: none;
-            border: none;
-            font-size: 16px;
-            color: #3182ce;
-            cursor: pointer;
-        }
-
-        .mobile-nav button.active {
-            color: #2b6cb0;
-            font-weight: bold;
-        }
-
-        @media (max-width: 600px) {
-            .sidebar {
-                display: none;
-            }
-
-            .topbar {
-                padding: 0 15px;
-            }
-
-            .topbar .logo {
-                font-size: 20px;
-            }
-
-            .content {
-                margin-left: 0;
-                width: 100%;
-                padding: 70px 15px 70px;
-            }
-
-            .account-panel {
-                padding: 15px;
-                border-radius: 10px;
-                box-shadow: none;
-            }
-
-            .account-panel h1 {
-                font-size: 24px;
-                color: #2b6cb0;
-            }
-
-            .account-panel p, .account-panel .subscription {
-                font-size: 14px;
-            }
-
-            .account-panel .subscription button {
-                font-size: 12px;
-                padding: 3px 8px;
-            }
-
-            .articles-table th, .articles-table td {
-                padding: 8px;
-                font-size: 14px;
-            }
-
-            .articles-table button {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-
-            .error {
-                font-size: 14px;
-                font-weight: bold;
-            }
-
-            .mobile-nav {
-                display: block;
-            }
-
-            .article-preview-content {
-                width: 95%;
-                padding: 15px;
-            }
-        }
-    </style>
+    .error {
+      color: #e53e3e;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="topbar">
-        <div class="logo">Газета</div>
-    </div>
-    <div class="container">
-        <div class="sidebar">
-            <button onclick="window.location.href='index.html'">Головна</button>
-            <button id="createArticleBtn" style="display: none;" onclick="window.location.href='word.html'">+</button>
-            <button class="active" onclick="window.location.href='account.html'">Акаунт</button>
-            <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін-панель</button>
-            <button id="loginBtn" onclick="window.location.href='login.html'">Увійти</button>
-            <button id="registerBtn" onclick="window.location.href='register.html'">Зареєструватися</button>
-            <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
-        </div>
-        <div class="content">
-            <div class="account-panel">
-                <h1>Мій акаунт</h1>
-                <p id="userInfo"></p>
-                <div class="subscriptions" id="subscriptions">
-                    <h3>Підписки</h3>
-                </div>
-                <div class="filter">
-                    <select id="statusFilter" onchange="filterUserArticles()">
-                        <option value="all">Усі статуси</option>
-                        <option value="pending">Очікує</option>
-                        <option value="approved">Схвалено</option>
-                        <option value="rejected">Відхилено</option>
-                    </select>
-                </div>
-                <h3>Мої статті</h3>
-                <table class="articles-table">
-                    <thead>
-                        <tr>
-                            <th>Заголовок</th>
-                            <th>Статус</th>
-                            <th>Лайки</th>
-                            <th>Дата</th>
-                            <th>Дії</th>
-                        </tr>
-                    </thead>
-                    <tbody id="articlesTableBody"></tbody>
-                </table>
-                <div id="error" class="error"></div>
-            </div>
-        </div>
-    </div>
-    <div id="articlePreview" class="article-preview">
-        <div class="article-preview-content">
-            <h2 id="previewTitle"></h2>
-            <p id="previewContent"></p>
-            <p id="previewAuthor" class="author"></p>
-            <button class="close-button" onclick="closePreview()">Закрити</button>
-        </div>
-    </div>
-    <div class="mobile-nav">
-        <div class="nav-buttons">
-            <button class="nav-button" onclick="window.location.href='index.html'">Головна</button>
-            <button class="nav-button" id="navCreateArticle" style="display: none;" onclick="window.location.href='word.html'">+</button>
-            <button class="nav-button active" onclick="window.location.href='account.html'">Акаунт</button>
-            <button class="nav-button" id="navAdminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін</button>
-        </div>
+  <div class="account-panel">
+    <h1>Мій акаунт</h1>
+    <p id="userInfo">Завантаження...</p>
+
+    <div id="nameChangeSection" style="display: none;">
+      <input type="text" id="newName" placeholder="Введіть нове ім’я">
+      <button id="saveNameBtn">Зберегти нове ім’я</button>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        import { getDatabase, ref, get, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
-        import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.es.min.js';
+    <button id="loginBtn" onclick="window.location.href='login.html'">Увійти</button>
+    <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
-            authDomain: "newpaper-6cb18.firebaseapp.com",
-            databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "newpaper-6cb18",
-            storageBucket: "newpaper-6cb18.firebasestorage.app",
-            messagingSenderId: "284037128087",
-            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
-            measurementId: "G-0EMERY88FL"
-        };
+    <div id="error" class="error"></div>
+  </div>
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-        let userArticles = [];
+    const firebaseConfig = {
+      apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
+      authDomain: "newpaper-6cb18.firebaseapp.com",
+      databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "newpaper-6cb18",
+      storageBucket: "newpaper-6cb18.firebasestorage.app",
+      messagingSenderId: "284037128087",
+      appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
+      measurementId: "G-0EMERY88FL"
+    };
 
-        onAuthStateChanged(auth, async (user) => {
-            const loginBtn = document.getElementById('loginBtn');
-            const registerBtn = document.getElementById('registerBtn');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const createArticleBtn = document.getElementById('createArticleBtn');
-            const navCreateArticle = document.getElementById('navCreateArticle');
-            const adminBtn = document.getElementById('adminBtn');
-            const navAdminBtn = document.getElementById('navAdminBtn');
-            const userInfo = document.getElementById('userInfo');
-            const errorDiv = document.getElementById('error');
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-            if (user) {
-                try {
-                    const userRef = ref(db, 'users/' + user.uid);
-                    const snapshot = await get(userRef);
-                    const userData = snapshot.val();
-                    const username = userData?.username || 'Користувач';
-                    userInfo.textContent = `Ім’я: ${username} | Email: ${user.email}`;
-                    loginBtn.style.display = 'none';
-                    registerBtn.style.display = 'none';
-                    logoutBtn.style.display = 'block';
-                    createArticleBtn.style.display = 'block';
-                    navCreateArticle.style.display = 'block';
-                    if (user.email === 'petro.hryhorenko@gmail.com') {
-                        adminBtn.style.display = 'block';
-                        navAdminBtn.style.display = 'block';
-                    }
-                    loadSubscriptions(user.uid);
-                    loadUserArticles(user.email);
-                } catch (error) {
-                    errorDiv.textContent = 'Помилка завантаження даних: ' + error.message;
-                }
-            } else {
-                window.location.href = 'login.html';
-            }
-        });
+    const userInfo = document.getElementById('userInfo');
+    const nameSection = document.getElementById('nameChangeSection');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const saveNameBtn = document.getElementById('saveNameBtn');
+    const newNameInput = document.getElementById('newName');
+    const errorDiv = document.getElementById('error');
 
-        async function loadSubscriptions(userId) {
-            const subscriptionsDiv = document.getElementById('subscriptions');
-            const subscriptionsRef = ref(db, `subscriptions/${userId}`);
-            onValue(subscriptionsRef, async (snapshot) => {
-                subscriptionsDiv.innerHTML = '<h3>Підписки</h3>';
-                const subscriptions = snapshot.val() || {};
-                const authors = Object.keys(subscriptions);
-                if (authors.length === 0) {
-                    subscriptionsDiv.innerHTML += '<p>Ви не підписані на жодного автора</p>';
-                    return;
-                }
-                const articlesRef = ref(db, 'articles');
-                const articlesSnapshot = await get(articlesRef);
-                const articles = articlesSnapshot.val() || {};
-                authors.forEach(async (author) => {
-                    const authorArticles = Object.values(articles).filter(a => a.author === author && a.status === 'approved');
-                    const subscriptionElement = document.createElement('div');
-                    subscriptionElement.className = 'subscription';
-                    subscriptionElement.innerHTML = `
-                        <span>${DOMPurify.sanitize(author)} (${authorArticles.length} статей)</span>
-                        <button class="unsubscribe" onclick="toggleSubscription('${userId}', '${author}')">Відписатися</button>
-                    `;
-                    subscriptionsDiv.appendChild(subscriptionElement);
-                });
-            });
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userRef = ref(db, 'users/' + user.uid);
+          const snapshot = await get(userRef);
+          const userData = snapshot.val() || {};
+          const username = userData.username || 'Користувач';
+          userInfo.textContent = `Ім’я: ${username}\nEmail: ${user.email}`;
+          nameSection.style.display = 'block';
+          loginBtn.style.display = 'none';
+          logoutBtn.style.display = 'block';
+        } catch (error) {
+          errorDiv.textContent = 'Помилка: ' + error.message;
         }
+      } else {
+        userInfo.textContent = 'Ви не увійшли.';
+        nameSection.style.display = 'none';
+        loginBtn.style.display = 'block';
+        logoutBtn.style.display = 'none';
+      }
+    });
 
-        async function loadUserArticles(userEmail) {
-            const pendingArticlesRef = ref(db, 'pending_articles');
-            const articlesRef = ref(db, 'articles');
-            userArticles = [];
-            const tableBody = document.getElementById('articlesTableBody');
-            tableBody.innerHTML = '';
+    saveNameBtn.addEventListener('click', async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Увійдіть спочатку!');
+        return;
+      }
+      const newName = newNameInput.value.trim();
+      if (!newName) {
+        alert('Введіть ім’я!');
+        return;
+      }
+      try {
+        await set(ref(db, 'users/' + user.uid + '/username'), newName);
+        alert('Ім’я змінено!');
+        userInfo.textContent = `Ім’я: ${newName}\nEmail: ${user.email}`;
+        newNameInput.value = '';
+      } catch (error) {
+        errorDiv.textContent = 'Помилка: ' + error.message;
+      }
+    });
 
-            try {
-                const pendingSnapshot = await get(pendingArticlesRef);
-                const articlesSnapshot = await get(articlesRef);
-                const pendingArticles = pendingSnapshot.val() || {};
-                const articles = articlesSnapshot.val() || {};
-
-                userArticles = [
-                    ...Object.entries(pendingArticles).map(([id, article]) => ({ id, ...article })),
-                    ...Object.entries(articles).map(([id, article]) => ({ id, ...article }))
-                ].filter(article => article.authorEmail === userEmail);
-
-                filterUserArticles();
-            } catch (error) {
-                document.getElementById('error').textContent = 'Помилка завантаження статей: ' + error.message;
-            }
-        }
-
-        function filterUserArticles() {
-            const statusFilter = document.getElementById('statusFilter').value;
-            const tableBody = document.getElementById('articlesTableBody');
-            tableBody.innerHTML = '';
-            const filteredArticles = statusFilter === 'all' ? userArticles : userArticles.filter(article => article.status === statusFilter);
-            if (filteredArticles.length > 0) {
-                filteredArticles.forEach(article => {
-                    const row = document.createElement('tr');
-                    row.className = article.status;
-                    row.innerHTML = `
-                        <td>${DOMPurify.sanitize(article.title)}</td>
-                        <td>${article.status === 'pending' ? 'Очікує' : article.status === 'approved' ? 'Схвалено' : 'Відхилено'}</td>
-                        <td>${article.likes || 0}</td>
-                        <td>${new Date(article.createdAt).toLocaleDateString('uk-UA')}</td>
-                        <td>
-                            <button class="view" onclick="viewArticle('${article.id}', '${article.status}')">Переглянути</button>
-                            ${article.status === 'pending' ? `<button class="delete" onclick="deleteArticle('${article.id}')">Видалити</button>` : ''}
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            } else {
-                tableBody.innerHTML = '<tr><td colspan="5">Ви ще не опублікували статей</td></tr>';
-            }
-        }
-
-        window.filterUserArticles = filterUserArticles;
-
-        window.viewArticle = async (articleId, status) => {
-            try {
-                const articleRef = ref(db, `${status === 'approved' ? 'articles' : 'pending_articles'}/${articleId}`);
-                const snapshot = await get(articleRef);
-                const article = snapshot.val();
-                if (!article) {
-                    throw new Error('Стаття не знайдена');
-                }
-                document.getElementById('previewTitle').innerHTML = DOMPurify.sanitize(article.title);
-                document.getElementById('previewContent').innerHTML = DOMPurify.sanitize(article.content.replace(/\n/g, '<br>'));
-                document.getElementById('previewAuthor').textContent = `Автор: ${DOMPurify.sanitize(article.author)}`;
-                document.getElementById('articlePreview').style.display = 'flex';
-            } catch (error) {
-                document.getElementById('error').textContent = 'Помилка перегляду: ' + error.message;
-            }
-        };
-
-        window.deleteArticle = async (articleId) => {
-            if (!confirm('Ви впевнені, що хочете видалити цю статтю?')) return;
-            try {
-                const articleRef = ref(db, `pending_articles/${articleId}`);
-                await remove(articleRef);
-                alert('Статтю видалено!');
-                loadUserArticles(auth.currentUser.email);
-            } catch (error) {
-                document.getElementById('error').textContent = 'Помилка видалення: ' + error.message;
-            }
-        };
-
-        window.toggleSubscription = async (userId, author) => {
-            const user = auth.currentUser;
-            if (!user) {
-                alert('Увійдіть, щоб керувати підписками!');
-                return;
-            }
-            try {
-                const subscriptionsRef = ref(db, `subscriptions/${userId}/${author}`);
-                const snapshot = await get(subscriptionsRef);
-                if (snapshot.exists()) {
-                    await set(subscriptionsRef, null);
-                    alert(`Ви відписалися від ${author}`);
-                } else {
-                    await set(subscriptionsRef, true);
-                    alert(`Ви підписалися на ${author}`);
-                }
-            } catch (error) {
-                document.getElementById('error').textContent = 'Помилка підписки: ' + error.message;
-            }
-        };
-
-        window.closePreview = () => {
-            document.getElementById('articlePreview').style.display = 'none';
-        };
-
-        window.logout = async () => {
-            try {
-                await signOut(auth);
-                alert('Вихід успішний!');
-                window.location.href = 'index.html';
-            } catch (error) {
-                document.getElementById('error').textContent = 'Помилка виходу: ' + error.message;
-            }
-        };
-    </script>
+    window.logout = async () => {
+      try {
+        await signOut(auth);
+        alert('Ви вийшли!');
+        window.location.href = 'index.html';
+      } catch (error) {
+        errorDiv.textContent = 'Помилка виходу: ' + error.message;
+      }
+    };
+  </script>
 </body>
 </html>
