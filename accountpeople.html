@@ -2,14 +2,14 @@
 <html lang="uk" manifest="/manifest.json">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#f9fafb">
-    <meta name="description" content="Електронна газета з новинами та статтями">
+    <meta name="description" content="Профіль автора в Електронній газеті">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icon.png">
-    <title>Електронна газета</title>
+    <title>Профіль автора | Електронна газета</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -18,6 +18,9 @@
             background-color: #f9fafb;
             color: #1a202c;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overscroll-behavior: none;
         }
 
         .container {
@@ -33,8 +36,9 @@
             right: 0;
             background-color: #ffffff;
             border-top: 1px solid #e2e8f0;
-            padding: 10px;
+            padding: 8px;
             z-index: 1000;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .nav-buttons {
@@ -44,14 +48,15 @@
         }
 
         .nav-button {
-            padding: 10px;
+            padding: 8px;
             background: none;
             border: none;
-            font-size: 14px;
+            font-size: 13px;
             color: #1a202c;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 6px;
             transition: background-color 0.2s;
+            touch-action: manipulation;
         }
 
         .nav-button:hover {
@@ -63,19 +68,13 @@
             font-weight: 500;
         }
 
-        @media (max-width: 600px) {
-            .mobile-nav {
-                display: block;
-            }
-        }
-
         .sidebar {
             width: 240px;
             background-color: #ffffff;
-            padding: 20px;
+            padding: 16px;
             border-right: 1px solid #e2e8f0;
             position: fixed;
-            top: 60px;
+            top: 56px;
             bottom: 0;
             overflow-y: auto;
         }
@@ -83,15 +82,15 @@
         .sidebar button {
             display: block;
             width: 100%;
-            padding: 12px;
-            margin: 5px 0;
+            padding: 10px;
+            margin: 4px 0;
             background: none;
             border: none;
             text-align: left;
-            font-size: 16px;
+            font-size: 15px;
             color: #1a202c;
             cursor: pointer;
-            border-radius: 8px;
+            border-radius: 6px;
             transition: background-color 0.2s;
         }
 
@@ -109,78 +108,101 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 60px;
+            height: 56px;
             background-color: #ffffff;
             border-bottom: 1px solid #e2e8f0;
             display: flex;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 16px;
             z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .topbar .logo {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             color: #3182ce;
-            margin-right: 20px;
+            cursor: pointer;
+            user-select: none;
         }
 
         .topbar .search-bar {
             flex-grow: 1;
             max-width: 600px;
+            margin-left: 16px;
         }
 
         .topbar .search-bar input {
             width: 100%;
-            padding: 10px;
+            padding: 8px 12px;
             border: 1px solid #e2e8f0;
-            border-radius: 20px;
-            font-size: 16px;
+            border-radius: 16px;
+            font-size: 14px;
             background-color: #f9fafb;
         }
 
         .topbar .search-bar input:focus {
             outline: none;
             border-color: #3182ce;
-            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.1);
         }
 
         .content {
             margin-left: 240px;
-            padding: 80px 20px 20px;
+            padding: 72px 16px 16px;
             width: calc(100% - 240px);
+        }
+
+        .author-header {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .author-header h1 {
+            font-size: 26px;
+            color: #2b6cb0;
+            margin: 0 0 8px;
+        }
+
+        .author-header p {
+            font-size: 15px;
+            color: #4a5568;
+            margin: 0;
         }
 
         .articles {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
         }
 
         .article {
             background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            padding: 12px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .article:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
         }
 
         .article h2 {
-            font-size: 20px;
+            font-size: 18px;
             color: #2b6cb0;
-            margin-bottom: 10px;
+            margin: 0 0 8px;
         }
 
         .article div {
-            font-size: 16px;
+            font-size: 15px;
             color: #4a5568;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
@@ -188,26 +210,15 @@
         }
 
         .article .author {
-            font-size: 14px;
+            font-size: 13px;
             color: #718096;
             font-style: italic;
         }
 
-        .article .author span {
-            color: #3182ce;
-            cursor: pointer;
-            text-decoration: underline;
-            font-weight: 500;
-        }
-
-        .article .author span:hover {
-            color: #2b6cb0;
-        }
-
         .article .likes {
-            font-size: 14px;
+            font-size: 13px;
             color: #3182ce;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .article .like-button {
@@ -215,8 +226,8 @@
             border: none;
             color: #3182ce;
             cursor: pointer;
-            font-size: 16px;
-            margin-top: 5px;
+            font-size: 15px;
+            margin-top: 4px;
         }
 
         .article .like-button:hover {
@@ -225,9 +236,9 @@
 
         .error {
             color: #e53e3e;
-            font-size: 14px;
+            font-size: 13px;
             text-align: center;
-            margin: 20px 0;
+            margin: 16px 0;
         }
 
         .article-fullscreen {
@@ -240,52 +251,43 @@
             display: none;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
+            z-index: 2000;
+            overflow-y: auto;
         }
 
         .article-fullscreen-content {
             background-color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
+            padding: 16px;
+            border-radius: 10px;
             width: 90%;
             max-width: 700px;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
+            position: relative;
         }
 
         .article-fullscreen-content h2 {
-            font-size: 24px;
+            font-size: 22px;
             color: #2b6cb0;
-            margin-bottom: 15px;
+            margin: 0 0 12px;
         }
 
         .article-fullscreen-content div {
-            font-size: 16px;
+            font-size: 15px;
             color: #4a5568;
         }
 
         .article-fullscreen-content .author {
-            font-size: 14px;
+            font-size: 13px;
             color: #718096;
             font-style: italic;
-            margin-top: 10px;
-        }
-
-        .article-fullscreen-content .author span {
-            color: #3182ce;
-            cursor: pointer;
-            text-decoration: underline;
-            font-weight: 500;
-        }
-
-        .article-fullscreen-content .author span:hover {
-            color: #2b6cb0;
+            margin-top: 8px;
         }
 
         .article-fullscreen-content .likes {
-            font-size: 14px;
+            font-size: 13px;
             color: #3182ce;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .article-fullscreen-content .like-button {
@@ -293,8 +295,8 @@
             border: none;
             color: #3182ce;
             cursor: pointer;
-            font-size: 18px;
-            padding: 5px 10px;
+            font-size: 16px;
+            padding: 4px 8px;
             border-radius: 6px;
         }
 
@@ -305,100 +307,17 @@
 
         .close-button {
             background-color: #e53e3e;
-            margin-top: 15px;
-            padding: 10px 20px;
+            margin-top: 12px;
+            padding: 8px 16px;
             color: #fff;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 14px;
         }
 
         .close-button:hover {
             background-color: #c53030;
-        }
-
-        .tutorial-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .tutorial-content {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 80vh;
-            overflow-y: auto;
-            text-align: center;
-        }
-
-        .tutorial-content h2 {
-            font-size: 24px;
-            color: #2b6cb0;
-            margin-bottom: 15px;
-        }
-
-        .tutorial-content p {
-            font-size: 16px;
-            color: #4a5568;
-            margin-bottom: 10px;
-        }
-
-        .tutorial-content ul {
-            text-align: left;
-            padding-left: 20px;
-        }
-
-        .tutorial-content button {
-            padding: 10px 20px;
-            background-color: #3182ce;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-top: 15px;
-        }
-
-        .tutorial-content button:hover {
-            background-color: #2b6cb0;
-        }
-
-        .install-prompt {
-            position: fixed;
-            bottom: 10px;
-            left: 10px;
-            right: 10px;
-            background-color: #ffffff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            display: none;
-            z-index: 1001;
-        }
-
-        .install-prompt button {
-            padding: 5px 15px;
-            background-color: #3182ce;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        .install-prompt button:hover {
-            background-color: #2b6cb0;
         }
 
         @media (max-width: 600px) {
@@ -406,100 +325,92 @@
                 display: none;
             }
 
+            .mobile-nav {
+                display: block;
+            }
+
             .topbar {
-                padding: 0 15px;
+                padding: 0 12px;
+                height: 48px;
             }
 
             .topbar .logo {
-                font-size: 20px;
+                font-size: 18px;
+            }
+
+            .topbar .search-bar {
+                margin-left: 12px;
             }
 
             .topbar .search-bar input {
-                font-size: 14px;
-                padding: 8px;
+                font-size: 13px;
+                padding: 6px 10px;
+                border-radius: 14px;
             }
 
             .content {
                 margin-left: 0;
                 width: 100%;
-                padding: 70px 15px 70px;
+                padding: 64px 12px 64px;
             }
 
             .articles {
                 grid-template-columns: 1fr;
+                gap: 12px;
             }
 
             .article {
-                border-radius: 10px;
+                border-radius: 8px;
                 padding: 10px;
             }
 
             .article h2 {
-                font-size: 18px;
+                font-size: 16px;
             }
 
             .article div, .article .author, .article .likes, .article .like-button {
-                font-size: 14px;
+                font-size: 13px;
+            }
+
+            .author-header {
+                padding: 12px;
+                border-radius: 8px;
+            }
+
+            .author-header h1 {
+                font-size: 22px;
+            }
+
+            .author-header p {
+                font-size: 13px;
             }
 
             .article-fullscreen-content {
                 width: 95%;
-                padding: 15px;
+                padding: 12px;
+                border-radius: 8px;
+                max-height: 90vh;
             }
 
             .article-fullscreen-content h2 {
-                font-size: 22px;
-            }
-
-            .article-fullscreen-content div, .article-fullscreen-content .author, .article-fullscreen-content .likes {
-                font-size: 14px;
-            }
-
-            .article-fullscreen-content .like-button {
-                font-size: 16px;
-            }
-
-            .tutorial-content {
-                width: 95%;
-                padding: 15px;
-            }
-
-            .tutorial-content h2 {
                 font-size: 20px;
             }
 
-            .tutorial-content p, .tutorial-content ul {
+            .article-fullscreen-content div, .article-fullscreen-content .author, .article-fullscreen-content .likes {
+                font-size: 13px;
+            }
+
+            .article-fullscreen-content .like-button {
                 font-size: 14px;
-            }
-
-            .tutorial-content button {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
-
-            .install-prompt {
-                bottom: 60px;
-                left: 5px;
-                right: 5px;
-                padding: 8px;
-            }
-
-            .install-prompt button {
-                padding: 4px 12px;
-                font-size: 14px;
-            }
-
-            .mobile-nav {
-                display: block;
             }
         }
     </style>
 </head>
 <body>
     <div class="topbar">
-        <div class="logo">Газета</div>
+        <div class="logo" onclick="goToProfileOrHome()">Газета</div>
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Пошук статей...">
+            <input type="text" id="searchInput" placeholder="Пошук статей автора...">
         </div>
     </div>
     <div class="container">
@@ -513,39 +424,13 @@
             <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
         </div>
         <div class="content">
-            <h1 id="welcomeMessage">Електронна газета</h1>
+            <div id="authorHeader" class="author-header" style="display: none;">
+                <h1 id="authorName"></h1>
+                <p id="authorBio"></p>
+            </div>
             <div id="articles" class="articles"></div>
             <div id="error" class="error"></div>
         </div>
-    </div>
-    <div id="articleFullscreen" class="article-fullscreen">
-        <div class="article-fullscreen-content">
-            <h2 id="fullscreenTitle"></h2>
-            <div id="fullscreenContent"></div>
-            <p id="fullscreenAuthor" class="author"></p>
-            <p id="fullscreenLikes" class="likes"></p>
-            <button id="fullscreenLikeButton" class="like-button" style="display: none;" onclick="toggleLike()">👍</button>
-            <button class="close-button" onclick="closeFullscreen()">Закрити</button>
-        </div>
-    </div>
-    <div id="tutorialModal" class="tutorial-modal">
-        <div class="tutorial-content">
-            <h2>Ласкаво просимо до Електронної газети!</h2>
-            <p>Це ваш перший візит? Ознайомтеся з основними функціями:</p>
-            <ul>
-                <li>Переглядайте статті, натискаючи на картки у головному розділі.</li>
-                <li>Натисніть кнопку "Лайкнути" (👍), щоб оцінити статтю (потрібен вхід).</li>
-                <li>Створюйте власні статті через кнопку "+" у бічній панелі (після входу).</li>
-                <li>Увійдіть або зареєструйтесь, щоб отримати доступ до всіх функцій.</li>
-                <li>Перейдіть до "Акаунт", щоб редагувати свій профіль.</li>
-                <li>Встановіть додаток на домашній екран для зручного доступу!</li>
-            </ul>
-            <button onclick="closeTutorial()">Розумію</button>
-        </div>
-    </div>
-    <div id="installPrompt" class="install-prompt">
-        <p>Встановіть Електронну газету на домашній екран для кращого досвіду!</p>
-        <button onclick="installPWA()">Встановити</button>
     </div>
     <div class="mobile-nav">
         <div class="nav-buttons">
@@ -555,11 +440,21 @@
             <button class="nav-button" id="navAdminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін</button>
         </div>
     </div>
+    <div id="articleFullscreen" class="article-fullscreen">
+        <div class="article-fullscreen-content">
+            <h2 id="fullscreenTitle"></h2>
+            <div id="fullscreenContent"></div>
+            <p id="fullscreenAuthor" class="author"></p>
+            <p id="fullscreenLikes" class="likes"></p>
+            <button id="fullscreenLikeButton" class="like-button"></button>
+            <button class="close-button" onclick="closeFullscreen()">Закрити</button>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, get, set, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
@@ -575,10 +470,38 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-        let currentArticleId = null;
+        let currentAuthor = null;
+        let allArticles = [];
 
+        // Витягування параметра автора з URL
+        const urlParams = new URLSearchParams(window.location.search);
+        currentAuthor = urlParams.get('author');
+        if (!currentAuthor) {
+            document.getElementById('error').textContent = 'Автор не вказано.';
+            throw new Error('Автор не вказано.');
+        }
+
+        // Перенаправлення на профіль або головну сторінку
+        window.goToProfileOrHome = async () => {
+            const user = auth.currentUser;
+            if (user) {
+                try {
+                    const userRef = ref(db, 'users/' + user.uid);
+                    const snapshot = await get(userRef);
+                    const userData = snapshot.val();
+                    const username = userData?.username || 'Користувач';
+                    window.location.href = `profile.html?author=${encodeURIComponent(username)}`;
+                } catch (error) {
+                    document.getElementById('error').textContent = 'Помилка завантаження даних користувача: ' + error.message;
+                    window.location.href = 'index.html';
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
+        };
+
+        // Обробка стану авторизації
         onAuthStateChanged(auth, async (user) => {
-            const welcomeMessage = document.getElementById('welcomeMessage');
             const loginBtn = document.getElementById('loginBtn');
             const registerBtn = document.getElementById('registerBtn');
             const logoutBtn = document.getElementById('logoutBtn');
@@ -587,9 +510,6 @@
             const adminBtn = document.getElementById('adminBtn');
             const navAdminBtn = document.getElementById('navAdminBtn');
             const errorDiv = document.getElementById('error');
-            const fullscreenLikeButton = document.getElementById('fullscreenLikeButton');
-            const tutorialModal = document.getElementById('tutorialModal');
-            const installPrompt = document.getElementById('installPrompt');
 
             if (user) {
                 try {
@@ -597,27 +517,19 @@
                     const snapshot = await get(userRef);
                     const userData = snapshot.val();
                     const username = userData?.username || 'Користувач';
-                    welcomeMessage.textContent = `Вітаємо, ${username}!`;
                     loginBtn.style.display = 'none';
                     registerBtn.style.display = 'none';
                     logoutBtn.style.display = 'block';
                     createArticleBtn.style.display = 'block';
                     navCreateArticle.style.display = 'block';
-                    fullscreenLikeButton.style.display = 'block';
                     if (user.email === 'petro.hryhorenko@gmail.com') {
                         adminBtn.style.display = 'block';
                         navAdminBtn.style.display = 'block';
-                    }
-
-                    if (!localStorage.getItem('tutorialShown')) {
-                        tutorialModal.style.display = 'flex';
-                        localStorage.setItem('tutorialShown', 'true');
                     }
                 } catch (error) {
                     errorDiv.textContent = 'Помилка завантаження даних: ' + error.message;
                 }
             } else {
-                welcomeMessage.textContent = 'Електронна газета';
                 loginBtn.style.display = 'block';
                 registerBtn.style.display = 'block';
                 logoutBtn.style.display = 'none';
@@ -625,52 +537,76 @@
                 navCreateArticle.style.display = 'none';
                 adminBtn.style.display = 'none';
                 navAdminBtn.style.display = 'none';
-                fullscreenLikeButton.style.display = 'none';
             }
-
-            let deferredPrompt;
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                if (!localStorage.getItem('installPromptShown')) {
-                    installPrompt.style.display = 'block';
-                    localStorage.setItem('installPromptShown', 'true');
-                }
-            });
         });
 
-        let allArticles = [];
+        // Завантаження всіх статей
         const articlesRef = ref(db, 'articles');
         onValue(articlesRef, (snapshot) => {
-            const articlesDiv = document.getElementById('articles');
-            articlesDiv.innerHTML = '';
             allArticles = [];
             const articles = snapshot.val();
             if (articles) {
                 allArticles = Object.entries(articles)
                     .filter(([_, article]) => article.status === 'approved')
                     .map(([id, article]) => ({ id, ...article }));
-                renderArticles(allArticles);
-            } else {
-                articlesDiv.innerHTML = '<p>Статей поки немає.</p>';
             }
+            loadAuthorProfile();
         });
+
+        // Завантаження профілю автора та фільтрація статей
+        async function loadAuthorProfile() {
+            if (!currentAuthor) return;
+
+            try {
+                const usersRef = ref(db, 'users');
+                const usersSnapshot = await get(usersRef);
+                const users = usersSnapshot.val();
+                let authorData = null;
+                if (users) {
+                    for (const [uid, data] of Object.entries(users)) {
+                        if (data.username === currentAuthor) {
+                            authorData = { uid, ...data };
+                            break;
+                        }
+                    }
+                }
+
+                if (authorData) {
+                    document.getElementById('authorName').textContent = authorData.username;
+                    document.getElementById('authorBio').textContent = authorData.bio || 'Опис відсутній.';
+                    document.getElementById('authorHeader').style.display = 'block';
+                } else {
+                    document.getElementById('authorName').textContent = currentAuthor;
+                    document.getElementById('authorBio').textContent = 'Профіль не знайдено.';
+                    document.getElementById('authorHeader').style.display = 'block';
+                }
+
+                const authorArticles = allArticles.filter(article => article.author === currentAuthor);
+                renderArticles(authorArticles);
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка завантаження профілю: ' + error.message;
+            }
+        }
 
         function renderArticles(articles) {
             const articlesDiv = document.getElementById('articles');
             articlesDiv.innerHTML = '';
+            if (articles.length === 0) {
+                articlesDiv.innerHTML = '<p>Статей від цього автора поки немає.</p>';
+                return;
+            }
             articles.forEach(article => {
                 const articleElement = document.createElement('div');
                 articleElement.className = 'article';
                 articleElement.innerHTML = `
                     <h2>${article.title}</h2>
                     <div>${article.content}</div>
-                    <p class="author"><span onclick="openAuthorProfile('${article.author}')">Автор: ${article.author}</span></p>
+                    <p class="author">Автор: ${article.author}</p>
                     <p class="likes">Лайки: ${article.likes || 0}</p>
                     <button class="like-button" onclick="toggleLike('${article.id}')">👍</button>
                 `;
                 articleElement.addEventListener('click', (e) => {
-                    if (e.target.tagName !== 'SPAN' && e.target.tagName !== 'BUTTON') {
+                    if (!e.target.classList.contains('like-button')) {
                         openFullscreen(article);
                     }
                 });
@@ -680,16 +616,11 @@
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const articlesDiv = document.getElementById('articles');
-            articlesDiv.innerHTML = '';
             const filteredArticles = allArticles.filter(article =>
-                article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query)
+                article.author === currentAuthor &&
+                (article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query))
             );
-            if (filteredArticles.length > 0) {
-                renderArticles(filteredArticles);
-            } else {
-                articlesDiv.innerHTML = '<p>Нічого не знайдено.</p>';
-            }
+            renderArticles(filteredArticles);
         });
 
         async function toggleLike(articleId) {
@@ -710,54 +641,23 @@
                 const currentLikes = articleSnapshot.val()?.likes || 0;
                 await set(likesRef, currentLikes + 1);
                 await set(userLikesRef, true);
-                const updatedArticle = { ...articleSnapshot.val(), likes: currentLikes + 1 };
-                openFullscreen(updatedArticle);
-                renderArticles(allArticles.map(a => a.id === articleId ? { ...a, likes: currentLikes + 1 } : a));
+                renderArticles(allArticles.filter(a => a.author === currentAuthor).map(a => a.id === articleId ? { ...a, likes: currentLikes + 1 } : a));
             } catch (error) {
                 document.getElementById('error').textContent = 'Помилка лайку: ' + error.message;
             }
         }
 
-        window.toggleLike = async () => {
-            await toggleLike(currentArticleId);
-            const articleSnapshot = await get(ref(db, `articles/${currentArticleId}`));
-            const article = articleSnapshot.val();
-            document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
-        };
-
         function openFullscreen(article) {
-            currentArticleId = article.id;
             document.getElementById('fullscreenTitle').textContent = article.title;
             document.getElementById('fullscreenContent').innerHTML = article.content;
-            document.getElementById('fullscreenAuthor').innerHTML = `<span onclick="openAuthorProfile('${article.author}')">Автор: ${article.author}</span>`;
+            document.getElementById('fullscreenAuthor').textContent = `Автор: ${article.author}`;
             document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
+            document.getElementById('fullscreenLikeButton').onclick = () => toggleLike(article.id);
             document.getElementById('articleFullscreen').style.display = 'flex';
         }
 
-        window.openAuthorProfile = (author) => {
-            window.location.href = `accountpeople.html?author=${encodeURIComponent(author)}`;
-        };
-
         window.closeFullscreen = () => {
             document.getElementById('articleFullscreen').style.display = 'none';
-            currentArticleId = null;
-        };
-
-        window.closeTutorial = () => {
-            document.getElementById('tutorialModal').style.display = 'none';
-        };
-
-        window.installPWA = () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    }
-                    deferredPrompt = null;
-                    document.getElementById('installPrompt').style.display = 'none';
-                });
-            }
         };
 
         window.logout = async () => {
