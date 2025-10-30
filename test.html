@@ -3,773 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Шкільна Газета</title>
+    <title>Roblox-подібна платформа: Хрестики-Нулики + Морський Бій</title>
     <style>
-        /* Базові стилі */
         body {
-            background: #f8fafc;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             margin: 0;
-            color: #1f2937;
-        }
-        .container {
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-        /* Випуклий ефект */
-        .embossed {
-            background: #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            border-radius: 10px;
-        }
-        /* Заголовок */
-        header {
-            background: #18181b;
+            padding: 0;
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
             color: #fff;
-            padding: 12px 0;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        header .header-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        header h1 {
-            font-size: 24px;
-            font-weight: 500;
-            margin: 0;
-            letter-spacing: 0.5px;
-        }
-        /* Профіль */
-        .profile-container {
-            position: relative;
-        }
-        .profile-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 20px;
-            transition: background 0.2s;
-        }
-        .profile-toggle:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .profile-icon {
-            width: 32px;
-            height: 32px;
-            background: #3b82f6;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            color: #fff;
-        }
-        .profile-dropdown {
-            display: none;
-            position: absolute;
-            top: 48px;
-            right: 0;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            padding: 12px;
-            min-width: 200px;
-            z-index: 20;
-        }
-        .profile-dropdown.show {
-            display: block;
-        }
-        .profile-dropdown p {
-            font-size: 14px;
-            color: #1f2937;
-            margin: 0 0 8px;
-        }
-        .profile-dropdown p span {
-            font-weight: 500;
-        }
-        .profile-dropdown button {
-            width: 100%;
-            background: #6b7280;
-            color: #fff;
-            padding: 8px;
-            font-size: 14px;
-            text-align: left;
-            margin-bottom: 4px;
-        }
-        .profile-dropdown button:hover {
-            background: #4b5563;
-        }
-        .profile-dropdown button.sign-out {
-            background: #ef4444;
-        }
-        .profile-dropdown button.sign-out:hover {
-            background: #dc2626;
-        }
-        /* Вкладки профілю */
-        .profile-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-        .profile-tab {
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: #e5e7eb;
-            color: #1f2937;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.3s, color 0.3s;
-        }
-        .profile-tab.active {
-            background: #3b82f6;
-            color: #fff;
-        }
-        .profile-tab:hover {
-            background: #d1d5db;
-        }
-        .profile-tab.active:hover {
-            background: #2563eb;
-        }
-        .profile-content {
-            display: none;
-        }
-        .profile-content.active {
-            display: block;
-        }
-        .profile-content .article {
-            padding: 12px;
-            margin-bottom: 8px;
-        }
-        /* Вкладки навігації */
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin: 16px 0;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding-bottom: 4px;
-        }
-        .tab {
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: #e5e7eb;
-            color: #1f2937;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.3s, color 0.3s;
-        }
-        .tab.active {
-            background: #3b82f6;
-            color: #fff;
-        }
-        .tab:hover {
-            background: #d1d5db;
-        }
-        .tab.active:hover {
-            background: #2563eb;
-        }
-        /* Секція автентифікації */
-        #auth-section {
-            padding: 24px;
-            margin: 24px 0;
-        }
-        #auth-section h2 {
-            font-size: 20px;
-            font-weight: 500;
-            margin: 0 0 16px;
-            text-align: center;
-        }
-        #login-form input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 15px;
-            background: #f9fafb;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        #login-form input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        #login-form input::placeholder {
-            color: #9ca3af;
-        }
-        #login-form .button-group {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-        }
-        button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-        }
-        button:hover {
-            transform: translateY(-1px);
-        }
-        #login-form button.sign-in {
-            background: #3b82f6;
-            color: #fff;
-        }
-        #login-form button.sign-in:hover {
-            background: #2563eb;
-        }
-        #login-form button.sign-up {
-            background: #6b7280;
-            color: #fff;
-        }
-        #login-form button.sign-up:hover {
-            background: #4b5563;
-        }
-        /* Секція газет */
-        #articles-section {
-            margin-bottom: 24px;
-        }
-        #search-form {
-            margin-bottom: 16px;
-        }
-        #search-form input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 15px;
-            background: #f9fafb;
-        }
-        #search-form input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        #search-form input::placeholder {
-            color: #9ca3af;
-        }
-        /* Кнопка створення (десктоп) */
-        #create-article-btn {
-            position: fixed;
-            right: 24px;
-            top: 80px;
-            background: #3b82f6;
-            color: #fff;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-        }
-        #create-article-btn:hover {
-            background: #2563eb;
-            transform: scale(1.1);
-        }
-        #article-form {
-            padding: 24px;
-            margin-bottom: 24px;
-            display: none;
-        }
-        #article-form.show {
-            display: block;
-        }
-        #article-form h2 {
-            font-size: 20px;
-            font-weight: 500;
-            margin: 0 0 16px;
-        }
-        #article-form select,
-        #article-form input,
-        #article-form textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 15px;
-            background: #f9fafb;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        #article-form textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-        #article-form select:focus,
-        #article-form input:focus,
-        #article-form textarea:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-        #article-form select::placeholder,
-        #article-form input::placeholder,
-        #article-form textarea::placeholder {
-            color: #9ca3af;
-        }
-        #article-form button {
-            background: #3b82f6;
-            color: #fff;
-        }
-        #article-form button:hover {
-            background: #2563eb;
-        }
-        .article {
-            padding: 20px;
-            margin-bottom: 16px;
-            position: relative;
-            cursor: pointer;
-        }
-        .article h2 {
-            font-size: 18px;
-            font-weight: 500;
-            margin: 0 0 10px;
-        }
-        .article p.content {
-            font-size: 15px;
-            color: #4b5563;
-            margin: 0 0 10px;
-            line-height: 1.6;
-        }
-        .article p.meta {
-            font-size: 13px;
-            color: #6b7280;
-        }
-        .article p.meta .author {
-            color: #3b82f6;
-            cursor: pointer;
-        }
-        .article p.meta .author:hover {
-            text-decoration: underline;
-        }
-        .article .actions {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            display: flex;
-            gap: 8px;
-        }
-        .article button {
-            padding: 6px 12px;
-            font-size: 13px;
-        }
-        .article button.like {
-            background: #f3f4f6;
-            color: #1f2937;
-        }
-        .article button.like.liked {
-            background: #3b82f6;
-            color: #fff;
-        }
-        .article button.like:hover {
-            background: #e5e7eb;
-        }
-        .article button.like.liked:hover {
-            background: #2563eb;
-        }
-        .article button.edit {
-            background: #10b981;
-            color: #fff;
-        }
-        .article button.edit:hover {
-            background: #059669;
-        }
-        .article button.delete {
-            background: #ef4444;
-            color: #fff;
-        }
-        .article button.delete:hover {
-            background: #dc2626;
-        }
-        .article .edit-form {
-            margin-top: 12px;
-            display: none;
-        }
-        .article .edit-form.show {
-            display: block;
-        }
-        .article .edit-form select,
-        .article .edit-form input,
-        .article .edit-form textarea {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 8px;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            font-size: 14px;
-            background: #f9fafb;
-        }
-        .article .edit-form textarea {
-            min-height: 80px;
-        }
-        .article .edit-form button.save {
-            background: #10b981;
-            color: #fff;
-        }
-        .article .edit-form button.save:hover {
-            background: #059669;
-        }
-        .article .edit-form button.cancel {
-            background: #6b7280;
-            color: #fff;
-        }
-        .article .edit-form button.cancel:hover {
-            background: #4b5563;
-        }
-        /* Модальне вікно */
-        .modal {
-            display: none;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        #loading {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 100;
-            align-items: center;
+            background: #000;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
-        }
-        .modal.show {
-            display: flex;
-        }
-        .modal-content {
-            background: #fff;
-            border-radius: 10px;
-            padding: 24px;
-            max-width: 800px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-        .modal-content h2 {
-            font-size: 24px;
-            font-weight: 500;
-            margin: 0 0 16px;
-        }
-        .modal-content p.content {
-            font-size: 16px;
-            color: #4b5563;
-            line-height: 1.6;
-        }
-        .modal-content p.meta {
-            font-size: 14px;
-            color: #6b7280;
-            margin-top: 16px;
-        }
-        .modal-content p.meta .author {
-            color: #3b82f6;
-            cursor: pointer;
-        }
-        .modal-content p.meta .author:hover {
-            text-decoration: underline;
-        }
-        .modal-content button.close {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: #6b7280;
-            color: #fff;
-            padding: 8px;
-            font-size: 14px;
-        }
-        .modal-content button.close:hover {
-            background: #4b5563;
-        }
-        .modal-content button.like {
-            background: #f3f4f6;
-            color: #1f2937;
-            margin-top: 12px;
-        }
-        .modal-content button.like.liked {
-            background: #3b82f6;
-            color: #fff;
-        }
-        .modal-content button.like:hover {
-            background: #e5e7eb;
-        }
-        .modal-content button.like.liked:hover {
-            background: #2563eb;
-        }
-        /* Профіль автора */
-        .author-profile {
-            padding: 24px;
-        }
-        .author-profile h2 {
-            font-size: 20px;
-            font-weight: 500;
-            margin: 0 0 16px;
-        }
-        .author-profile button.subscribe {
-            background: #3b82f6;
-            color: #fff;
-            margin-bottom: 16px;
-        }
-        .author-profile button.subscribe.subscribed {
-            background: #6b7280;
-        }
-        .author-profile button.subscribe:hover {
-            background: #2563eb;
-        }
-        .author-profile button.subscribe.subscribed:hover {
-            background: #4b5563;
-        }
-        /* Порожній стан */
-        #articles .empty,
-        .profile-content .empty {
-            text-align: center;
-            font-size: 15px;
-            color: #6b7280;
-        }
-        /* Прихований клас */
-        .hidden {
-            display: none;
-        }
-        /* Анімація появи */
-        .fade-in {
-            animation: fadeIn 0.4s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* Стилі фокусу для доступності */
-        input:focus,
-        select:focus,
-        textarea:focus,
-        button:focus {
-            outline: 2px solid #3b82f6;
-            outline-offset: 2px;
-        }
-        /* Нижня навігаційна панель (мобільна) */
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #18181b;
-            padding: 8px 0;
-            z-index: 10;
-        }
-        .mobile-nav .nav-items {
-            display: flex;
-            justify-content: space-around;
             align-items: center;
+            z-index: 1000;
+            transition: opacity 1s;
         }
-        .mobile-nav button {
-            background: none;
-            color: #fff;
-            font-size: 14px;
-            padding: 8px;
+        #loading h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+        .loader-bar {
+            width: 300px;
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .loader-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #00ffcc, #00bfff);
+            animation: load 3s forwards;
+        }
+        @keyframes load {
+            to { width: 100%; }
+        }
+        #app {
+            display: none;
+            height: 100vh;
+        }
+        #lobby {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
         }
-        .mobile-nav button.active {
-            color: #3b82f6;
+        #lobby h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #00ffcc;
         }
-        .mobile-nav button svg {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px;
+            width: 300px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
         }
-        /* Адаптивність */
-        @media (max-width: 600px) {
-            .container {
-                padding: 0 12px;
-            }
-            header h1 {
-                font-size: 20px;
-            }
-            .profile-icon {
-                width: 28px;
-                height: 28px;
-                font-size: 14px;
-            }
-            .profile-dropdown {
-                min-width: 160px;
-                top: 44px;
-            }
-            #auth-section h2,
-            #article-form h2,
-            .modal-content h2,
-            .author-profile h2 {
-                font-size: 18px;
-            }
-            #login-form .button-group {
-                flex-direction: column;
-                gap: 8px;
-            }
-            .article h2 {
-                font-size: 16px;
-            }
-            .article p.content {
-                font-size: 14px;
-            }
-            .article p.meta {
-                font-size: 12px;
-            }
-            #create-article-btn {
-                display: none;
-            }
-            .tabs {
-                margin: 12px 0;
-            }
-            .mobile-nav {
-                display: block;
-            }
-            .modal-content {
-                width: 95%;
-                padding: 16px;
-            }
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 48px rgba(0, 255, 255, 0.4);
+        }
+        .game-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        .game-card h3 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        .game-card p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        #game-container {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            padding: 20px;
+        }
+        #header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        #backBtn {
+            padding: 10px 20px;
+            background: #e74c3c;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #roomInfo {
+            font-size: 18px;
+            color: #00ffcc;
+        }
+        #game-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        canvas {
+            border: 3px solid #fff;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+        #tictactoe-board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
+            gap: 10px;
+            background: #333;
+            padding: 10px;
+            border-radius: 15px;
+        }
+        .ttt-cell {
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        .ttt-cell:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+        .ttt-cell.x { color: #e74c3c; }
+        .ttt-cell.o { color: #3498db; }
+        #battleship-my, #battleship-enemy {
+            background: #001f3f;
+        }
+        #status {
+            text-align: center;
+            font-size: 22px;
+            margin: 15px 0;
+            font-weight: bold;
+            text-shadow: 0 0 5px #00ffcc;
+        }
+        .action-btn {
+            padding: 12px 24px;
+            background: #00ffcc;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s;
+        }
+        .action-btn:hover {
+            background: #00bfff;
+            transform: translateY(-3px);
+        }
+        .action-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        #quickMatchBtn, #createRoomBtn, #joinRoomBtn {
+            margin: 10px;
+        }
+        input {
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            margin: 10px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #00ffcc;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Заголовок -->
-    <header>
-        <div class="container header-content">
-            <h1>Шкільна Газета</h1>
-            <div class="profile-container">
-                <div id="profile-toggle" class="profile-toggle hidden">
-                    <div class="profile-icon" id="profile-icon"></div>
-                    <span id="profile-name"></span>
-                </div>
-                <div id="profile-dropdown" class="profile-dropdown hidden">
-                    <p><span id="user-display-name"></span></p>
-                    <p><span id="user-email"></span></p>
-                    <button onclick="showProfile()">Мій профіль</button>
-                    <button class="sign-out" onclick="signOut()">Вийти</button>
-                </div>
-            </div>
-        </div>
-    </header>
+    <!-- Завантаження -->
+    <div id="loading">
+        <h1>Завантаження Roblox-подібної платформи...</h1>
+        <div class="loader-bar"><div class="loader-fill"></div></div>
+    </div>
 
-    <!-- Основний вміст -->
-    <main class="container">
-        <!-- Вкладки -->
-        <div class="tabs">
-            <div class="tab active" onclick="filterArticles('recommended')">Рекомендації</div>
-            <div class="tab" onclick="filterArticles('all')">Усі</div>
-            <div class="tab" onclick="filterArticles('games')">Ігри</div>
-            <div class="tab" onclick="filterArticles('events')">Події</div>
-        </div>
-
-        <!-- Секція автентифікації -->
-        <section id="auth-section" class="embossed">
-            <div id="login-form">
-                <h2>Увійти</h2>
-                <input type="email" id="login-email" placeholder="Електронна пошта" required>
-                <input type="password" id="login-password" placeholder="Пароль" required>
-                <div class="button-group">
-                    <button class="sign-in" onclick="signIn()">Увійти</button>
-                    <button class="sign-up" onclick="signUp()">Зареєструватися</button>
-                </div>
+    <!-- Основний додаток -->
+    <div id="app">
+        <!-- Лоббі -->
+        <div id="lobby">
+            <h1>Виберіть гру</h1>
+            <div class="game-card" data-game="tictactoe">
+                <img src="https://via.placeholder.com/300x150/3498db/ffffff?text=Хрестики-Нулики" alt="Tic-Tac-Toe">
+                <h3>Хрестики-Нулики</h3>
+                <p>Класична гра 3x3. Швидкі матчі онлайн!</p>
             </div>
-        </section>
-
-        <!-- Секція газет -->
-        <section id="articles-section" class="hidden">
-            <div id="search-form">
-                <input type="text" id="search-input" placeholder="Пошук газет...">
-            </div>
-            <div id="article-form" class="embossed">
-                <h2>Нова газета</h2>
-                <select id="article-category" required>
-                    <option value="" disabled selected>Оберіть категорію</option>
-                    <option value="games">Ігри</option>
-                    <option value="events">Події</option>
-                    <option value="other">Інше</option>
-                </select>
-                <input type="text" id="article-title" placeholder="Заголовок" required>
-                <textarea id="article-content" placeholder="Напишіть вашу статтю..." required></textarea>
-                <button onclick="addArticle()">Опублікувати</button>
-            </div>
-            <div id="articles"></div>
-        </section>
-
-        <!-- Модальне вікно статті -->
-        <div id="article-modal" class="modal">
-            <div class="modal-content embossed">
-                <button class="close" onclick="closeModal()">Закрити</button>
-                <h2 id="modal-title"></h2>
-                <p id="modal-content" class="content"></p>
-                <p id="modal-meta" class="meta"></p>
-                <button id="modal-like" class="like" onclick="toggleLike()">Лайк</button>
+            <div class="game-card" data-game="battleship">
+                <img src="https://via.placeholder.com/300x150/e74c3c/ffffff?text=Морський+Бій" alt="Battleship">
+                <h3>Морський Бій</h3>
+                <p>Розмістіть флот і потопіть ворога!</p>
             </div>
         </div>
 
-        <!-- Профіль користувача -->
-        <div id="profile-modal" class="modal hidden">
-            <div class="modal-content embossed">
-                <button class="close" onclick="closeModal()">Закрити</button>
-                <h2 id="profile-title"></h2>
-                <div class="profile-tabs">
-                    <div class="profile-tab active" onclick="showProfileTab('likes')">Лайки</div>
-                    <div class="profile-tab" onclick="showProfileTab('articles')">Мої статті</div>
-                    <div class="profile-tab" onclick="showProfileTab('subscriptions')">Підписки</div>
-                </div>
-                <div id="profile-likes" class="profile-content active"></div>
-                <div id="profile-articles" class="profile-content"></div>
-                <div id="profile-subscriptions" class="profile-content"></div>
+        <!-- Контейнер гри -->
+        <div id="game-container">
+            <div id="header">
+                <button id="backBtn">Назад до лоббі</button>
+                <div id="roomInfo"></div>
             </div>
+            <div id="game-area"></div>
+            <div id="controls" style="text-align: center;"></div>
         </div>
+    </div>
 
-        <!-- Профіль автора -->
-        <div id="author-modal" class="modal hidden">
-            <div class="modal-content embossed author-profile">
-                <button class="close" onclick="closeModal()">Закрити</button>
-                <h2 id="author-title"></h2>
-                <button id="author-subscribe" class="subscribe" onclick="toggleSubscribe()">Підписатися</button>
-                <div id="author-articles"></div>
-            </div>
-        </div>
-
-        <!-- Кнопка створення (десктоп) -->
-        <div id="create-article-btn" onclick="toggleArticleForm()">+</div>
-    </main>
-
-    <!-- Нижня навігаційна панель (мобільна) -->
-    <nav class="mobile-nav">
-        <div class="nav-items">
-            <button class="nav-item active" onclick="goToHome()">
-                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-                <span>Головна</span>
-            </button>
-            <button class="nav-item" onclick="toggleArticleForm()">
-                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6z"/></svg>
-                <span>Створити</span>
-            </button>
-            <button class="nav-item" onclick="showProfile()">
-                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-                <span>Профіль</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Firebase SDK v9.6.1 Modular Imports -->
+    <!-- Firebase SDK -->
     <script type="module">
-        // Імпорт модулів Firebase
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-        import { getDatabase, ref, push, set, onValue, remove, get, update } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut as signOutAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js';
+        import { getDatabase, ref, set, onValue, push, remove, onDisconnect, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.13.1/firebase-database.js';
 
-        // Конфігурація Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
             authDomain: "newpaper-6cb18.firebaseapp.com",
@@ -781,719 +270,276 @@
             measurementId: "G-0EMERY88FL"
         };
 
-        // Ініціалізація Firebase
         const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-        // Посилання на дані
-        const articlesRef = ref(database, 'articles');
-        const userDataRef = ref(database, 'userData');
+        // === Елементи ===
+        const loading = document.getElementById('loading');
+        const appDiv = document.getElementById('app');
+        const lobby = document.getElementById('lobby');
+        const gameContainer = document.getElementById('game-container');
+        const gameArea = document.getElementById('game-area');
+        const controls = document.getElementById('controls');
+        const backBtn = document.getElementById('backBtn');
+        const roomInfo = document.getElementById('roomInfo');
 
-        // Слухач стану автентифікації
-        onAuthStateChanged(auth, (user) => {
-            const authSection = document.getElementById('auth-section');
-            const articlesSection = document.getElementById('articles-section');
-            const loginForm = document.getElementById('login-form');
-            const profileToggle = document.getElementById('profile-toggle');
-            const profileDropdown = document.getElementById('profile-dropdown');
-            const userDisplayName = document.getElementById('user-display-name');
-            const userEmail = document.getElementById('user-email');
-            const profileName = document.getElementById('profile-name');
-            const profileIcon = document.getElementById('profile-icon');
+        // === Змінні ===
+        let currentGame = null;
+        let roomId = null;
+        let player = null;
+        let roomRef = null;
+        let queueRef = null;
 
-            if (user && authSection && articlesSection && loginForm && profileToggle && profileDropdown && userDisplayName && userEmail && profileName && profileIcon) {
-                authSection.classList.add('hidden');
-                articlesSection.classList.remove('hidden');
-                loginForm.classList.add('hidden');
-                profileToggle.classList.remove('hidden');
-                userDisplayName.textContent = user.displayName || user.email.split('@')[0];
-                userEmail.textContent = user.email;
-                profileName.textContent = user.displayName || user.email.split('@')[0];
-                profileIcon.textContent = (user.displayName || user.email.split('@')[0])[0].toUpperCase();
-                loadArticles();
-                updateUserViewHistory(user.uid);
-            } else if (authSection && articlesSection && loginForm && profileToggle && profileDropdown) {
-                authSection.classList.remove('hidden');
-                articlesSection.classList.add('hidden');
-                loginForm.classList.remove('hidden');
-                profileToggle.classList.add('hidden');
-                profileDropdown.classList.remove('show');
-            } else {
-                console.error('Відсутні один або кілька елементів DOM.');
-            }
-        });
+        // === Імітація завантаження ===
+        setTimeout(() => {
+            loading.style.opacity = '0';
+            setTimeout(() => {
+                loading.style.display = 'none';
+                appDiv.style.display = 'block';
+            }, 1000);
+        }, 3000);
 
-        // Оновлення історії переглядів
-        function updateUserViewHistory(userId) {
-            const userViewRef = ref(database, `userData/${userId}/views`);
-            set(userViewRef, { lastActive: Date.now() }).catch((error) => {
-                console.error('Помилка оновлення історії переглядів:', error);
-            });
-        }
-
-        // Перемикання випадаючого меню профілю
-        window.toggleProfileDropdown = function() {
-            const profileDropdown = document.getElementById('profile-dropdown');
-            if (profileDropdown) {
-                profileDropdown.classList.toggle('show');
-            }
-        };
-
-        // Перехід на головну
-        window.goToHome = function() {
-            const tabs = document.querySelectorAll('.tab');
-            const navItems = document.querySelectorAll('.nav-item');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            navItems.forEach(item => item.classList.remove('active'));
-            tabs[0].classList.add('active');
-            navItems[0].classList.add('active');
-            filterArticles('recommended');
-            closeModal();
-        };
-
-        // Перемикання форми створення
-        window.toggleArticleForm = function() {
-            const articleForm = document.getElementById('article-form');
-            if (articleForm) {
-                articleForm.classList.toggle('show');
-            }
-        };
-
-        // Показ профілю
-        window.showProfile = function() {
-            const profileModal = document.getElementById('profile-modal');
-            const profileTitle = document.getElementById('profile-title');
-            const user = auth.currentUser;
-            if (profileModal && profileTitle && user) {
-                profileModal.classList.add('show');
-                profileTitle.textContent = user.displayName || user.email.split('@')[0];
-                showProfileTab('likes');
-            }
-        };
-
-        // Показ вкладки профілю
-        window.showProfileTab = function(tab) {
-            const tabs = document.querySelectorAll('.profile-tab');
-            const contents = document.querySelectorAll('.profile-content');
-            tabs.forEach(t => t.classList.remove('active'));
-            contents.forEach(c => c.classList.remove('active'));
-            document.querySelector(`.profile-tab[onclick="showProfileTab('${tab}')"]`).classList.add('active');
-            const contentDiv = document.getElementById(`profile-${tab}`);
-            if (contentDiv) {
-                contentDiv.classList.add('active');
-                if (tab === 'likes') {
-                    loadUserLikes();
-                } else if (tab === 'articles') {
-                    loadUserArticles();
-                } else if (tab === 'subscriptions') {
-                    loadUserSubscriptions();
-                }
-            }
-        };
-
-        // Завантаження лайків користувача
-        function loadUserLikes() {
-            const user = auth.currentUser;
-            const likesDiv = document.getElementById('profile-likes');
-            if (!user || !likesDiv) return;
-            const userLikesRef = ref(database, `userData/${user.uid}/likes`);
-            get(userLikesRef).then((snapshot) => {
-                likesDiv.innerHTML = '';
-                const likes = snapshot.val();
-                if (likes) {
-                    Object.keys(likes).forEach((articleId) => {
-                        get(ref(database, `articles/${articleId}`)).then((articleSnapshot) => {
-                            if (articleSnapshot.exists()) {
-                                const article = articleSnapshot.val();
-                                const articleDiv = document.createElement('div');
-                                articleDiv.className = 'article embossed';
-                                articleDiv.innerHTML = `
-                                    <h2>${article.title}</h2>
-                                    <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • ${new Date(article.timestamp).toLocaleString()}</p>
-                                `;
-                                articleDiv.onclick = () => openArticleModal(articleId, article);
-                                likesDiv.appendChild(articleDiv);
-                            }
-                        });
-                    });
-                } else {
-                    likesDiv.innerHTML = '<p class="empty">Ви ще не лайкнули жодної статті.</p>';
-                }
-            }).catch((error) => {
-                console.error('Помилка завантаження лайків:', error);
-            });
-        }
-
-        // Завантаження статей користувача
-        function loadUserArticles() {
-            const user = auth.currentUser;
-            const articlesDiv = document.getElementById('profile-articles');
-            if (!user || !articlesDiv) return;
-            get(articlesRef).then((snapshot) => {
-                articlesDiv.innerHTML = '';
-                const articles = snapshot.val();
-                if (articles) {
-                    const userArticles = Object.entries(articles).filter(([_, article]) => article.authorId === user.uid);
-                    if (userArticles.length > 0) {
-                        userArticles.forEach(([articleId, article]) => {
-                            const articleDiv = document.createElement('div');
-                            articleDiv.className = 'article embossed';
-                            articleDiv.innerHTML = `
-                                <h2>${article.title}</h2>
-                                <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • ${new Date(article.timestamp).toLocaleString()}</p>
-                            `;
-                            articleDiv.onclick = () => openArticleModal(articleId, article);
-                            articlesDiv.appendChild(articleDiv);
-                        });
-                    } else {
-                        articlesDiv.innerHTML = '<p class="empty">Ви ще не створили жодної статті.</p>';
-                    }
-                } else {
-                    articlesDiv.innerHTML = '<p class="empty">Ви ще не створили жодної статті.</p>';
-                }
-            }).catch((error) => {
-                console.error('Помилка завантаження статей:', error);
-            });
-        }
-
-        // Завантаження підписок
-        function loadUserSubscriptions() {
-            const user = auth.currentUser;
-            const subscriptionsDiv = document.getElementById('profile-subscriptions');
-            if (!user || !subscriptionsDiv) return;
-            const userSubscriptionsRef = ref(database, `userData/${user.uid}/subscriptions`);
-            get(userSubscriptionsRef).then((snapshot) => {
-                subscriptionsDiv.innerHTML = '';
-                const subscriptions = snapshot.val();
-                if (subscriptions) {
-                    Object.keys(subscriptions).forEach((authorId) => {
-                        get(ref(database, `userData/${authorId}/profile`)).then((profileSnapshot) => {
-                            const profile = profileSnapshot.val() || { displayName: 'Анонім' };
-                            const authorDiv = document.createElement('div');
-                            authorDiv.className = 'article embossed';
-                            authorDiv.innerHTML = `<h2>${profile.displayName}</h2>`;
-                            authorDiv.onclick = () => showAuthorProfile(authorId);
-                            subscriptionsDiv.appendChild(authorDiv);
-                        });
-                    });
-                } else {
-                    subscriptionsDiv.innerHTML = '<p class="empty">Ви ще не підписані на жодного автора.</p>';
-                }
-            }).catch((error) => {
-                console.error('Помилка завантаження підписок:', error);
-            });
-        }
-
-        // Показ профілю автора
-        window.showAuthorProfile = function(authorId) {
-            const authorModal = document.getElementById('author-modal');
-            const authorTitle = document.getElementById('author-title');
-            const authorArticles = document.getElementById('author-articles');
-            const subscribeButton = document.getElementById('author-subscribe');
-            if (!authorModal || !authorTitle || !authorArticles || !subscribeButton) return;
-            authorModal.classList.add('show');
-            get(ref(database, `userData/${authorId}/profile`)).then((profileSnapshot) => {
-                const profile = profileSnapshot.val() || { displayName: 'Анонім' };
-                authorTitle.textContent = profile.displayName;
-                get(articlesRef).then((snapshot) => {
-                    authorArticles.innerHTML = '';
-                    const articles = snapshot.val();
-                    if (articles) {
-                        const authorArticles = Object.entries(articles).filter(([_, article]) => article.authorId === authorId);
-                        if (authorArticles.length > 0) {
-                            authorArticles.forEach(([articleId, article]) => {
-                                const articleDiv = document.createElement('div');
-                                articleDiv.className = 'article embossed';
-                                articleDiv.innerHTML = `
-                                    <h2>${article.title}</h2>
-                                    <p class="meta">Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'} • ${new Date(article.timestamp).toLocaleString()}</p>
-                                `;
-                                articleDiv.onclick = () => openArticleModal(articleId, article);
-                                authorArticles.appendChild(articleDiv);
-                            });
-                        } else {
-                            authorArticles.innerHTML = '<p class="empty">Цей автор ще не опублікував статей.</p>';
-                        }
-                    } else {
-                        authorArticles.innerHTML = '<p class="empty">Цей автор ще не опублікував статей.</p>';
-                    }
-                });
-                const user = auth.currentUser;
-                if (user) {
-                    get(ref(database, `userData/${user.uid}/subscriptions/${authorId}`)).then((snapshot) => {
-                        subscribeButton.classList.toggle('subscribed', snapshot.exists());
-                        subscribeButton.textContent = snapshot.exists() ? 'Відписатися' : 'Підписатися';
-                        subscribeButton.onclick = () => toggleSubscribe(authorId);
-                    });
-                }
-            }).catch((error) => {
-                console.error('Помилка завантаження профілю автора:', error);
-            });
-        };
-
-        // Перемикання підписки
-        window.toggleSubscribe = function(authorId) {
-            const user = auth.currentUser;
-            if (!user) {
-                alert('Ви повинні увійти, щоб підписуватися.');
-                return;
-            }
-            const subscribeButton = document.getElementById('author-subscribe');
-            const subscriptionRef = ref(database, `userData/${user.uid}/subscriptions/${authorId}`);
-            get(subscriptionRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    remove(subscriptionRef).then(() => {
-                        if (subscribeButton) {
-                            subscribeButton.classList.remove('subscribed');
-                            subscribeButton.textContent = 'Підписатися';
-                        }
-                    });
-                } else {
-                    set(subscriptionRef, { subscribedAt: Date.now() }).then(() => {
-                        if (subscribeButton) {
-                            subscribeButton.classList.add('subscribed');
-                            subscribeButton.textContent = 'Відписатися';
-                        }
-                    });
-                }
-            }).catch((error) => {
-                console.error('Помилка підписки:', error);
-                alert('Не вдалося змінити статус підписки.');
-            });
-        };
-
-        // Відкриття модального вікна статті
-        window.openArticleModal = function(articleId, article) {
-            const modal = document.getElementById('article-modal');
-            const modalTitle = document.getElementById('modal-title');
-            const modalContent = document.getElementById('modal-content');
-            const modalMeta = document.getElementById('modal-meta');
-            const modalLike = document.getElementById('modal-like');
-            if (!modal || !modalTitle || !modalContent || !modalMeta || !modalLike) return;
-            modal.classList.add('show');
-            modalTitle.textContent = article.title;
-            modalContent.textContent = article.content;
-            modalMeta.innerHTML = `Автор: <span class="author" onclick="showAuthorProfile('${article.authorId}')">${article.authorEmail}</span> • ${new Date(article.timestamp).toLocaleString()} • Категорія: ${article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше'}`;
-            modalLike.classList.toggle('liked', false);
-            modalLike.onclick = () => toggleLike(articleId);
-            const user = auth.currentUser;
-            if (user) {
-                get(ref(database, `userData/${user.uid}/likes/${articleId}`)).then((snapshot) => {
-                    modalLike.classList.toggle('liked', snapshot.exists());
-                });
-                get(ref(database, `userData/${user.uid}/views/${article.category}`)).then((snapshot) => {
-                    const count = snapshot.val() ? snapshot.val().count + 1 : 1;
-                    set(ref(database, `userData/${user.uid}/views/${article.category}`), { count });
-                });
-            }
-        };
-
-        // Закриття модального вікна
-        window.closeModal = function() {
-            const modals = document.querySelectorAll('.modal');
-            modals.forEach(modal => modal.classList.remove('show'));
-        };
-
-        // Лайк статті
-        window.toggleLike = function(articleId) {
-            const user = auth.currentUser;
-            if (!user) {
-                alert('Ви повинні увійти, щоб лайкати статті.');
-                return;
-            }
-            const likeRef = ref(database, `userData/${user.uid}/likes/${articleId}`);
-            const modalLike = document.getElementById('modal-like');
-            get(likeRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    remove(likeRef).then(() => {
-                        if (modalLike) modalLike.classList.remove('liked');
-                        updateArticleLikes(articleId, -1);
-                    });
-                } else {
-                    set(likeRef, { likedAt: Date.now() }).then(() => {
-                        if (modalLike) modalLike.classList.add('liked');
-                        updateArticleLikes(articleId, 1);
-                    });
-                }
-            }).catch((error) => {
-                console.error('Помилка лайка:', error);
-                alert('Не вдалося змінити статус лайка.');
-            });
-        };
-
-        // Оновлення кількості лайків
-        function updateArticleLikes(articleId, delta) {
-            const likesRef = ref(database, `articles/${articleId}/likes`);
-            get(likesRef).then((snapshot) => {
-                const currentLikes = snapshot.val() || 0;
-                set(likesRef, currentLikes + delta);
-            });
-        }
-
-        // Реєстрація
-        window.signUp = function() {
-            const emailInput = document.getElementById('login-email');
-            const passwordInput = document.getElementById('login-password');
-            if (!emailInput || !passwordInput) {
-                alert('Відсутні елементи форми.');
-                return;
-            }
-            const email = emailInput.value;
-            const password = passwordInput.value;
-
-            if (email && password) {
-                createUserWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        console.log('Користувач зареєстрований:', userCredential.user);
-                        emailInput.value = '';
-                        passwordInput.value = '';
-                        set(ref(database, `userData/${userCredential.user.uid}/profile`), {
-                            displayName: email.split('@')[0]
-                        });
-                    })
-                    .catch((error) => {
-                        console.error('Помилка реєстрації:', error);
-                        alert('Помилка реєстрації: ' + error.message);
-                    });
-            } else {
-                alert('Будь ласка, заповніть електронну пошту та пароль.');
-            }
-        };
-
-        // Вхід
-        window.signIn = function() {
-            const emailInput = document.getElementById('login-email');
-            const passwordInput = document.getElementById('login-password');
-            if (!emailInput || !passwordInput) {
-                alert('Відсутні елементи форми.');
-                return;
-            }
-            const email = emailInput.value;
-            const password = passwordInput.value;
-
-            if (email && password) {
-                signInWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        console.log('Користувач увійшов:', userCredential.user);
-                        emailInput.value = '';
-                        passwordInput.value = '';
-                    })
-                    .catch((error) => {
-                        console.error('Помилка входу:', error);
-                        alert('Помилка входу: ' + error.message);
-                    });
-            } else {
-                alert('Будь ласка, заповніть електронну пошту та пароль.');
-            }
-        };
-
-        // Вихід
-        window.signOut = function() {
-            signOutAuth(auth).then(() => {
-                console.log('Користувач вийшов');
-                closeModal();
-            }).catch((error) => {
-                console.error('Помилка виходу:', error);
-            });
-        };
-
-        // Додавання нової статті
-        window.addArticle = function() {
-            const titleInput = document.getElementById('article-title');
-            const contentInput = document.getElementById('article-content');
-            const categoryInput = document.getElementById('article-category');
-            if (!titleInput || !contentInput || !categoryInput) {
-                alert('Відсутні елементи форми.');
-                return;
-            }
-            const title = titleInput.value;
-            const content = contentInput.value;
-            const category = categoryInput.value;
-            const user = auth.currentUser;
-
-            if (title && content && category && user) {
-                const newArticleRef = push(articlesRef);
-                set(newArticleRef, {
-                    title: title,
-                    content: content,
-                    category: category,
-                    authorId: user.uid,
-                    authorEmail: user.email,
-                    timestamp: Date.now(),
-                    likes: 0
-                }).then(() => {
-                    titleInput.value = '';
-                    contentInput.value = '';
-                    categoryInput.value = '';
-                    toggleArticleForm();
-                }).catch((error) => {
-                    console.error('Помилка додавання статті:', error);
-                    alert('Не вдалося додати статтю.');
-                });
-            } else {
-                alert('Будь ласка, заповніть заголовок, вміст, категорію та переконайтеся, що ви увійшли.');
-            }
-        };
-
-        // Редагування статті
-        window.editArticle = function(articleId, title, content, category) {
-            const articleDiv = document.getElementById(`article-${articleId}`);
-            if (!articleDiv) return;
-            const editForm = articleDiv.querySelector('.edit-form');
-            const contentDisplay = articleDiv.querySelector('.content-display');
-            if (editForm && contentDisplay) {
-                editForm.classList.toggle('show');
-                contentDisplay.classList.toggle('hidden');
-            }
-        };
-
-        // Збереження відредагованої статті
-        window.saveArticle = function(articleId) {
-            const user = auth.currentUser;
-            if (!user) {
-                alert('Ви повинні увійти, щоб редагувати статті.');
-                return;
-            }
-            const articleRef = ref(database, `articles/${articleId}`);
-            get(ref(database, `articles/${articleId}/authorId`)).then((snapshot) => {
-                if (snapshot.exists() && snapshot.val() === user.uid) {
-                    const titleInput = document.getElementById(`edit-title-${articleId}`);
-                    const contentInput = document.getElementById(`edit-content-${articleId}`);
-                    const categoryInput = document.getElementById(`edit-category-${articleId}`);
-                    if (!titleInput || !contentInput || !categoryInput) {
-                        alert('Відсутні елементи форми.');
-                        return;
-                    }
-                    const title = titleInput.value;
-                    const content = contentInput.value;
-                    const category = categoryInput.value;
-                    if (title && content && category) {
-                        get(ref(database, `articles/${articleId}/likes`)).then((snapshot) => {
-                            const likes = snapshot.val() || 0;
-                            set(articleRef, {
-                                title: title,
-                                content: content,
-                                category: category,
-                                authorId: user.uid,
-                                authorEmail: user.email,
-                                timestamp: Date.now(),
-                                likes: likes
-                            }).then(() => {
-                                const articleDiv = document.getElementById(`article-${articleId}`);
-                                if (articleDiv) {
-                                    articleDiv.querySelector('.edit-form').classList.remove('show');
-                                    articleDiv.querySelector('.content-display').classList.remove('hidden');
-                                }
-                            }).catch((error) => {
-                                console.error('Помилка збереження статті:', error);
-                                alert('Не вдалося зберегти статтю.');
-                            });
-                        });
-                    } else {
-                        alert('Будь ласка, заповніть заголовок, вміст та категорію.');
-                    }
-                } else {
-                    alert('Ви можете редагувати лише власні статті.');
-                }
-            }).catch((error) => {
-                console.error('Помилка перевірки власника статті:', error);
-            });
-        };
-
-        // Скасування редагування
-        window.cancelEdit = function(articleId) {
-            const articleDiv = document.getElementById(`article-${articleId}`);
-            if (articleDiv) {
-                articleDiv.querySelector('.edit-form').classList.remove('show');
-                articleDiv.querySelector('.content-display').classList.remove('hidden');
-            }
-        };
-
-        // Видалення статті
-        window.deleteArticle = function(articleId) {
-            const user = auth.currentUser;
-            if (!user) {
-                alert('Ви повинні увійти, щоб видаляти статті.');
-                return;
-            }
-            const articleRef = ref(database, `articles/${articleId}`);
-            get(ref(database, `articles/${articleId}/authorId`)).then((snapshot) => {
-                if (snapshot.exists() && snapshot.val() === user.uid) {
-                    remove(articleRef).catch((error) => {
-                        console.error('Помилка видалення статті:', error);
-                        alert('Не вдалося видалити статтю.');
-                    });
-                } else {
-                    alert('Ви можете видаляти лише власні статті.');
-                }
-            }).catch((error) => {
-                console.error('Помилка перевірки власника статті:', error);
-            });
-        };
-
-        // Завантаження статей
-        let allArticles = [];
-        let currentFilter = 'recommended';
-        function loadArticles(searchQuery = '') {
-            const articlesDiv = document.getElementById('articles');
-            if (!articlesDiv) {
-                console.error('Контейнер для статей відсутній.');
-                return;
-            }
-            onValue(articlesRef, (snapshot) => {
-                articlesDiv.innerHTML = '';
-                const articles = snapshot.val();
-                allArticles = [];
-                if (articles) {
-                    Object.entries(articles).forEach(([key, article]) => {
-                        allArticles.push({ id: key, ...article });
-                    });
-                    let filteredArticles = allArticles;
-                    const user = auth.currentUser;
-                    if (user && currentFilter === 'recommended') {
-                        get(ref(database, `userData/${user.uid}/views`)).then((snapshot) => {
-                            const views = snapshot.val() || {};
-                            let topCategory = 'other';
-                            let maxCount = 0;
-                            Object.entries(views).forEach(([category, data]) => {
-                                if (category !== 'lastActive' && data.count > maxCount) {
-                                    maxCount = data.count;
-                                    topCategory = category;
-                                }
-                            });
-                            filteredArticles = allArticles
-                                .filter(article => article.category === topCategory)
-                                .sort((a, b) => (b.likes || 0) - (a.likes || 0));
-                            if (filteredArticles.length === 0) {
-                                filteredArticles = allArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-                            }
-                            renderArticles(filteredArticles, searchQuery);
-                        });
-                    } else {
-                        if (currentFilter !== 'all') {
-                            filteredArticles = allArticles.filter(article => article.category === currentFilter);
-                        }
-                        filteredArticles = filteredArticles.sort((a, b) => (b.likes || 0) - (a.likes || 0));
-                        renderArticles(filteredArticles, searchQuery);
-                    }
-                } else {
-                    articlesDiv.innerHTML = '<p class="empty">Ще немає газет. Почніть писати!</p>';
-                }
-            }, (error) => {
-                console.error('Помилка завантаження статей:', error);
-                alert('Не вдалося завантажити статті.');
-            });
-        }
-
-        // Рендеринг статей
-        function renderArticles(articles, searchQuery) {
-            const articlesDiv = document.getElementById('articles');
-            if (!articlesDiv) return;
-            articlesDiv.innerHTML = '';
-            let filteredArticles = articles;
-            if (searchQuery) {
-                filteredArticles = articles.filter(article =>
-                    article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    article.content.toLowerCase().includes(searchQuery.toLowerCase())
-                );
-            }
-            if (filteredArticles.length > 0) {
-                filteredArticles.forEach((article) => {
-                    const articleDiv = document.createElement('div');
-                    articleDiv.className = 'article embossed fade-in';
-                    articleDiv.id = `article-${article.id}`;
-                    const categoryLabel = article.category === 'games' ? 'Ігри' : article.category === 'events' ? 'Події' : 'Інше';
-                    const deleteButton = article.authorId === auth.currentUser?.uid 
-                        ? `<button class="delete" onclick="deleteArticle('${article.id}')">Видалити</button>`
-                        : '';
-                    const editButton = article.authorId === auth.currentUser?.uid 
-                        ? `<button class="edit" onclick="editArticle('${article.id}', '${article.title.replace(/'/g, "\\'")}', '${article.content.replace(/'/g, "\\'")}', '${article.category}')">Редагувати</button>`
-                        : '';
-                    const likeButton = auth.currentUser 
-                        ? `<button class="like" id="like-${article.id}" onclick="toggleLike('${article.id}')">Лайк (${article.likes || 0})</button>`
-                        : '';
-                    articleDiv.innerHTML = `
-                        <div class="content-display">
-                            <h2>${article.title}</h2>
-                            <p class="content">${article.content.substring(0, 100)}${article.content.length > 100 ? '...' : ''}</p>
-                            <p class="meta">Автор: <span class="author" onclick="showAuthorProfile('${article.authorId}')">${article.authorEmail}</span> • ${new Date(article.timestamp).toLocaleString()} • ${categoryLabel}</p>
-                            <div class="actions">${likeButton}${editButton}${deleteButton}</div>
-                        </div>
-                        <div class="edit-form hidden">
-                            <select id="edit-category-${article.id}" required>
-                                <option value="games" ${article.category === 'games' ? 'selected' : ''}>Ігри</option>
-                                <option value="events" ${article.category === 'events' ? 'selected' : ''}>Події</option>
-                                <option value="other" ${article.category === 'other' ? 'selected' : ''}>Інше</option>
-                            </select>
-                            <input type="text" id="edit-title-${article.id}" value="${article.title.replace(/"/g, '&quot;')}" required>
-                            <textarea id="edit-content-${article.id}" required>${article.content}</textarea>
-                            <div class="button-group">
-                                <button class="save" onclick="saveArticle('${article.id}')">Зберегти</button>
-                                <button class="cancel" onclick="cancelEdit('${article.id}')">Скасувати</button>
-                            </div>
-                        </div>
-                    `;
-                    articleDiv.onclick = (e) => {
-                        if (!e.target.closest('.actions, .edit-form')) {
-                            openArticleModal(article.id, article);
-                        }
-                    };
-                    articlesDiv.appendChild(articleDiv);
-                    if (auth.currentUser) {
-                        get(ref(database, `userData/${auth.currentUser.uid}/likes/${article.id}`)).then((snapshot) => {
-                            const likeButton = document.getElementById(`like-${article.id}`);
-                            if (likeButton) likeButton.classList.toggle('liked', snapshot.exists());
-                        });
-                    }
-                });
-            } else {
-                articlesDiv.innerHTML = '<p class="empty">Ще немає газет. Почніть писати!</p>';
-            }
-        }
-
-        // Фільтрація статей
-        window.filterArticles = function(category) {
-            currentFilter = category;
-            const tabs = document.querySelectorAll('.tab');
-            const navItems = document.querySelectorAll('.nav-item');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            navItems.forEach(item => item.classList.remove('active'));
-            document.querySelector(`.tab[onclick="filterArticles('${category}')"]`).classList.add('active');
-            if (category === 'recommended') {
-                navItems[0].classList.add('active');
-            }
-            const searchInput = document.getElementById('search-input');
-            loadArticles(searchInput ? searchInput.value : '');
-        };
-
-        // Пошук статей
-        window.searchArticles = function() {
-            const searchInput = document.getElementById('search-input');
-            if (!searchInput) {
-                console.error('Поле пошуку відсутнє.');
-                return;
-            }
-            const searchQuery = searchInput.value;
-            loadArticles(searchQuery);
-        };
-
-        // Ініціалізація слухачів подій
-        document.addEventListener('DOMContentLoaded', () => {
-            const searchInput = document.getElementById('search-input');
-            const profileToggle = document.getElementById('profile-toggle');
-            if (searchInput) {
-                searchInput.addEventListener('input', () => window.searchArticles());
-            }
-            if (profileToggle) {
-                profileToggle.addEventListener('click', () => window.toggleProfileDropdown());
-            }
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.modal-content, .profile-toggle, .tabs, .nav-item, .article, .author')) {
-                    closeModal();
-                }
+        // === Вибір гри ===
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('click', () => {
+                currentGame = card.dataset.game;
+                lobby.style.display = 'none';
+                gameContainer.style.display = 'flex';
+                initGame(currentGame);
             });
         });
+
+        backBtn.addEventListener('click', () => {
+            cleanupRoom();
+            gameContainer.style.display = 'none';
+            lobby.style.display = 'flex';
+            gameArea.innerHTML = '';
+            controls.innerHTML = '';
+            currentGame = null;
+            roomId = null;
+            player = null;
+        });
+
+        // === Ініціалізація гри ===
+        function initGame(gameType) {
+            gameArea.innerHTML = '';
+            controls.innerHTML = `
+                <button id="quickMatchBtn" class="action-btn">Швидка гра</button>
+                <button id="createRoomBtn" class="action-btn">Створити кімнату</button>
+                <button id="joinRoomBtn" class="action-btn">Приєднатися за кодом</button>
+                <input type="text" id="roomCodeInput" placeholder="Код кімнати" style="display:none;">
+                <div id="status"></div>
+            `;
+
+            const quickBtn = document.getElementById('quickMatchBtn');
+            const createBtn = document.getElementById('createRoomBtn');
+            const joinBtn = document.getElementById('joinRoomBtn');
+            const input = document.getElementById('roomCodeInput');
+            const statusEl = document.getElementById('status');
+
+            quickBtn.onclick = () => startQuickMatch(gameType, statusEl);
+            createBtn.onclick = () => createPrivateRoom(gameType, statusEl);
+            joinBtn.onclick = () => { input.style.display = 'block'; input.focus(); };
+            input.addEventListener('keypress', e => {
+                if (e.key === 'Enter' && e.target.value.trim()) {
+                    joinRoomByCode(gameType, e.target.value.trim().toUpperCase(), statusEl);
+                }
+            });
+
+            if (gameType === 'tictactoe') {
+                initTicTacToe();
+            } else if (gameType === 'battleship') {
+                initBattleship(statusEl);
+            }
+        }
+
+        // === Хрестики-Нулики ===
+        function initTicTacToe() {
+            const board = document.createElement('div');
+            board.id = 'tictactoe-board';
+            gameArea.appendChild(board);
+        }
+
+        function startTicTacToeGame() {
+            const boardEl = document.getElementById('tictactoe-board');
+            const cells = boardEl.querySelectorAll('.ttt-cell') || [];
+            if (cells.length === 0) {
+                for (let i = 0; i < 9; i++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('ttt-cell');
+                    cell.dataset.index = i;
+                    cell.addEventListener('click', () => makeTicTacToeMove(i));
+                    boardEl.appendChild(cell);
+                }
+            }
+            updateTicTacToeBoard();
+        }
+
+        function makeTicTacToeMove(index) {
+            if (!roomRef || player !== getCurrentGameData().currentTurn) return;
+            const data = getCurrentGameData();
+            if (data.board[index]) return;
+            data.board[index] = player;
+            const winner = checkTicTacToeWinner(data.board);
+            data.gameActive = !winner;
+            data.winner = winner;
+            data.currentTurn = player === 'X' ? 'O' : 'X';
+            set(roomRef, data);
+        }
+
+        function checkTicTacToeWinner(board) {
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for (let [a,b,c] of wins) {
+                if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a];
+            }
+            if (board.every(c => c)) return 'draw';
+            return null;
+        }
+
+        function updateTicTacToeBoard() {
+            if (!roomRef) return;
+            onValue(roomRef, snap => {
+                const data = snap.val();
+                if (!data) return;
+                const cells = document.querySelectorAll('.ttt-cell');
+                data.board.forEach((mark, i) => {
+                    cells[i].textContent = mark;
+                    cells[i].className = 'ttt-cell';
+                    if (mark === 'X') cells[i].classList.add('x');
+                    if (mark === 'O') cells[i].classList.add('o');
+                });
+                const statusEl = document.getElementById('status');
+                if (!data.gameActive) {
+                    const result = data.winner;
+                    if (result === 'draw') statusEl.textContent = 'Нічия!';
+                    else if (result === player) statusEl.textContent = 'Ви перемогли!';
+                    else statusEl.textContent = 'Ви програли.';
+                    addRestartButton();
+                } else {
+                    statusEl.textContent = data.currentTurn === player ? 'Ваш хід!' : 'Хід суперника...';
+                }
+            });
+        }
+
+        // === Морський Бій ===
+        function initBattleship(statusEl) {
+            const myCanvas = document.createElement('canvas');
+            myCanvas.id = 'battleship-my';
+            myCanvas.width = 300;
+            myCanvas.height = 300;
+            const enemyCanvas = document.createElement('canvas');
+            enemyCanvas.id = 'battleship-enemy';
+            enemyCanvas.width = 300;
+            enemyCanvas.height = 300;
+            gameArea.appendChild(myCanvas);
+            gameArea.appendChild(enemyCanvas);
+
+            statusEl.textContent = 'Розмістіть кораблі (клік по своєму полю).';
+            // Додати логіку розміщення...
+        }
+
+        // === Кімнати та черга ===
+        function generateCode() {
+            return Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+
+        async function startQuickMatch(gameType, statusEl) {
+            statusEl.innerHTML = '<div class="loader"></div> Пошук суперника...';
+            queueRef = ref(db, `queue/${gameType}`);
+            const entry = push(queueRef);
+            set(entry, { ts: serverTimestamp() });
+            onValue(queueRef, async snap => {
+                const entries = snap.val();
+                if (entries && Object.keys(entries).length >= 2) {
+                    const ids = Object.keys(entries);
+                    if (ids[0] === entry.key) {
+                        await createPrivateRoom(gameType, statusEl);
+                        ids.slice(0, 2).forEach(id => remove(ref(db, `queue/${gameType}/${id}`)));
+                    }
+                }
+            });
+            onDisconnect(entry).remove();
+        }
+
+        async function createPrivateRoom(gameType, statusEl) {
+            roomId = generateCode();
+            roomRef = ref(db, `rooms/${gameType}/${roomId}`);
+            const initialData = gameType === 'tictactoe' ? {
+                board: Array(9).fill(''),
+                currentTurn: 'X',
+                gameActive: true,
+                playerX: null,
+                playerO: null
+            } : {
+                p1Board: null,
+                p2Board: null,
+                p1Ready: false,
+                p2Ready: false,
+                currentTurn: 'P1',
+                shotsP1: Array(10).fill().map(() => Array(10).fill(0)),
+                shotsP2: Array(10).fill().map(() => Array(10).fill(0))
+            };
+            await set(roomRef, initialData);
+            roomInfo.textContent = `Код: ${roomId}`;
+            player = 'X'; // або P1
+            listenToGame(gameType, statusEl);
+        }
+
+        function joinRoomByCode(gameType, code, statusEl) {
+            roomId = code;
+            roomRef = ref(db, `rooms/${gameType}/${roomId}`);
+            onValue(roomRef, snap => {
+                if (!snap.exists()) {
+                    statusEl.textContent = 'Кімната не знайдена.';
+                    return;
+                }
+                roomInfo.textContent = `Кімната: ${roomId}`;
+                player = gameType === 'tictactoe' ? 'O' : 'P2';
+                listenToGame(gameType, statusEl);
+            }, { onlyOnce: true });
+        }
+
+        function listenToGame(gameType, statusEl) {
+            onValue(roomRef, snap => {
+                const data = snap.val();
+                if (!data) return;
+                if (gameType === 'tictactoe') {
+                    if (!player && !data.playerX) { player = 'X'; set(roomRef, { ...data, playerX: true }); }
+                    else if (!player && !data.playerO) { player = 'O'; set(roomRef, { ...data, playerO: true }); }
+                    startTicTacToeGame();
+                    updateTicTacToeBoard();
+                }
+                // Додати для battleship...
+            });
+        }
+
+        function getCurrentGameData() {
+            // Повертає поточний стан
+            return {};
+        }
+
+        function addRestartButton() {
+            if (document.getElementById('restartBtn')) return;
+            const btn = document.createElement('button');
+            btn.id = 'restartBtn';
+            btn.className = 'action-btn';
+            btn.textContent = 'Нова гра';
+            btn.onclick = () => {
+                const initial = currentGame === 'tictactoe' ? {
+                    board: Array(9).fill(''),
+                    currentTurn: 'X',
+                    gameActive: true,
+                    winner: null
+                } : {};
+                set(roomRef, initial);
+            };
+            controls.appendChild(btn);
+        }
+
+        function cleanupRoom() {
+            if (roomRef) onDisconnect(roomRef).remove();
+            if (queueRef) remove(queueRef);
+        }
     </script>
 </body>
 </html>

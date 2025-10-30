@@ -1,14 +1,21 @@
 <!DOCTYPE html>
-<html lang="uk" manifest="/manifest.json">
+<html lang="uk">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f9fafb">
     <meta name="description" content="Електронна газета з новинами та статтями">
+
+    <!-- PWA: iOS Support (одна іконка) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-title" content="Газета">
     <link rel="apple-touch-icon" href="/icon.png">
+
+    <!-- PWA: Android & Chrome -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/icon.png" type="image/png">
+
     <title>Електронна газета</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -24,7 +31,6 @@
             display: flex;
             min-height: 100vh;
         }
-
         .mobile-nav {
             display: none;
             position: fixed;
@@ -68,7 +74,6 @@
                 display: block;
             }
         }
-
         .sidebar {
             width: 240px;
             background-color: #ffffff;
@@ -193,17 +198,6 @@
             font-style: italic;
         }
 
-        .article .author span {
-            color: #3182ce;
-            cursor: pointer;
-            text-decoration: underline;
-            font-weight: 500;
-        }
-
-        .article .author span:hover {
-            color: #2b6cb0;
-        }
-
         .article .likes {
             font-size: 14px;
             color: #3182ce;
@@ -269,17 +263,6 @@
             color: #718096;
             font-style: italic;
             margin-top: 10px;
-        }
-
-        .article-fullscreen-content .author span {
-            color: #3182ce;
-            cursor: pointer;
-            text-decoration: underline;
-            font-weight: 500;
-        }
-
-        .article-fullscreen-content .author span:hover {
-            color: #2b6cb0;
         }
 
         .article-fullscreen-content .likes {
@@ -375,16 +358,17 @@
 
         .install-prompt {
             position: fixed;
-            bottom: 10px;
+            bottom: 70px;
             left: 10px;
             right: 10px;
             background-color: #ffffff;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             text-align: center;
             display: none;
             z-index: 1001;
+            font-size: 14px;
         }
 
         .install-prompt button {
@@ -394,11 +378,17 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            margin-left: 10px;
+            margin-left: 8px;
+            font-size: 14px;
         }
 
         .install-prompt button:hover {
             background-color: #2b6cb0;
+        }
+
+        .install-prompt button:last-child {
+            background-color: #e2e8f0;
+            color: #1a202c;
         }
 
         @media (max-width: 600px) {
@@ -478,7 +468,7 @@
             }
 
             .install-prompt {
-                bottom: 60px;
+                bottom: 70px;
                 left: 5px;
                 right: 5px;
                 padding: 8px;
@@ -544,8 +534,9 @@
         </div>
     </div>
     <div id="installPrompt" class="install-prompt">
-        <p>Встановіть Електронну газету на домашній екран для кращого досвіду!</p>
+        <p>Встановіть Електронну газету на домашній екран!</p>
         <button onclick="installPWA()">Встановити</button>
+        <button onclick="hideInstallPrompt()">Пізніше</button>
     </div>
     <div class="mobile-nav">
         <div class="nav-buttons">
@@ -576,6 +567,38 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
         let currentArticleId = null;
+        let deferredPrompt = null;
+
+        // === PWA: beforeinstallprompt ===
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+
+            if (!localStorage.getItem('pwa_install_prompt_shown')) {
+                setTimeout(() => {
+                    const prompt = document.getElementById('installPrompt');
+                    if (prompt) prompt.style.display = 'block';
+                }, 3000);
+            }
+        });
+
+        window.installPWA = () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choice) => {
+                if (choice.outcome === 'accepted') {
+                    console.log('Користувач встановив PWA');
+                }
+                deferredPrompt = null;
+                hideInstallPrompt();
+                localStorage.setItem('pwa_install_prompt_shown', 'true');
+            });
+        };
+
+        window.hideInstallPrompt = () => {
+            document.getElementById('installPrompt').style.display = 'none';
+            localStorage.setItem('pwa_install_prompt_shown', 'true');
+        };
 
         onAuthStateChanged(auth, async (user) => {
             const welcomeMessage = document.getElementById('welcomeMessage');
@@ -589,7 +612,6 @@
             const errorDiv = document.getElementById('error');
             const fullscreenLikeButton = document.getElementById('fullscreenLikeButton');
             const tutorialModal = document.getElementById('tutorialModal');
-            const installPrompt = document.getElementById('installPrompt');
 
             if (user) {
                 try {
@@ -627,16 +649,6 @@
                 navAdminBtn.style.display = 'none';
                 fullscreenLikeButton.style.display = 'none';
             }
-
-            let deferredPrompt;
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                if (!localStorage.getItem('installPromptShown')) {
-                    installPrompt.style.display = 'block';
-                    localStorage.setItem('installPromptShown', 'true');
-                }
-            });
         });
 
         let allArticles = [];
@@ -665,14 +677,12 @@
                 articleElement.innerHTML = `
                     <h2>${article.title}</h2>
                     <div>${article.content}</div>
-                    <p class="author"><span onclick="openAuthorProfile('${article.author}')">Автор: ${article.author}</span></p>
+                    <p class="author">Автор: ${article.author}</p>
                     <p class="likes">Лайки: ${article.likes || 0}</p>
                     <button class="like-button" onclick="toggleLike('${article.id}')">👍</button>
                 `;
                 articleElement.addEventListener('click', (e) => {
-                    if (e.target.tagName !== 'SPAN' && e.target.tagName !== 'BUTTON') {
-                        openFullscreen(article);
-                    }
+                    if (e.target.tagName !== 'BUTTON') openFullscreen(article);
                 });
                 articlesDiv.appendChild(articleElement);
             });
@@ -729,14 +739,10 @@
             currentArticleId = article.id;
             document.getElementById('fullscreenTitle').textContent = article.title;
             document.getElementById('fullscreenContent').innerHTML = article.content;
-            document.getElementById('fullscreenAuthor').innerHTML = `<span onclick="openAuthorProfile('${article.author}')">Автор: ${article.author}</span>`;
+            document.getElementById('fullscreenAuthor').textContent = `Автор: ${article.author}`;
             document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
             document.getElementById('articleFullscreen').style.display = 'flex';
         }
-
-        window.openAuthorProfile = (author) => {
-            window.location.href = `accountpeople.html?author=${encodeURIComponent(author)}`;
-        };
 
         window.closeFullscreen = () => {
             document.getElementById('articleFullscreen').style.display = 'none';
@@ -745,19 +751,6 @@
 
         window.closeTutorial = () => {
             document.getElementById('tutorialModal').style.display = 'none';
-        };
-
-        window.installPWA = () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
-                    }
-                    deferredPrompt = null;
-                    document.getElementById('installPrompt').style.display = 'none';
-                });
-            }
         };
 
         window.logout = async () => {
@@ -770,10 +763,13 @@
             }
         };
 
+        // === PWA: Service Worker Registration ===
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(() => console.log('Service Worker registered'))
-                .catch((error) => console.error('Service Worker registration failed:', error));
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker зареєстровано:', reg.scope))
+                    .catch(err => console.error('Помилка реєстрації SW:', err));
+            });
         }
     </script>
 </body>
