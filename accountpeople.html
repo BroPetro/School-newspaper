@@ -173,6 +173,18 @@
             margin: 0;
         }
 
+        .author-stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .author-stats span {
+            font-weight: 500;
+        }
+
         .articles {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -215,6 +227,12 @@
             font-style: italic;
         }
 
+        .article .date {
+            font-size: 13px;
+            color: #718096;
+            margin-top: 4px;
+        }
+
         .article .likes {
             font-size: 13px;
             color: #3182ce;
@@ -231,6 +249,10 @@
         }
 
         .article .like-button:hover {
+            color: #2b6cb0;
+        }
+
+        .article .like-button.liked {
             color: #2b6cb0;
         }
 
@@ -275,6 +297,7 @@
         .article-fullscreen-content div {
             font-size: 15px;
             color: #4a5568;
+            line-height: 1.6;
         }
 
         .article-fullscreen-content .author {
@@ -282,6 +305,12 @@
             color: #718096;
             font-style: italic;
             margin-top: 8px;
+        }
+
+        .article-fullscreen-content .date {
+            font-size: 13px;
+            color: #718096;
+            margin-top: 4px;
         }
 
         .article-fullscreen-content .likes {
@@ -305,6 +334,11 @@
             color: #2b6cb0;
         }
 
+        .article-fullscreen-content .like-button.liked {
+            color: #2b6cb0;
+            background-color: #e6f0fa;
+        }
+
         .close-button {
             background-color: #e53e3e;
             margin-top: 12px;
@@ -318,6 +352,13 @@
 
         .close-button:hover {
             background-color: #c53030;
+        }
+
+        .loading {
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            margin: 16px 0;
         }
 
         @media (max-width: 600px) {
@@ -368,7 +409,7 @@
                 font-size: 16px;
             }
 
-            .article div, .article .author, .article .likes, .article .like-button {
+            .article div, .article .author, .article .likes, .article .like-button, .article .date {
                 font-size: 13px;
             }
 
@@ -385,6 +426,10 @@
                 font-size: 13px;
             }
 
+            .author-stats {
+                font-size: 13px;
+            }
+
             .article-fullscreen-content {
                 width: 95%;
                 padding: 12px;
@@ -396,7 +441,7 @@
                 font-size: 20px;
             }
 
-            .article-fullscreen-content div, .article-fullscreen-content .author, .article-fullscreen-content .likes {
+            .article-fullscreen-content div, .article-fullscreen-content .author, .article-fullscreen-content .likes, .article-fullscreen-content .date {
                 font-size: 13px;
             }
 
@@ -416,6 +461,7 @@
     <div class="container">
         <div class="sidebar">
             <button class="active" onclick="window.location.href='index.html'">Головна</button>
+             <button onclick="window.location.href='topgazet.html'">ТОП-10 Тижня 🏆</button>
             <button id="createArticleBtn" style="display: none;" onclick="window.location.href='word.html'">+</button>
             <button onclick="window.location.href='account.html'">Акаунт</button>
             <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін-панель</button>
@@ -424,9 +470,14 @@
             <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
         </div>
         <div class="content">
+            <div id="loading" class="loading">Завантаження профілю...</div>
             <div id="authorHeader" class="author-header" style="display: none;">
                 <h1 id="authorName"></h1>
                 <p id="authorBio"></p>
+                <div class="author-stats">
+                    <div><span id="articlesCount">0</span> статей</div>
+                    <div><span id="totalLikes">0</span> лайків</div>
+                </div>
             </div>
             <div id="articles" class="articles"></div>
             <div id="error" class="error"></div>
@@ -445,6 +496,7 @@
             <h2 id="fullscreenTitle"></h2>
             <div id="fullscreenContent"></div>
             <p id="fullscreenAuthor" class="author"></p>
+            <p id="fullscreenDate" class="date"></p>
             <p id="fullscreenLikes" class="likes"></p>
             <button id="fullscreenLikeButton" class="like-button"></button>
             <button class="close-button" onclick="closeFullscreen()">Закрити</button>
@@ -454,7 +506,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set, child } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
@@ -472,11 +524,14 @@
         const db = getDatabase(app);
         let currentAuthor = null;
         let allArticles = [];
+        let currentUser = null;
+        let userLikes = {};
 
         // Витягування параметра автора з URL
         const urlParams = new URLSearchParams(window.location.search);
         currentAuthor = urlParams.get('author');
         if (!currentAuthor) {
+            document.getElementById('loading').style.display = 'none';
             document.getElementById('error').textContent = 'Автор не вказано.';
             throw new Error('Автор не вказано.');
         }
@@ -502,6 +557,7 @@
 
         // Обробка стану авторизації
         onAuthStateChanged(auth, async (user) => {
+            currentUser = user;
             const loginBtn = document.getElementById('loginBtn');
             const registerBtn = document.getElementById('registerBtn');
             const logoutBtn = document.getElementById('logoutBtn');
@@ -526,6 +582,13 @@
                         adminBtn.style.display = 'block';
                         navAdminBtn.style.display = 'block';
                     }
+
+                    // Завантаження лайків користувача
+                    const userLikesRef = ref(db, `user_likes/${user.uid}`);
+                    onValue(userLikesRef, (snapshot) => {
+                        userLikes = snapshot.val() || {};
+                        updateLikeButtons();
+                    });
                 } catch (error) {
                     errorDiv.textContent = 'Помилка завантаження даних: ' + error.message;
                 }
@@ -537,6 +600,8 @@
                 navCreateArticle.style.display = 'none';
                 adminBtn.style.display = 'none';
                 navAdminBtn.style.display = 'none';
+                userLikes = {};
+                updateLikeButtons();
             }
         });
 
@@ -548,7 +613,7 @@
             if (articles) {
                 allArticles = Object.entries(articles)
                     .filter(([_, article]) => article.status === 'approved')
-                    .map(([id, article]) => ({ id, ...article }));
+                    .map(([id, article]) => ({ id, ...article, timestamp: article.timestamp || 0 }));
             }
             loadAuthorProfile();
         });
@@ -558,6 +623,7 @@
             if (!currentAuthor) return;
 
             try {
+                document.getElementById('loading').style.display = 'block';
                 const usersRef = ref(db, 'users');
                 const usersSnapshot = await get(usersRef);
                 const users = usersSnapshot.val();
@@ -565,7 +631,7 @@
                 if (users) {
                     for (const [uid, data] of Object.entries(users)) {
                         if (data.username === currentAuthor) {
-                            authorData = { uid, ...data };
+                            authorData = data;
                             break;
                         }
                     }
@@ -581,30 +647,51 @@
                     document.getElementById('authorHeader').style.display = 'block';
                 }
 
-                const authorArticles = allArticles.filter(article => article.author === currentAuthor);
+                const authorArticles = allArticles
+                    .filter(article => article.author === currentAuthor)
+                    .sort((a, b) => b.timestamp - a.timestamp); // Сортування за датою (новіші першими)
+
+                document.getElementById('articlesCount').textContent = authorArticles.length;
+                const totalLikes = authorArticles.reduce((sum, art) => sum + (art.likes || 0), 0);
+                document.getElementById('totalLikes').textContent = totalLikes;
+
                 renderArticles(authorArticles);
+                document.getElementById('loading').style.display = 'none';
             } catch (error) {
+                document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').textContent = 'Помилка завантаження профілю: ' + error.message;
             }
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('uk-UA', { year: 'numeric', month: 'long', day: 'numeric' });
         }
 
         function renderArticles(articles) {
             const articlesDiv = document.getElementById('articles');
             articlesDiv.innerHTML = '';
             if (articles.length === 0) {
-                articlesDiv.innerHTML = '<p>Статей від цього автора поки немає.</p>';
+                articlesDiv.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #718096;">Статей від цього автора поки немає.</p>';
                 return;
             }
             articles.forEach(article => {
                 const articleElement = document.createElement('div');
                 articleElement.className = 'article';
+                const isLiked = currentUser && userLikes[article.id];
                 articleElement.innerHTML = `
                     <h2>${article.title}</h2>
                     <div>${article.content}</div>
                     <p class="author">Автор: ${article.author}</p>
+                    <p class="date">Опубліковано: ${formatDate(article.timestamp)}</p>
                     <p class="likes">Лайки: ${article.likes || 0}</p>
-                    <button class="like-button" onclick="toggleLike('${article.id}')">👍</button>
+                    <button class="like-button ${isLiked ? 'liked' : ''}" data-id="${article.id}">👍 ${isLiked ? 'Лайкнуто' : 'Лайк'}</button>
                 `;
+                articleElement.querySelector('.like-button').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleLike(article.id);
+                });
                 articleElement.addEventListener('click', (e) => {
                     if (!e.target.classList.contains('like-button')) {
                         openFullscreen(article);
@@ -612,36 +699,58 @@
                 });
                 articlesDiv.appendChild(articleElement);
             });
+            updateLikeButtons();
+        }
+
+        function updateLikeButtons() {
+            document.querySelectorAll('.like-button').forEach(btn => {
+                const articleId = btn.dataset.id;
+                if (currentUser && userLikes[articleId]) {
+                    btn.classList.add('liked');
+                    btn.textContent = '👍 Лайкнуто';
+                } else {
+                    btn.classList.remove('liked');
+                    btn.textContent = '👍 Лайк';
+                }
+            });
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const filteredArticles = allArticles.filter(article =>
-                article.author === currentAuthor &&
-                (article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query))
-            );
+            const filteredArticles = allArticles
+                .filter(article => article.author === currentAuthor &&
+                    (article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query)))
+                .sort((a, b) => b.timestamp - a.timestamp);
             renderArticles(filteredArticles);
         });
 
         async function toggleLike(articleId) {
-            const user = auth.currentUser;
-            if (!user) {
+            if (!currentUser) {
                 alert('Увійдіть, щоб поставити лайк!');
                 return;
             }
             try {
-                const likesRef = ref(db, `articles/${articleId}/likes`);
-                const userLikesRef = ref(db, `user_likes/${user.uid}/${articleId}`);
+                const userLikesRef = ref(db, `user_likes/${currentUser.uid}/${articleId}`);
                 const snapshot = await get(userLikesRef);
                 if (snapshot.exists()) {
                     alert('Ви вже лайкнули цю статтю!');
                     return;
                 }
-                const articleSnapshot = await get(ref(db, `articles/${articleId}`));
-                const currentLikes = articleSnapshot.val()?.likes || 0;
-                await set(likesRef, currentLikes + 1);
+                const articleRef = ref(db, `articles/${articleId}`);
+                const articleSnapshot = await get(articleRef);
+                const articleData = articleSnapshot.val();
+                const currentLikes = articleData?.likes || 0;
+                await set(child(articleRef, 'likes'), currentLikes + 1);
                 await set(userLikesRef, true);
-                renderArticles(allArticles.filter(a => a.author === currentAuthor).map(a => a.id === articleId ? { ...a, likes: currentLikes + 1 } : a));
+
+                // Оновлення локальних даних
+                const article = allArticles.find(a => a.id === articleId);
+                if (article) article.likes = currentLikes + 1;
+                userLikes[articleId] = true;
+
+                const authorArticles = allArticles.filter(a => a.author === currentAuthor);
+                document.getElementById('totalLikes').textContent = authorArticles.reduce((sum, art) => sum + (art.likes || 0), 0);
+                renderArticles(authorArticles);
             } catch (error) {
                 document.getElementById('error').textContent = 'Помилка лайку: ' + error.message;
             }
@@ -649,10 +758,18 @@
 
         function openFullscreen(article) {
             document.getElementById('fullscreenTitle').textContent = article.title;
-            document.getElementById('fullscreenContent').innerHTML = article.content;
+            document.getElementById('fullscreenContent').innerHTML = article.content.replace(/\n/g, '<br>');
             document.getElementById('fullscreenAuthor').textContent = `Автор: ${article.author}`;
+            document.getElementById('fullscreenDate').textContent = `Опубліковано: ${formatDate(article.timestamp)}`;
             document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
-            document.getElementById('fullscreenLikeButton').onclick = () => toggleLike(article.id);
+            const likeBtn = document.getElementById('fullscreenLikeButton');
+            const isLiked = currentUser && userLikes[article.id];
+            likeBtn.className = `like-button ${isLiked ? 'liked' : ''}`;
+            likeBtn.textContent = isLiked ? '👍 Лайкнуто' : '👍 Лайк';
+            likeBtn.onclick = (e) => {
+                e.stopPropagation();
+                toggleLike(article.id);
+            };
             document.getElementById('articleFullscreen').style.display = 'flex';
         }
 

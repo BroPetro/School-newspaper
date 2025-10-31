@@ -1,186 +1,592 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Акаунт</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Roboto', Arial, sans-serif;
-      background-color: #f9fafb;
-      color: #1a202c;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f9fafb">
+    <meta name="description" content="Акаунт користувача в Електронній газеті">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <title>Акаунт | Електронна газета</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #1a202c;
+            min-height: 100vh;
+        }
 
-    .account-panel {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      max-width: 400px;
-      width: 90%;
-      text-align: center;
-    }
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
 
-    .account-panel h1 {
-      color: #3182ce;
-      font-size: 26px;
-      margin-bottom: 20px;
-    }
+        .topbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3182ce;
+            cursor: pointer;
+        }
 
-    .account-panel p {
-      font-size: 16px;
-      color: #4a5568;
-      margin-bottom: 20px;
-    }
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
 
-    .account-panel input {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
+        .sidebar {
+            width: 240px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            overflow-y: auto;
+        }
 
-    .account-panel button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.2s;
-    }
+        .sidebar button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 5px 0;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 16px;
+            color: #1a202c;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s, transform 0.2s;
+        }
 
-    #saveNameBtn {
-      background-color: #3182ce;
-      color: white;
-    }
+        .sidebar button:hover {
+            background-color: #f1f5f9;
+            transform: translateX(5px);
+        }
 
-    #saveNameBtn:hover {
-      background-color: #2b6cb0;
-    }
+        .sidebar button.active {
+            background-color: #e2e8f0;
+            font-weight: 500;
+        }
 
-    #logoutBtn, #loginBtn {
-      background-color: #e53e3e;
-      color: #fff;
-    }
+        .content {
+            margin-left: 240px;
+            padding: 80px 20px 20px;
+            width: calc(100% - 240px);
+        }
 
-    #logoutBtn:hover, #loginBtn:hover {
-      background-color: #c53030;
-    }
+        .account-panel {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
 
-    .error {
-      color: #e53e3e;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-  </style>
+        .account-panel h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        .account-panel p {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .account-panel .name-section, .account-panel .bio-section {
+            margin-top: 20px;
+        }
+
+        .account-panel .name-section input, .account-panel .bio-section textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #f9fafb;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .account-panel .bio-section textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .account-panel .name-section input:focus, .account-panel .bio-section textarea:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        .account-panel .name-section button, .account-panel .bio-section button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #3182ce;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .account-panel .name-section button:hover, .account-panel .bio-section button:hover {
+            background-color: #2b6cb0;
+            transform: scale(1.05);
+        }
+
+        .account-panel .subscriptions {
+            margin-top: 20px;
+        }
+
+        .account-panel .subscriptions h3 {
+            font-size: 18px;
+            color: #1a202c;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .account-panel .subscription {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 14px;
+            color: #4a5568;
+        }
+
+        .account-panel .subscription span {
+            cursor: pointer;
+            color: #3182ce;
+            text-decoration: underline;
+        }
+
+        .account-panel .subscription span:hover {
+            color: #2b6cb0;
+        }
+
+        .account-panel .subscription button {
+            margin-left: 10px;
+            padding: 4px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #e53e3e;
+            color: #fff;
+            font-size: 12px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .account-panel .subscription button:hover {
+            background-color: #c53030;
+            transform: scale(1.05);
+        }
+
+        .account-panel .auth-button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .account-panel .auth-button#loginBtn {
+            background-color: #3182ce;
+            color: #fff;
+        }
+
+        .account-panel .auth-button#loginBtn:hover {
+            background-color: #2b6cb0;
+            transform: scale(1.05);
+        }
+
+        .account-panel .auth-button#logoutBtn {
+            background-color: #e53e3e;
+            color: #fff;
+        }
+
+        .account-panel .auth-button#logoutBtn:hover {
+            background-color: #c53030;
+            transform: scale(1.05);
+        }
+
+        .error {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+            z-index: 1000;
+        }
+
+        .mobile-nav .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .mobile-nav button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            color: #3182ce;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.2s;
+        }
+
+        .mobile-nav button:hover {
+            color: #2b6cb0;
+            transform: scale(1.05);
+        }
+
+        .mobile-nav button.active {
+            color: #2b6cb0;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .topbar .logo {
+                font-size: 20px;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 70px 15px 70px;
+            }
+
+            .account-panel {
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: none;
+            }
+
+            .account-panel h1 {
+                font-size: 24px;
+                color: #2b6cb0;
+            }
+
+            .account-panel p, .account-panel .subscription {
+                font-size: 14px;
+            }
+
+            .account-panel .name-section input, .account-panel .bio-section textarea {
+                font-size: 13px;
+                min-height: 60px;
+            }
+
+            .account-panel .name-section button, .account-panel .bio-section button {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+
+            .account-panel .subscription button {
+                font-size: 12px;
+                padding: 3px 8px;
+            }
+
+            .account-panel .auth-button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .error {
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="account-panel">
-    <h1>Мій акаунт</h1>
-    <p id="userInfo">Завантаження...</p>
-
-    <div id="nameChangeSection" style="display: none;">
-      <input type="text" id="newName" placeholder="Введіть нове ім’я">
-      <button id="saveNameBtn">Зберегти нове ім’я</button>
+    <div class="topbar">
+        <div class="logo" onclick="window.location.href='index.html'">Газета</div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <button onclick="window.location.href='index.html'">Головна</button>
+             <button onclick="window.location.href='topgazet.html'">ТОП-10 Тижня 🏆</button>
+            <button id="createArticleBtn" style="display: none;" onclick="window.location.href='word.html'">+</button>
+            <button class="active" onclick="window.location.href='account.html'">Акаунт</button>
+            <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін-панель</button>
+            <button id="registerBtn" onclick="window.location.href='register.html'">Зареєструватися</button>
+        </div>
+        <div class="content">
+            <div class="account-panel">
+                <h1>Мій акаунт</h1>
+                <p id="userInfo"></p>
+                <div id="nameSection" class="name-section" style="display: none;">
+                    <h3>Зміна імені</h3>
+                    <input id="newName" placeholder="Введіть нове ім’я">
+                    <button id="saveNameBtn">Зберегти ім’я</button>
+                </div>
+                <div id="bioSection" class="bio-section" style="display: none;">
+                    <h3>Опис профілю</h3>
+                    <textarea id="bioInput" placeholder="Введіть опис вашого профілю..."></textarea>
+                    <button id="saveBioBtn">Зберегти опис</button>
+                </div>
+                <div id="subscriptions" class="subscriptions" style="display: none;">
+                    <h3>Підписки</h3>
+                </div>
+                <button id="loginBtn" class="auth-button" onclick="window.location.href='login.html'">Увійти</button>
+                <button id="logoutBtn" class="auth-button" style="display: none;" onclick="logout()">Вийти</button>
+                <div id="error" class="error"></div>
+            </div>
+        </div>
+    </div>
+    <div class="mobile-nav">
+        <div class="nav-buttons">
+            <button class="nav-button" onclick="window.location.href='index.html'">Головна</button>
+            <button class="nav-button" id="navCreateArticle" style="display: none;" onclick="window.location.href='word.html'">+</button>
+            <button class="nav-button active" onclick="window.location.href='account.html'">Акаунт</button>
+            <button class="nav-button" id="navAdminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін</button>
+        </div>
     </div>
 
-    <button id="loginBtn" onclick="window.location.href='login.html'">Увійти</button>
-    <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+        import { getDatabase, ref, get, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-    <div id="error" class="error"></div>
-  </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
+            authDomain: "newpaper-6cb18.firebaseapp.com",
+            databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "newpaper-6cb18",
+            storageBucket: "newpaper-6cb18.firebasestorage.app",
+            messagingSenderId: "284037128087",
+            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
+            measurementId: "G-0EMERY88FL"
+        };
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
-      authDomain: "newpaper-6cb18.firebaseapp.com",
-      databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "newpaper-6cb18",
-      storageBucket: "newpaper-6cb18.firebasestorage.app",
-      messagingSenderId: "284037128087",
-      appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
-      measurementId: "G-0EMERY88FL"
-    };
+        onAuthStateChanged(auth, async (user) => {
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const createArticleBtn = document.getElementById('createArticleBtn');
+            const navCreateArticle = document.getElementById('navCreateArticle');
+            const adminBtn = document.getElementById('adminBtn');
+            const navAdminBtn = document.getElementById('navAdminBtn');
+            const userInfo = document.getElementById('userInfo');
+            const nameSection = document.getElementById('nameSection');
+            const bioSection = document.getElementById('bioSection');
+            const bioInput = document.getElementById('bioInput');
+            const subscriptionsDiv = document.getElementById('subscriptions');
+            const errorDiv = document.getElementById('error');
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+            if (user) {
+                try {
+                    const userRef = ref(db, 'users/' + user.uid);
+                    const snapshot = await get(userRef);
+                    const userData = snapshot.val();
+                    const username = userData?.username || 'Користувач';
+                    userInfo.textContent = `Ім’я: ${username} | Email: ${user.email}`;
+                    document.getElementById('newName').value = username;
+                    bioInput.value = userData?.bio || '';
+                    loginBtn.style.display = 'none';
+                    logoutBtn.style.display = 'block';
+                    nameSection.style.display = 'block';
+                    bioSection.style.display = 'block';
+                    subscriptionsDiv.style.display = 'block';
+                    createArticleBtn.style.display = 'block';
+                    navCreateArticle.style.display = 'block';
+                    if (user.email === 'petro.hryhorenko@gmail.com') {
+                        adminBtn.style.display = 'block';
+                        navAdminBtn.style.display = 'block';
+                    }
+                    loadSubscriptions(user.uid);
+                } catch (error) {
+                    errorDiv.textContent = 'Помилка завантаження даних: ' + error.message;
+                }
+            } else {
+                userInfo.textContent = 'Ви не увійшли. Увійдіть, щоб переглянути свій профіль.';
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                nameSection.style.display = 'none';
+                bioSection.style.display = 'none';
+                subscriptionsDiv.style.display = 'none';
+                createArticleBtn.style.display = 'none';
+                navCreateArticle.style.display = 'none';
+                adminBtn.style.display = 'none';
+                navAdminBtn.style.display = 'none';
+            }
+        });
 
-    const userInfo = document.getElementById('userInfo');
-    const nameSection = document.getElementById('nameChangeSection');
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const saveNameBtn = document.getElementById('saveNameBtn');
-    const newNameInput = document.getElementById('newName');
-    const errorDiv = document.getElementById('error');
+        // Збереження імені користувача
+        document.getElementById('saveNameBtn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) {
+                document.getElementById('error').textContent = 'Увійдіть, щоб змінити ім’я!';
+                return;
+            }
+            const newName = document.getElementById('newName').value.trim();
+            if (!newName) {
+                document.getElementById('error').textContent = 'Введіть ім’я!';
+                return;
+            }
+            // Валідація: тільки літери, цифри, пробіли, _, -
+            const validNameRegex = /^[\p{L}\p{N}\s_-]+$/u;
+            if (!validNameRegex.test(newName)) {
+                document.getElementById('error').textContent = 'Ім’я може містити лише літери, цифри, пробіли, _ або -!';
+                return;
+            }
+            if (newName.length > 50) {
+                document.getElementById('error').textContent = 'Ім’я не може перевищувати 50 символів!';
+                return;
+            }
+            try {
+                const userRef = ref(db, `users/${user.uid}/username`);
+                await set(userRef, newName);
+                document.getElementById('userInfo').textContent = `Ім’я: ${newName} | Email: ${user.email}`;
+                document.getElementById('error').textContent = 'Ім’я успішно збережено!';
+                document.getElementById('error').style.color = '#3182ce';
+                setTimeout(() => {
+                    document.getElementById('error').textContent = '';
+                    document.getElementById('error').style.color = '#e53e3e';
+                }, 3000);
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка збереження імені: ' + error.message;
+            }
+        });
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        try {
-          const userRef = ref(db, 'users/' + user.uid);
-          const snapshot = await get(userRef);
-          const userData = snapshot.val() || {};
-          const username = userData.username || 'Користувач';
-          userInfo.textContent = `Ім’я: ${username}\nEmail: ${user.email}`;
-          nameSection.style.display = 'block';
-          loginBtn.style.display = 'none';
-          logoutBtn.style.display = 'block';
-        } catch (error) {
-          errorDiv.textContent = 'Помилка: ' + error.message;
+        // Збереження опису профілю
+        document.getElementById('saveBioBtn').addEventListener('click', async () => {
+            const user = auth.currentUser;
+            if (!user) {
+                document.getElementById('error').textContent = 'Увійдіть, щоб зберегти опис!';
+                return;
+            }
+            const bioInput = document.getElementById('bioInput').value.trim();
+            if (bioInput.length > 500) {
+                document.getElementById('error').textContent = 'Опис не може перевищувати 500 символів!';
+                return;
+            }
+            try {
+                const userRef = ref(db, `users/${user.uid}/bio`);
+                await set(userRef, bioInput);
+                document.getElementById('error').textContent = 'Опис успішно збережено!';
+                document.getElementById('error').style.color = '#3182ce';
+                setTimeout(() => {
+                    document.getElementById('error').textContent = '';
+                    document.getElementById('error').style.color = '#e53e3e';
+                }, 3000);
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка збереження опису: ' + error.message;
+            }
+        });
+
+        // Завантаження підписок
+        async function loadSubscriptions(userId) {
+            const subscriptionsDiv = document.getElementById('subscriptions');
+            const subscriptionsRef = ref(db, `subscriptions/${userId}`);
+            onValue(subscriptionsRef, async (snapshot) => {
+                subscriptionsDiv.innerHTML = '<h3>Підписки</h3>';
+                const subscriptions = snapshot.val() || {};
+                const authorUids = Object.keys(subscriptions);
+                if (authorUids.length === 0) {
+                    subscriptionsDiv.innerHTML += '<p>Ви не підписані на жодного автора</p>';
+                    return;
+                }
+                const usersRef = ref(db, 'users');
+                const usersSnapshot = await get(usersRef);
+                const users = usersSnapshot.val() || {};
+                const articlesRef = ref(db, 'articles');
+                const articlesSnapshot = await get(articlesRef);
+                const articles = articlesSnapshot.val() || {};
+                for (const authorUid of authorUids) {
+                    const authorData = users[authorUid];
+                    if (authorData) {
+                        const authorUsername = authorData.username || 'Невідомий автор';
+                        const authorArticles = Object.values(articles).filter(a => a.author === authorUsername && a.status === 'approved');
+                        const subscriptionElement = document.createElement('div');
+                        subscriptionElement.className = 'subscription';
+                        subscriptionElement.innerHTML = `
+                            <span onclick="window.location.href='accountpeople.html?author=${encodeURIComponent(authorUsername)}'">${authorUsername} (${authorArticles.length} статей)</span>
+                            <button onclick="toggleSubscription('${userId}', '${authorUid}')">Відписатися</button>
+                        `;
+                        subscriptionsDiv.appendChild(subscriptionElement);
+                    }
+                }
+            });
         }
-      } else {
-        userInfo.textContent = 'Ви не увійшли.';
-        nameSection.style.display = 'none';
-        loginBtn.style.display = 'block';
-        logoutBtn.style.display = 'none';
-      }
-    });
 
-    saveNameBtn.addEventListener('click', async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        alert('Увійдіть спочатку!');
-        return;
-      }
-      const newName = newNameInput.value.trim();
-      if (!newName) {
-        alert('Введіть ім’я!');
-        return;
-      }
-      try {
-        await set(ref(db, 'users/' + user.uid + '/username'), newName);
-        alert('Ім’я змінено!');
-        userInfo.textContent = `Ім’я: ${newName}\nEmail: ${user.email}`;
-        newNameInput.value = '';
-      } catch (error) {
-        errorDiv.textContent = 'Помилка: ' + error.message;
-      }
-    });
+        // Обробка підписки/відписки
+        window.toggleSubscription = async (userId, authorUid) => {
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Увійдіть, щоб керувати підписками!');
+                return;
+            }
+            try {
+                const subscriptionRef = ref(db, `subscriptions/${userId}/${authorUid}`);
+                const subscriberRef = ref(db, `subscribers/${authorUid}/${userId}`);
+                const snapshot = await get(subscriptionRef);
+                if (snapshot.exists()) {
+                    await remove(subscriptionRef);
+                    await remove(subscriberRef);
+                    alert('Ви відписалися від автора');
+                } else {
+                    await set(subscriptionRef, true);
+                    await set(subscriberRef, true);
+                    alert('Ви підписалися на автора');
+                }
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка підписки: ' + error.message;
+            }
+        };
 
-    window.logout = async () => {
-      try {
-        await signOut(auth);
-        alert('Ви вийшли!');
-        window.location.href = 'index.html';
-      } catch (error) {
-        errorDiv.textContent = 'Помилка виходу: ' + error.message;
-      }
-    };
-  </script>
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                alert('Вихід успішний!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка виходу: ' + error.message;
+            }
+        };
+    </script>
 </body>
 </html>

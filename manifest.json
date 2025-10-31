@@ -1,12 +1,13 @@
 {
-  "name": "Електронна газета",
+  "name": "Шкільна газета",
   "short_name": "Газета",
-  "description": "Електронна газета з новинами та статтями",
-  "start_url": "/index.html",
+  "description": "Електронна газета школи №36 для учнів, учителів та батьків",
+  "start_url": "index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f9fafb",
   "theme_color": "#3182ce",
-  "orientation": "portrait-primary",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "/icon.png",
@@ -18,7 +19,21 @@
       "src": "/icon.png",
       "sizes": "512x512",
       "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "lang": "uk-UA",
+  "dir": "ltr"
 }

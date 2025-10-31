@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТОП-10 Тижня | Електронна газета</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f9fafb;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .topbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3182ce;
+        }
+
+        .topbar .back {
+            margin-left: auto;
+            padding: 8px 16px;
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .topbar .back:hover {
+            background-color: #2b6cb0;
+        }
+
+        .container {
+            padding: 80px 20px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2b6cb0;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #4a5568;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .week-info {
+            text-align: center;
+            color: #3182ce;
+            font-weight: 500;
+            font-size: 15px;
+            margin-bottom: 30px;
+            padding: 10px;
+            background: #ebf8ff;
+            border-radius: 8px;
+            border: 1px solid #bee3f8;
+        }
+
+        .top-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .top-item {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            /* Клік НЕ відкриває */
+        }
+
+        .top-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .rank {
+            font-size: 48px;
+            font-weight: 700;
+            color: #3182ce;
+            margin-right: 20px;
+            width: 60px;
+            text-align: center;
+        }
+
+        .rank.gold { color: #f6e05e; text-shadow: 0 0 10px #fbbf24; }
+        .rank.silver { color: #a0aec0; }
+        .rank.bronze { color: #f6ad55; }
+
+        .article-info h2 {
+            font-size: 20px;
+            color: #2b6cb0;
+            margin: 0 0 8px 0;
+        }
+
+        .article-info p {
+            margin: 5px 0;
+            color: #4a5568;
+            font-size: 15px;
+        }
+
+        .author-rank {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+            margin-top: 5px;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 5px;
+        }
+
+        .rank-novice { background: #e2e8f0; color: #4a5568; }
+        .rank-bronze { background: #f6ad55; color: white; }
+        .rank-silver { background: #a0aec0; color: white; }
+        .rank-gold { background: #f6e05e; color: #1a202c; }
+        .rank-platinum { background: #e6e6fa; color: #4c1d95; }
+        .rank-diamond { background: #b2f5ea; color: #065f46; }
+        .rank-legend { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+
+        .likes {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #e53e3e;
+            font-weight: 500;
+        }
+
+        .likes::before {
+            content: "❤️";
+            font-size: 18px;
+        }
+
+        .no-articles {
+            text-align: center;
+            color: #718096;
+            font-size: 18px;
+            padding: 40px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border: 1px dashed #e2e8f0;
+        }
+
+        @media (max-width: 600px) {
+            .top-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            .rank {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="logo">Газета №36</div>
+        <button class="back" onclick="window.location.href='index.html'">На головну</button>
+    </div>
+
+    <div class="container">
+        <h1>ТОП-10 Тижня</h1>
+        <p class="subtitle">Понеділок – Неділя | Тільки свіжі хіти!</p>
+        <div class="week-info" id="weekInfo">Завантаження...</div>
+
+        <div id="topList" class="top-list">
+            <!-- Статті тут -->
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
+            authDomain: "newpaper-6cb18.firebaseapp.com",
+            databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "newpaper-6cb18",
+            storageBucket: "newpaper-6cb18.firebasestorage.app",
+            messagingSenderId: "284037128087",
+            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // === ТИЖДЕНЬ: ПОНЕДІЛОК 00:00 → НЕДІЛЯ 23:59 ===
+        function getWeekRange() {
+            const now = new Date();
+            const day = now.getDay(); // 0 = неділя, 1 = понеділок
+
+            // Початок тижня — понеділок 00:00
+            const start = new Date(now);
+            const diffToMonday = day === 0 ? -6 : 1 - day;
+            start.setDate(now.getDate() + diffToMonday);
+            start.setHours(0, 0, 0, 0);
+
+            // Кінець тижня — неділя 23:59:59
+            const end = new Date(start);
+            end.setDate(start.getDate() + 6);
+            end.setHours(23, 59, 59, 999);
+
+            return { start, end };
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('uk-UA', { month: 'long', day: 'numeric' });
+        }
+
+        // === СИСТЕМА РАНГІВ ===
+        function getAuthorRank(totalLikes) {
+            if (totalLikes >= 500) return { name: "Легенда", badge: "legend" };
+            if (totalLikes >= 300) return { name: "Діамант", badge: "diamond" };
+            if (totalLikes >= 200) return { name: "Платина", badge: "platinum" };
+            if (totalLikes >= 100) return { name: "Золото", badge: "gold" };
+            if (totalLikes >= 50) return { name: "Срібло", badge: "silver" };
+            if (totalLikes >= 20) return { name: "Бронза", badge: "bronze" };
+            return { name: "Новачок", badge: "novice" };
+        }
+
+        async function loadTopArticles() {
+            const topList = document.getElementById('topList');
+            const weekInfo = document.getElementById('weekInfo');
+            topList.innerHTML = '<p class="no-articles">Завантаження...</p>';
+
+            const { start, end } = getWeekRange();
+            const startISO = start.toISOString();
+            const endISO = end.toISOString();
+
+            weekInfo.innerHTML = `
+                <strong>${formatDate(start)} – ${formatDate(end)}</strong><br>
+                <small>Понеділок – Неділя</small>
+            `;
+
+            try {
+                const articlesRef = ref(db, 'articles');
+                const snapshot = await get(articlesRef);
+                
+                if (!snapshot.exists()) {
+                    topList.innerHTML = '<p class="no-articles">Статей ще немає. Будь першим!</p>';
+                    return;
+                }
+
+                const rawArticles = Object.entries(snapshot.val())
+                    .map(([id, data]) => ({ id, ...data }))
+                    .filter(a => 
+                        a.status === 'approved' && 
+                        a.createdAt && 
+                        a.createdAt >= startISO && 
+                        a.createdAt <= endISO &&
+                        a.likes > 0
+                    );
+
+                // Групуємо за автором для рангу
+                const authorLikes = {};
+                rawArticles.forEach(a => {
+                    authorLikes[a.author] = (authorLikes[a.author] || 0) + (a.likes || 0);
+                });
+
+                const articles = rawArticles
+                    .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+                    .slice(0, 10);
+
+                if (articles.length === 0) {
+                    topList.innerHTML = `
+                        <p class="no-articles">
+                            🏆 Цього тижня ще немає статей з лайками!<br>
+                            <strong>Пиши статтю — стань першим у ТОПі!</strong>
+                        </p>`;
+                    return;
+                }
+
+                topList.innerHTML = '';
+                articles.forEach((article, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'top-item';
+
+                    const rankClass = index === 0 ? 'gold' : index === 1 ? 'silver' : index === 2 ? 'bronze' : '';
+                    const totalAuthorLikes = authorLikes[article.author] || 0;
+                    const rank = getAuthorRank(totalAuthorLikes);
+
+                    item.innerHTML = `
+                        <div class="rank ${rankClass}">${index + 1}</div>
+                        <div class="article-info">
+                            <h2>${article.title}</h2>
+                            <p>Автор: ${article.author}</p>
+                            <p class="author-rank">
+                                Ранг: ${rank.name} 
+                                <span class="rank-badge ${rank.badge}">${rank.name}</span>
+                            </p>
+                            <p class="likes">${article.likes || 0}</p>
+                        </div>
+                    `;
+
+                    topList.appendChild(item);
+                });
+
+            } catch (error) {
+                topList.innerHTML = `<p class="no-articles">Помилка: ${error.message}</p>`;
+            }
+        }
+
+        // Завантажуємо
+        loadTopArticles();
+        setInterval(loadTopArticles, 30000);
+    </script>
+</body>
+</html>
