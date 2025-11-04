@@ -8,321 +8,229 @@
     <title>Налаштування | Газета №36</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: #f9fafb;
-            color: #1a202c;
-            min-height: 100vh;
-        }
-
-        .topbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 1000;
-        }
-
-        .topbar .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: #3182ce;
-            cursor: pointer;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            width: 240px;
-            background-color: #ffffff;
-            padding: 20px;
-            border-right: 1px solid #e2e8f0;
-            position: fixed;
-            top: 60px;
-            bottom: 0;
-            overflow-y: auto;
-        }
-
-        .sidebar button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            margin: 5px 0;
-            background: none;
-            border: none;
-            text-align: left;
-            font-size: 16px;
-            color: #1a202c;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.2s, transform 0.2s;
-        }
-
-        .sidebar button:hover {
-            background-color: #f1f5f9;
-            transform: translateX(5px);
-        }
-
-        .sidebar button.active {
-            background-color: #e2e8f0;
-            font-weight: 500;
-        }
-
-        .content {
-            margin-left: 240px;
-            padding: 80px 20px 20px;
-            width: calc(100% - 240px);
-        }
-
-        .settings-panel {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .settings-panel h1 {
-            font-size: 28px;
-            margin-bottom: 20px;
-            color: #1a202c;
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #2d3748;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
-            background-color: #f8fafc;
-            transition: border 0.2s;
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #3182ce;
-            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .btn {
-            padding: 12px 20px;
-            background-color: #10b981;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-        }
-
-        .btn:hover {
-            background-color: #059669;
-        }
-
-        .btn-back {
-            background-color: #718096;
-        }
-
-        .btn-back:hover {
-            background-color: #4a5568;
-        }
-
-        .message {
-            margin-top: 15px;
-            font-size: 14px;
-            text-align: center;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .success {
-            background-color: #d1fae5;
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-        }
-
-        .error {
-            background-color: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-        }
-
-        @media (max-width: 600px) {
-            .sidebar { display: none; }
-            .content { margin-left: 0; width: 100%; padding: 70px 15px; }
-            .settings-panel { padding: 20px; }
-        }
+        body{margin:0;font-family:'Roboto',Arial,sans-serif;background:#f9fafb;color:#1a202c;min-height:100vh}
+        .topbar{position:fixed;top:0;left:0;right:0;height:60px;background:#fff;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;padding:0 20px;z-index:1000}
+        .topbar .logo{font-size:24px;font-weight:700;color:#3182ce;cursor:pointer}
+        .container{display:flex;min-height:100vh}
+        .sidebar{width:240px;background:#fff;padding:20px;border-right:1px solid #e2e8f0;position:fixed;top:60px;bottom:0;overflow-y:auto}
+        .sidebar button{display:block;width:100%;padding:12px;margin:5px 0;background:none;border:none;text-align:left;font-size:16px;color:#1a202c;cursor:pointer;border-radius:8px;transition:background .2s,transform .2s}
+        .sidebar button:hover{background:#f1f5f9;transform:translateX(5px)}
+        .sidebar button.active{background:#e2e8f0;font-weight:500}
+        .content{margin-left:240px;padding:80px 20px 20px;width:calc(100% - 240px)}
+        .settings-panel{background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.1);max-width:600px;margin:0 auto}
+        .settings-panel h1{font-size:28px;margin-bottom:20px;color:#1a202c;font-weight:600}
+        .form-group{margin-bottom:20px}
+        .form-group label{display:block;margin-bottom:8px;font-weight:500;color:#2d3748}
+        .form-group input,.form-group textarea{width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:8px;font-size:16px;background:#f8fafc;transition:border .2s;box-sizing:border-box}
+        .form-group input:focus,.form-group textarea:focus{outline:none;border-color:#3182ce;box-shadow:0 0 0 3px rgba(49,130,206,.1)}
+        .form-group textarea{min-height:100px;resize:vertical}
+        .btn{padding:12px 20px;background:#10b981;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:16px;font-weight:500;transition:background .3s;margin-right:10px}
+        .btn:hover{background:#059669}
+        .btn-back{background:#718096}
+        .btn-back:hover{background:#4a5568}
+        .message{margin-top:15px;font-size:14px;text-align:center;padding:10px;border-radius:8px}
+        .success{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}
+        .error{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+        .form-group small{color:#718096;font-size:12px;margin-top:4px;display:block}
+        .avatar-preview{margin-top:8px;width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #e2e8f0}
+        .file-input{display:none}
+        .file-label{display:inline-block;padding:8px 12px;background:#e2e8f0;border-radius:6px;cursor:pointer;font-size:14px}
+        .file-label:hover{background:#cbd5e0}
+        @media(max-width:600px){.sidebar{display:none}.content{margin-left:0;width:100%;padding:70px 15px}.settings-panel{padding:20px}}
     </style>
 </head>
 <body>
-    <div class="topbar">
-        <div class="logo" onclick="window.location.href='index.html'">Газета</div>
+<div class="topbar"><div class="logo" onclick="window.location.href='index.html'">Газета</div></div>
+
+<div class="container">
+    <div class="sidebar">
+        <button onclick="window.location.href='index.html'">Головна</button>
+        <button onclick="window.location.href='topgazet.html'">ТОП-10 Тижня</button>
+        <button onclick="window.location.href='word.html'">+</button>
+        <button onclick="window.location.href='account.html'">Акаунт</button>
+        <button class="active">Налаштування</button>
+        <button id="adminBtn" style="display:none" onclick="window.location.href='admin.html'">Адмін</button>
     </div>
 
-    <div class="container">
-        <div class="sidebar">
-            <button onclick="window.location.href='index.html'">Головна</button>
-            <button onclick="window.location.href='topgazet.html'">ТОП-10 Тижня</button>
-            <button onclick="window.location.href='word.html'">+</button>
-            <button onclick="window.location.href='account.html'">Акаунт</button>
-            <button class="active">Налаштування</button>
-            <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін</button>
-        </div>
+    <div class="content">
+        <div class="settings-panel">
+            <h1>Налаштування профілю</h1>
 
-        <div class="content">
-            <div class="settings-panel">
-                <h1>Налаштування профілю</h1>
-
-                <div class="form-group">
-                    <label for="username">Ім’я</label>
-                    <input type="text" id="username" placeholder="Введіть ваше ім’я">
-                </div>
-
-                <div class="form-group">
-                    <label for="bio">Опис</label>
-                    <textarea id="bio" placeholder="Розкажіть про себе..."></textarea>
-                </div>
-
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button class="btn btn-back" onclick="window.location.href='account.html'">
-                        Назад
-                    </button>
-                    <button class="btn" onclick="saveProfile()">
-                        Зберегти зміни
-                    </button>
-                </div>
-
-                <div id="message"></div>
+            <!-- АВАТАР -->
+            <div class="form-group">
+                <label>Фото профілю</label>
+                <img id="avatarPreview" class="avatar-preview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23e2e8f0'/%3E%3Ctext x='40' y='48' font-size='36' text-anchor='middle' fill='%2395a5a6'%3E?%3C/text%3E%3C/svg%3E" alt="preview">
+                <label class="file-label" for="avatarInput">Вибрати фото</label>
+                <input type="file" id="avatarInput" class="file-input" accept="image/*">
+                <small>Макс. 2 МБ, буде сильно стиснено (JPEG, якість 0.4)</small>
             </div>
+
+            <div class="form-group">
+                <label for="username">Ім’я</label>
+                <input type="text" id="username" placeholder="Введіть ваше ім’я">
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Опис</label>
+                <textarea id="bio" placeholder="Розкажіть про себе..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="link">
+                    Посилання 
+                    <span style="font-weight:400;color:#718096;font-size:14px">(Telegram, Instagram, сайт тощо)</span>
+                </label>
+                <input type="url" id="link" placeholder="https://t.me/ваше_імя" style="direction:ltr;text-align:left">
+                <small>Приклад: https://t.me/username, https://instagram.com/username</small>
+            </div>
+
+            <div style="display:flex;gap:10px;margin-top:20px">
+                <button class="btn btn-back" onclick="window.location.href='account.html'">Назад</button>
+                <button class="btn" onclick="saveProfile()">Зберегти зміни</button>
+            </div>
+
+            <div id="message"></div>
         </div>
     </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
-            authDomain: "newpaper-6cb18.firebaseapp.com",
-            databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "newpaper-6cb18",
-            storageBucket: "newpaper-6cb18.firebasestorage.app",
-            messagingSenderId: "284037128087",
-            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
+        authDomain: "newpaper-6cb18.firebaseapp.com",
+        databaseURL: "https://newpaper-6cb18-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "newpaper-6cb18",
+        storageBucket: "newpaper-6cb18.firebasestorage.app",
+        messagingSenderId: "284037128087",
+        appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getDatabase(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    let currentUser = null;
 
-        let currentUser = null;
+    /* ---------- ОБРОБКА ФОТО ---------- */
+    const avatarInput = document.getElementById('avatarInput');
+    const avatarPreview = document.getElementById('avatarPreview');
+    let compressedBase64 = null;               // буде зберігати стиснутий Base64
 
-        // Перевірка авторизації + завантаження даних
-        onAuthStateChanged(auth, async (user) => {
-            currentUser = user;
-            const adminBtn = document.getElementById('adminBtn');
+    avatarInput.addEventListener('change', () => {
+        const file = avatarInput.files[0];
+        if (!file) return;
 
-            if (!user) {
-                alert('Увійдіть, щоб змінити налаштування!');
-                window.location.href = 'login.html';
-                return;
-            }
-
-            if (user.email === 'petro.hryhorenko@gmail.com') {
-                adminBtn.style.display = 'block';
-            }
-
-            try {
-                const userRef = ref(db, 'users/' + user.uid);
-                const snapshot = await get(userRef);
-                const userData = snapshot.val() || {};
-
-                document.getElementById('username').value = userData.username || '';
-                document.getElementById('bio').value = userData.bio || '';
-            } catch (e) {
-                showMessage('Помилка завантаження даних', 'error');
-            }
-        });
-
-        // Збереження профілю
-        window.saveProfile = async () => {
-            if (!currentUser) return;
-
-            const username = document.getElementById('username').value.trim();
-            const bio = document.getElementById('bio').value.trim();
-
-            if (!username) {
-                showMessage('Введіть ім’я!', 'error');
-                return;
-            }
-
-            if (username.length > 50) {
-                showMessage('Ім’я не може бути довшим за 50 символів!', 'error');
-                return;
-            }
-
-            if (bio.length > 500) {
-                showMessage('Опис не може бути довшим за 500 символів!', 'error');
-                return;
-            }
-
-            try {
-                const userRef = ref(db, 'users/' + currentUser.uid);
-                await set(userRef, {
-                    ...await get(userRef).then(s => s.val() || {}),
-                    username: username,
-                    bio: bio,
-                    updatedAt: Date.now()
-                });
-
-                showMessage('Налаштування успішно збережено!', 'success');
-                setTimeout(() => {
-                    window.location.href = 'account.html';
-                }, 1500);
-            } catch (e) {
-                showMessage('Помилка: ' + e.message, 'error');
-            }
-        };
-
-        function showMessage(text, type) {
-            const msg = document.getElementById('message');
-            msg.textContent = text;
-            msg.className = 'message ' + type;
+        if (file.size > 2 * 1024 * 1024) {
+            showMessage('Фото перевищує 2 МБ!', 'error');
+            return;
         }
-    </script>
+
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_SIZE = 200;                 // максимальний розмір сторони
+                let {width, height} = img;
+
+                if (width > height) {
+                    if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; }
+                } else {
+                    if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Сильне стиснення: JPEG, якість 0.4
+                compressedBase64 = canvas.toDataURL('image/jpeg', 0.4);
+                avatarPreview.src = compressedBase64;
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    /* ---------- АВТЕНТИФІКАЦІЯ + ЗАВАНТАЖЕННЯ ДАНИХ ---------- */
+    onAuthStateChanged(auth, async user => {
+        currentUser = user;
+        const adminBtn = document.getElementById('adminBtn');
+
+        if (!user) {
+            alert('Увійдіть, щоб змінити налаштування!');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        if (user.email === 'petro.hryhorenko@gmail.com') adminBtn.style.display = 'block';
+
+        try {
+            const userRef = ref(db, 'users/' + user.uid);
+            const snap = await get(userRef);
+            const data = snap.val() || {};
+
+            document.getElementById('username').value = data.username || '';
+            document.getElementById('bio').value = data.bio || '';
+            document.getElementById('link').value = data.link || '';
+
+            // Відновлення аватара
+            if (data.avatar) {
+                compressedBase64 = data.avatar;
+                avatarPreview.src = data.avatar;
+            }
+        } catch (e) {
+            showMessage('Помилка завантаження даних', 'error');
+        }
+    });
+
+    /* ---------- ЗБЕРЕЖЕННЯ ---------- */
+    window.saveProfile = async () => {
+        if (!currentUser) return;
+
+        const username = document.getElementById('username').value.trim();
+        const bio = document.getElementById('bio').value.trim();
+        const link = document.getElementById('link').value.trim();
+
+        if (!username) { showMessage('Введіть ім’я!', 'error'); return; }
+        if (username.length > 50) { showMessage('Ім’я не довше 50 символів!', 'error'); return; }
+        if (bio.length > 500) { showMessage('Опис не довше 500 символів!', 'error'); return; }
+        if (link && !isValidUrl(link)) { showMessage('Некоректне посилання!', 'error'); return; }
+
+        try {
+            const userRef = ref(db, 'users/' + currentUser.uid);
+            const existing = await get(userRef).then(s => s.val() || {});
+
+            await set(userRef, {
+                ...existing,
+                username,
+                bio,
+                link: link || null,
+                avatar: compressedBase64 || null,   // <-- Base64-текст
+                updatedAt: Date.now()
+            });
+
+            showMessage('Налаштування збережено!', 'success');
+            setTimeout(() => window.location.href = 'account.html', 1500);
+        } catch (e) {
+            showMessage('Помилка: ' + e.message, 'error');
+        }
+    };
+
+    function isValidUrl(str) {
+        try { return /^https?:\/\//.test(new URL(str).href); }
+        catch { return false; }
+    }
+
+    function showMessage(text, type) {
+        const el = document.getElementById('message');
+        el.textContent = text;
+        el.className = 'message ' + type;
+    }
+</script>
 </body>
 </html>

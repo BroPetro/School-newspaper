@@ -23,154 +23,78 @@
             overscroll-behavior: none;
         }
 
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
+        .container { display: flex; min-height: 100vh; }
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background-color: #ffffff; border-top: 1px solid #e2e8f0; padding: 8px; z-index: 1000; box-shadow: 0 -2px 5px rgba(0,0,0,0.1); }
+        .nav-buttons { display: flex; justify-content: space-around; align-items: center; }
+        .nav-button { padding: 8px; background: none; border: none; font-size: 13px; color: #1a202c; cursor: pointer; border-radius: 6px; transition: background-color .2s; touch-action: manipulation; }
+        .nav-button:hover { background-color: #f1f5f9; }
+        .nav-button.active { background-color: #e2e8f0; font-weight: 500; }
 
-        .mobile-nav {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #ffffff;
-            border-top: 1px solid #e2e8f0;
-            padding: 8px;
-            z-index: 1000;
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-        }
+        .sidebar { width: 240px; background-color: #ffffff; padding: 16px; border-right: 1px solid #e2e8f0; position: fixed; top: 56px; bottom: 0; overflow-y: auto; }
+        .sidebar button { display: block; width: 100%; padding: 10px; margin: 4px 0; background: none; border: none; text-align: left; font-size: 15px; color: #1a202c; cursor: pointer; border-radius: 6px; transition: background-color .2s; }
+        .sidebar button:hover { background-color: #f1f5f9; }
+        .sidebar button.active { background-color: #e2e8f0; font-weight: 500; }
 
-        .nav-buttons {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
+        .topbar { position: fixed; top: 0; left: 0; right: 0; height: 56px; background-color: #ffffff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding: 0 16px; z-index: 1000; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .topbar .logo { font-size: 22px; font-weight: 700; color: #3182ce; cursor: pointer; user-select: none; }
+        .topbar .search-bar { flex-grow: 1; max-width: 600px; margin-left: 16px; }
+        .topbar .search-bar input { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 16px; font-size: 14px; background-color: #f9fafb; }
+        .topbar .search-bar input:focus { outline: none; border-color: #3182ce; box-shadow: 0 0 0 2px rgba(49,130,206,0.1); }
 
-        .nav-button {
-            padding: 8px;
-            background: none;
-            border: none;
-            font-size: 13px;
-            color: #1a202c;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: background-color 0.2s;
-            touch-action: manipulation;
-        }
-
-        .nav-button:hover {
-            background-color: #f1f5f9;
-        }
-
-        .nav-button.active {
-            background-color: #e2e8f0;
-            font-weight: 500;
-        }
-
-        .sidebar {
-            width: 240px;
-            background-color: #ffffff;
-            padding: 16px;
-            border-right: 1px solid #e2e8f0;
-            position: fixed;
-            top: 56px;
-            bottom: 0;
-            overflow-y: auto;
-        }
-
-        .sidebar button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 4px 0;
-            background: none;
-            border: none;
-            text-align: left;
-            font-size: 15px;
-            color: #1a202c;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: background-color 0.2s;
-        }
-
-        .sidebar button:hover {
-            background-color: #f1f5f9;
-        }
-
-        .sidebar button.active {
-            background-color: #e2e8f0;
-            font-weight: 500;
-        }
-
-        .topbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .topbar .logo {
-            font-size: 22px;
-            font-weight: 700;
-            color: #3182ce;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .topbar .search-bar {
-            flex-grow: 1;
-            max-width: 600px;
-            margin-left: 16px;
-        }
-
-        .topbar .search-bar input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            font-size: 14px;
-            background-color: #f9fafb;
-        }
-
-        .topbar .search-bar input:focus {
-            outline: none;
-            border-color: #3182ce;
-            box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.1);
-        }
-
-        .content {
-            margin-left: 240px;
-            padding: 72px 16px 16px;
-            width: calc(100% - 240px);
-        }
+        .content { margin-left: 240px; padding: 72px 16px 16px; width: calc(100% - 240px); }
 
         .author-header {
             background-color: #ffffff;
             border-radius: 10px;
             padding: 16px;
             margin-bottom: 16px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
 
-        .author-header h1 {
+        .author-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #e2e8f0;
+            background-color: #f1f5f9;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-info h1 {
             font-size: 26px;
             color: #2b6cb0;
+            margin: 0 0 4px;
+        }
+
+        .author-info p {
+            font-size: 15px;
+            color: #4a5568;
             margin: 0 0 8px;
         }
 
-        .author-header p {
-            font-size: 15px;
-            color: #4a5568;
-            margin: 0;
+        .author-link {
+            font-size: 14px;
+            color: #3182ce;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .author-link:hover {
+            text-decoration: underline;
+        }
+
+        .author-link::before {
+            content: "🔗";
+            font-size: 16px;
         }
 
         .author-stats {
@@ -185,269 +109,38 @@
             font-weight: 500;
         }
 
-        .articles {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-        }
+        .articles { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .article { background-color: #ffffff; border-radius: 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.08); padding: 12px; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+        .article:hover { transform: translateY(-4px); box-shadow: 0 5px 12px rgba(0,0,0,0.12); }
+        .article h2 { font-size: 18px; color: #2b6cb0; margin: 0 0 8px; }
+        .article div { font-size: 15px; color: #4a5568; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .article .author { font-size: 13px; color: #718096; font-style: italic; }
+        .article .date { font-size: 13px; color: #718096; margin-top: 4px; }
+        .article .likes { font-size: 13px; color: #3182ce; margin-top: 8px; }
+        .article .like-button { background: none; border: none; color: #3182ce; cursor: pointer; font-size: 15px; margin-top: 4px; }
+        .article .like-button:hover { color: #2b6cb0; }
+        .article .like-button.liked { color: #2b6cb0; }
 
-        .article {
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-            padding: 12px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+        .error { color: #e53e3e; font-size: 13px; text-align: center; margin: 16px 0; }
+        .loading { text-align: center; color: #718096; font-size: 14px; margin: 16px 0; }
 
-        .article:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
-        }
-
-        .article h2 {
-            font-size: 18px;
-            color: #2b6cb0;
-            margin: 0 0 8px;
-        }
-
-        .article div {
-            font-size: 15px;
-            color: #4a5568;
-            margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .article .author {
-            font-size: 13px;
-            color: #718096;
-            font-style: italic;
-        }
-
-        .article .date {
-            font-size: 13px;
-            color: #718096;
-            margin-top: 4px;
-        }
-
-        .article .likes {
-            font-size: 13px;
-            color: #3182ce;
-            margin-top: 8px;
-        }
-
-        .article .like-button {
-            background: none;
-            border: none;
-            color: #3182ce;
-            cursor: pointer;
-            font-size: 15px;
-            margin-top: 4px;
-        }
-
-        .article .like-button:hover {
-            color: #2b6cb0;
-        }
-
-        .article .like-button.liked {
-            color: #2b6cb0;
-        }
-
-        .error {
-            color: #e53e3e;
-            font-size: 13px;
-            text-align: center;
-            margin: 16px 0;
-        }
-
-        .article-fullscreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-            overflow-y: auto;
-        }
-
-        .article-fullscreen-content {
-            background-color: #ffffff;
-            padding: 16px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 700px;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .article-fullscreen-content h2 {
-            font-size: 22px;
-            color: #2b6cb0;
-            margin: 0 0 12px;
-        }
-
-        .article-fullscreen-content div {
-            font-size: 15px;
-            color: #4a5568;
-            line-height: 1.6;
-        }
-
-        .article-fullscreen-content .author {
-            font-size: 13px;
-            color: #718096;
-            font-style: italic;
-            margin-top: 8px;
-        }
-
-        .article-fullscreen-content .date {
-            font-size: 13px;
-            color: #718096;
-            margin-top: 4px;
-        }
-
-        .article-fullscreen-content .likes {
-            font-size: 13px;
-            color: #3182ce;
-            margin-top: 8px;
-        }
-
-        .article-fullscreen-content .like-button {
-            background: none;
-            border: none;
-            color: #3182ce;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-
-        .article-fullscreen-content .like-button:hover {
-            background-color: #e6f0fa;
-            color: #2b6cb0;
-        }
-
-        .article-fullscreen-content .like-button.liked {
-            color: #2b6cb0;
-            background-color: #e6f0fa;
-        }
-
-        .close-button {
-            background-color: #e53e3e;
-            margin-top: 12px;
-            padding: 8px 16px;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .close-button:hover {
-            background-color: #c53030;
-        }
-
-        .loading {
-            text-align: center;
-            color: #718096;
-            font-size: 14px;
-            margin: 16px 0;
-        }
+        .article-fullscreen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; overflow-y: auto; }
+        .article-fullscreen-content { background-color: #ffffff; padding: 16px; border-radius: 10px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-button { background-color: #e53e3e; margin-top: 12px; padding: 8px 16px; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+        .close-button:hover { background-color: #c53030; }
 
         @media (max-width: 600px) {
-            .sidebar {
-                display: none;
-            }
-
-            .mobile-nav {
-                display: block;
-            }
-
-            .topbar {
-                padding: 0 12px;
-                height: 48px;
-            }
-
-            .topbar .logo {
-                font-size: 18px;
-            }
-
-            .topbar .search-bar {
-                margin-left: 12px;
-            }
-
-            .topbar .search-bar input {
-                font-size: 13px;
-                padding: 6px 10px;
-                border-radius: 14px;
-            }
-
-            .content {
-                margin-left: 0;
-                width: 100%;
-                padding: 64px 12px 64px;
-            }
-
-            .articles {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .article {
-                border-radius: 8px;
-                padding: 10px;
-            }
-
-            .article h2 {
-                font-size: 16px;
-            }
-
-            .article div, .article .author, .article .likes, .article .like-button, .article .date {
-                font-size: 13px;
-            }
-
-            .author-header {
-                padding: 12px;
-                border-radius: 8px;
-            }
-
-            .author-header h1 {
-                font-size: 22px;
-            }
-
-            .author-header p {
-                font-size: 13px;
-            }
-
-            .author-stats {
-                font-size: 13px;
-            }
-
-            .article-fullscreen-content {
-                width: 95%;
-                padding: 12px;
-                border-radius: 8px;
-                max-height: 90vh;
-            }
-
-            .article-fullscreen-content h2 {
-                font-size: 20px;
-            }
-
-            .article-fullscreen-content div, .article-fullscreen-content .author, .article-fullscreen-content .likes, .article-fullscreen-content .date {
-                font-size: 13px;
-            }
-
-            .article-fullscreen-content .like-button {
-                font-size: 14px;
-            }
+            .sidebar { display: none; }
+            .mobile-nav { display: block; }
+            .topbar { padding: 0 12px; height: 48px; }
+            .topbar .logo { font-size: 18px; }
+            .content { margin-left: 0; width: 100%; padding: 64px 12px 64px; }
+            .articles { grid-template-columns: 1fr; gap: 12px; }
+            .author-header { flex-direction: column; text-align: center; padding: 12px; }
+            .author-avatar { width: 64px; height: 64px; }
+            .author-info h1 { font-size: 22px; }
+            .author-info p { font-size: 13px; }
+            .author-stats { font-size: 13px; justify-content: center; }
         }
     </style>
 </head>
@@ -458,10 +151,11 @@
             <input type="text" id="searchInput" placeholder="Пошук статей автора...">
         </div>
     </div>
+
     <div class="container">
         <div class="sidebar">
             <button class="active" onclick="window.location.href='index.html'">Головна</button>
-             <button onclick="window.location.href='topgazet.html'">ТОП-10 Тижня 🏆</button>
+            <button onclick="window.location.href='topgazet.html'">ТОП-10 Тижня</button>
             <button id="createArticleBtn" style="display: none;" onclick="window.location.href='word.html'">+</button>
             <button onclick="window.location.href='account.html'">Акаунт</button>
             <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін-панель</button>
@@ -469,20 +163,28 @@
             <button id="registerBtn" onclick="window.location.href='register.html'">Зареєструватися</button>
             <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
         </div>
+
         <div class="content">
             <div id="loading" class="loading">Завантаження профілю...</div>
+
             <div id="authorHeader" class="author-header" style="display: none;">
-                <h1 id="authorName"></h1>
-                <p id="authorBio"></p>
-                <div class="author-stats">
-                    <div><span id="articlesCount">0</span> статей</div>
-                    <div><span id="totalLikes">0</span> лайків</div>
+                <img id="authorAvatar" class="author-avatar" src="" alt="Аватар автора">
+                <div class="author-info">
+                    <h1 id="authorName"></h1>
+                    <p id="authorBio"></p>
+                    <a id="authorLink" class="author-link" href="#" target="_blank" style="display: none;"></a>
+                    <div class="author-stats">
+                        <div><span id="articlesCount">0</span> статей</div>
+                        <div><span id="totalLikes">0</span> лайків</div>
+                    </div>
                 </div>
             </div>
+
             <div id="articles" class="articles"></div>
             <div id="error" class="error"></div>
         </div>
     </div>
+
     <div class="mobile-nav">
         <div class="nav-buttons">
             <button class="nav-button active" onclick="window.location.href='index.html'">Головна</button>
@@ -491,6 +193,7 @@
             <button class="nav-button" id="navAdminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін</button>
         </div>
     </div>
+
     <div id="articleFullscreen" class="article-fullscreen">
         <div class="article-fullscreen-content">
             <h2 id="fullscreenTitle"></h2>
@@ -515,8 +218,7 @@
             projectId: "newpaper-6cb18",
             storageBucket: "newpaper-6cb18.firebasestorage.app",
             messagingSenderId: "284037128087",
-            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
-            measurementId: "G-0EMERY88FL"
+            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -527,7 +229,7 @@
         let currentUser = null;
         let userLikes = {};
 
-        // Витягування параметра автора з URL
+        // Параметр автора з URL
         const urlParams = new URLSearchParams(window.location.search);
         currentAuthor = urlParams.get('author');
         if (!currentAuthor) {
@@ -536,7 +238,6 @@
             throw new Error('Автор не вказано.');
         }
 
-        // Перенаправлення на профіль або головну сторінку
         window.goToProfileOrHome = async () => {
             const user = auth.currentUser;
             if (user) {
@@ -547,7 +248,7 @@
                     const username = userData?.username || 'Користувач';
                     window.location.href = `profile.html?author=${encodeURIComponent(username)}`;
                 } catch (error) {
-                    document.getElementById('error').textContent = 'Помилка завантаження даних користувача: ' + error.message;
+                    document.getElementById('error').textContent = 'Помилка: ' + error.message;
                     window.location.href = 'index.html';
                 }
             } else {
@@ -555,7 +256,6 @@
             }
         };
 
-        // Обробка стану авторизації
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             const loginBtn = document.getElementById('loginBtn');
@@ -565,14 +265,12 @@
             const navCreateArticle = document.getElementById('navCreateArticle');
             const adminBtn = document.getElementById('adminBtn');
             const navAdminBtn = document.getElementById('navAdminBtn');
-            const errorDiv = document.getElementById('error');
 
             if (user) {
                 try {
                     const userRef = ref(db, 'users/' + user.uid);
                     const snapshot = await get(userRef);
                     const userData = snapshot.val();
-                    const username = userData?.username || 'Користувач';
                     loginBtn.style.display = 'none';
                     registerBtn.style.display = 'none';
                     logoutBtn.style.display = 'block';
@@ -583,14 +281,13 @@
                         navAdminBtn.style.display = 'block';
                     }
 
-                    // Завантаження лайків користувача
                     const userLikesRef = ref(db, `user_likes/${user.uid}`);
                     onValue(userLikesRef, (snapshot) => {
                         userLikes = snapshot.val() || {};
                         updateLikeButtons();
                     });
                 } catch (error) {
-                    errorDiv.textContent = 'Помилка завантаження даних: ' + error.message;
+                    console.error(error);
                 }
             } else {
                 loginBtn.style.display = 'block';
@@ -605,7 +302,6 @@
             }
         });
 
-        // Завантаження всіх статей
         const articlesRef = ref(db, 'articles');
         onValue(articlesRef, (snapshot) => {
             allArticles = [];
@@ -618,7 +314,6 @@
             loadAuthorProfile();
         });
 
-        // Завантаження профілю автора та фільтрація статей
         async function loadAuthorProfile() {
             if (!currentAuthor) return;
 
@@ -628,28 +323,57 @@
                 const usersSnapshot = await get(usersRef);
                 const users = usersSnapshot.val();
                 let authorData = null;
+                let authorUid = null;
+
                 if (users) {
                     for (const [uid, data] of Object.entries(users)) {
                         if (data.username === currentAuthor) {
                             authorData = data;
+                            authorUid = uid;
                             break;
                         }
                     }
                 }
 
+                const header = document.getElementById('authorHeader');
+                const avatarImg = document.getElementById('authorAvatar');
+                const nameEl = document.getElementById('authorName');
+                const bioEl = document.getElementById('authorBio');
+                const linkEl = document.getElementById('authorLink');
+
                 if (authorData) {
-                    document.getElementById('authorName').textContent = authorData.username;
-                    document.getElementById('authorBio').textContent = authorData.bio || 'Опис відсутній.';
-                    document.getElementById('authorHeader').style.display = 'block';
+                    nameEl.textContent = authorData.username;
+                    bioEl.textContent = authorData.bio || 'Опис відсутній.';
+
+                    // Фото
+                    if (authorData.avatar) {
+                        avatarImg.src = authorData.avatar;
+                    } else {
+                        avatarImg.src = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 80 80%27%3E%3Crect width=%2780%27 height=%2780%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2740%27 y=%2750%27 font-size=%2736%27 text-anchor=%27middle%27 fill=%27%2395a5a6%27%3E?%3C/text%3E%3C/svg%3E';
+                    }
+
+                    // Посилання
+                    if (authorData.link) {
+                        const cleanLink = authorData.link.replace(/^https?:\/\//, '').split('/')[0];
+                        linkEl.href = authorData.link;
+                        linkEl.textContent = cleanLink;
+                        linkEl.style.display = 'inline-flex';
+                    } else {
+                        linkEl.style.display = 'none';
+                    }
+
+                    header.style.display = 'flex';
                 } else {
-                    document.getElementById('authorName').textContent = currentAuthor;
-                    document.getElementById('authorBio').textContent = 'Профіль не знайдено.';
-                    document.getElementById('authorHeader').style.display = 'block';
+                    nameEl.textContent = currentAuthor;
+                    bioEl.textContent = 'Профіль не знайдено.';
+                    avatarImg.src = 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 80 80%27%3E%3Crect width=%2780%27 height=%2780%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2740%27 y=%2750%27 font-size=%2736%27 text-anchor=%27middle%27 fill=%27%2395a5a6%27%3E?%3C/text%3E%3C/svg%3E';
+                    linkEl.style.display = 'none';
+                    header.style.display = 'flex';
                 }
 
                 const authorArticles = allArticles
                     .filter(article => article.author === currentAuthor)
-                    .sort((a, b) => b.timestamp - a.timestamp); // Сортування за датою (новіші першими)
+                    .sort((a, b) => b.timestamp - a.timestamp);
 
                 document.getElementById('articlesCount').textContent = authorArticles.length;
                 const totalLikes = authorArticles.reduce((sum, art) => sum + (art.likes || 0), 0);
@@ -659,7 +383,7 @@
                 document.getElementById('loading').style.display = 'none';
             } catch (error) {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('error').textContent = 'Помилка завантаження профілю: ' + error.message;
+                document.getElementById('error').textContent = 'Помилка: ' + error.message;
             }
         }
 
@@ -686,7 +410,7 @@
                     <p class="author">Автор: ${article.author}</p>
                     <p class="date">Опубліковано: ${formatDate(article.timestamp)}</p>
                     <p class="likes">Лайки: ${article.likes || 0}</p>
-                    <button class="like-button ${isLiked ? 'liked' : ''}" data-id="${article.id}">👍 ${isLiked ? 'Лайкнуто' : 'Лайк'}</button>
+                    <button class="like-button ${isLiked ? 'liked' : ''}" data-id="${article.id}">Лайк</button>
                 `;
                 articleElement.querySelector('.like-button').addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -707,52 +431,45 @@
                 const articleId = btn.dataset.id;
                 if (currentUser && userLikes[articleId]) {
                     btn.classList.add('liked');
-                    btn.textContent = '👍 Лайкнуто';
+                    btn.textContent = 'Лайкнуто';
                 } else {
                     btn.classList.remove('liked');
-                    btn.textContent = '👍 Лайк';
+                    btn.textContent = 'Лайк';
                 }
             });
         }
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const filteredArticles = allArticles
-                .filter(article => article.author === currentAuthor &&
-                    (article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query)))
+            const filtered = allArticles
+                .filter(a => a.author === currentAuthor &&
+                    (a.title.toLowerCase().includes(query) || a.content.toLowerCase().includes(query)))
                 .sort((a, b) => b.timestamp - a.timestamp);
-            renderArticles(filteredArticles);
+            renderArticles(filtered);
         });
 
         async function toggleLike(articleId) {
-            if (!currentUser) {
-                alert('Увійдіть, щоб поставити лайк!');
-                return;
-            }
+            if (!currentUser) { alert('Увійдіть, щоб лайкнути!'); return; }
             try {
                 const userLikesRef = ref(db, `user_likes/${currentUser.uid}/${articleId}`);
-                const snapshot = await get(userLikesRef);
-                if (snapshot.exists()) {
-                    alert('Ви вже лайкнули цю статтю!');
-                    return;
-                }
+                const snap = await get(userLikesRef);
+                if (snap.exists()) { alert('Вже лайкнуто!'); return; }
+
                 const articleRef = ref(db, `articles/${articleId}`);
-                const articleSnapshot = await get(articleRef);
-                const articleData = articleSnapshot.val();
-                const currentLikes = articleData?.likes || 0;
-                await set(child(articleRef, 'likes'), currentLikes + 1);
+                const artSnap = await get(articleRef);
+                const likes = (artSnap.val()?.likes || 0) + 1;
+                await set(child(articleRef, 'likes'), likes);
                 await set(userLikesRef, true);
 
-                // Оновлення локальних даних
                 const article = allArticles.find(a => a.id === articleId);
-                if (article) article.likes = currentLikes + 1;
+                if (article) article.likes = likes;
                 userLikes[articleId] = true;
 
                 const authorArticles = allArticles.filter(a => a.author === currentAuthor);
-                document.getElementById('totalLikes').textContent = authorArticles.reduce((sum, art) => sum + (art.likes || 0), 0);
+                document.getElementById('totalLikes').textContent = authorArticles.reduce((s, a) => s + (a.likes || 0), 0);
                 renderArticles(authorArticles);
-            } catch (error) {
-                document.getElementById('error').textContent = 'Помилка лайку: ' + error.message;
+            } catch (e) {
+                document.getElementById('error').textContent = 'Помилка: ' + e.message;
             }
         }
 
@@ -762,14 +479,11 @@
             document.getElementById('fullscreenAuthor').textContent = `Автор: ${article.author}`;
             document.getElementById('fullscreenDate').textContent = `Опубліковано: ${formatDate(article.timestamp)}`;
             document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
-            const likeBtn = document.getElementById('fullscreenLikeButton');
-            const isLiked = currentUser && userLikes[article.id];
-            likeBtn.className = `like-button ${isLiked ? 'liked' : ''}`;
-            likeBtn.textContent = isLiked ? '👍 Лайкнуто' : '👍 Лайк';
-            likeBtn.onclick = (e) => {
-                e.stopPropagation();
-                toggleLike(article.id);
-            };
+            const btn = document.getElementById('fullscreenLikeButton');
+            const liked = currentUser && userLikes[article.id];
+            btn.className = `like-button ${liked ? 'liked' : ''}`;
+            btn.textContent = liked ? 'Лайкнуто' : 'Лайк';
+            btn.onclick = (e) => { e.stopPropagation(); toggleLike(article.id); };
             document.getElementById('articleFullscreen').style.display = 'flex';
         }
 
@@ -782,15 +496,13 @@
                 await signOut(auth);
                 alert('Вихід успішний!');
                 window.location.href = 'index.html';
-            } catch (error) {
-                document.getElementById('error').textContent = 'Помилка виходу: ' + error.message;
+            } catch (e) {
+                document.getElementById('error').textContent = 'Помилка: ' + e.message;
             }
         };
 
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(() => console.log('Service Worker registered'))
-                .catch((error) => console.error('Service Worker registration failed:', error));
+            navigator.serviceWorker.register('/sw.js').catch(console.error);
         }
     </script>
 </body>
