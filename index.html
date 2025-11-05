@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" manifest="/manifest.json">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,92 +9,74 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/icon.png">
-    <link rel="icon" href="/icon.png" type="image/png">
     <title>Електронна газета</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #3182ce;
-            --primary-dark: #2b6cb0;
-            --bg: #f9fafb;
-            --card: #ffffff;
-            --text: #1a202c;
-            --text-light: #4a5568;
-            --border: #e2e8f0;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             margin: 0;
             font-family: 'Roboto', Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: #f9fafb;
+            color: #1a202c;
             min-height: 100vh;
-            padding-top: 60px;
         }
 
         .container {
             display: flex;
-            min-height: calc(100vh - 60px);
+            min-height: 100vh;
         }
 
-        /* Topbar */
-        .topbar {
+        .mobile-nav {
+            display: none;
             position: fixed;
-            top: 0;
+            bottom: 0;
             left: 0;
             right: 0;
-            height: 60px;
-            background-color: var(--card);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
+            background-color: #ffffff;
+            border-top: 1px solid #e2e8f0;
+            padding: 10px;
             z-index: 1000;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .topbar .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-right: 20px;
-            text-decoration: none;
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
         }
 
-        .topbar .search-bar {
-            flex-grow: 1;
-            max-width: 600px;
+        .nav-button {
+            padding: 10px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            color: #1a202c;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.2s;
         }
 
-        .topbar .search-bar input {
-            width: 100%;
-            padding: 10px 16px;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            font-size: 16px;
-            background-color: var(--bg);
-            transition: all 0.2s;
+        .nav-button:hover {
+            background-color: #f1f5f9;
         }
 
-        .topbar .search-bar input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        .nav-button.active {
+            background-color: #e2e8f0;
+            font-weight: 500;
         }
 
-        /* Sidebar */
+        @media (max-width: 600px) {
+            .mobile-nav {
+                display: block;
+            }
+        }
+
         .sidebar {
             width: 240px;
-            background-color: var(--card);
+            background-color: #ffffff;
             padding: 20px;
-            border-right: 1px solid var(--border);
-            position: sticky;
+            border-right: 1px solid #e2e8f0;
+            position: fixed;
             top: 60px;
-            height: calc(100vh - 60px);
+            bottom: 0;
             overflow-y: auto;
         }
 
@@ -107,7 +89,7 @@
             border: none;
             text-align: left;
             font-size: 16px;
-            color: var(--text);
+            color: #1a202c;
             cursor: pointer;
             border-radius: 8px;
             transition: background-color 0.2s;
@@ -122,23 +104,62 @@
             font-weight: 500;
         }
 
-        /* Content */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .topbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #3182ce;
+            margin-right: 20px;
+        }
+
+        .topbar .search-bar {
+            flex-grow: 1;
+            max-width: 600px;
+        }
+
+        .topbar .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 16px;
+            background-color: #f9fafb;
+        }
+
+        .topbar .search-bar input:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
         .content {
-            flex: 1;
-            padding: 20px;
-            margin-left: 0;
-            transition: margin-left 0.3s;
+            margin-left: 300px;
+            padding: 80px 20px 20px;
+            width: calc(100% - 240px);
+            float: left;
         }
 
         .articles {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 20px;
-            margin-top: 20px;
         }
 
         .article {
-            background-color: var(--card);
+            background-color: #ffffff;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             padding: 15px;
@@ -153,13 +174,13 @@
 
         .article h2 {
             font-size: 20px;
-            color: var(--primary-dark);
-            margin: 0 0 10px;
+            color: #2b6cb0;
+            margin-bottom: 10px;
         }
 
         .article div {
             font-size: 16px;
-            color: var(--text-light);
+            color: #4a5568;
             margin-bottom: 10px;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -167,55 +188,120 @@
             overflow: hidden;
         }
 
+        .article .author {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+        }
+
         .article .author span {
-            color: var(--primary);
+            color: #3182ce;
             cursor: pointer;
             text-decoration: underline;
             font-weight: 500;
         }
 
         .article .author span:hover {
-            color: var(--primary-dark);
+            color: #2b6cb0;
         }
 
         .article .likes {
             font-size: 14px;
-            color: var(--primary);
-            margin: 10px 0 5px;
+            color: #3182ce;
+            margin-top: 10px;
         }
 
         .article .like-button {
             background: none;
             border: none;
-            color: var(--primary);
+            color: #3182ce;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
+            margin-top: 5px;
         }
 
         .article .like-button:hover {
-            color: var(--primary-dark);
+            color: #2b6cb0;
         }
 
-        /* Fullscreen */
+        .error {
+            color: #e53e3e;
+            font-size: 14px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
         .article-fullscreen {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            padding: 20px;
         }
 
         .article-fullscreen-content {
-            background-color: var(--card);
+            background-color: #ffffff;
             padding: 20px;
             border-radius: 12px;
             width: 90%;
             max-width: 700px;
             max-height: 80vh;
             overflow-y: auto;
+        }
+
+        .article-fullscreen-content h2 {
+            font-size: 24px;
+            color: #2b6cb0;
+            margin-bottom: 15px;
+        }
+
+        .article-fullscreen-content div {
+            font-size: 16px;
+            color: #4a5568;
+        }
+
+        .article-fullscreen-content .author {
+            font-size: 14px;
+            color: #718096;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        .article-fullscreen-content .author span {
+            color: #3182ce;
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        .article-fullscreen-content .author span:hover {
+            color: #2b6cb0;
+        }
+
+        .article-fullscreen-content .likes {
+            font-size: 14px;
+            color: #3182ce;
+            margin-top: 10px;
+        }
+
+        .article-fullscreen-content .like-button {
+            background: none;
+            border: none;
+            color: #3182ce;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+
+        .article-fullscreen-content .like-button:hover {
+            background-color: #e6f0fa;
+            color: #2b6cb0;
         }
 
         .close-button {
@@ -226,184 +312,256 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            float: right;
         }
 
         .close-button:hover {
             background-color: #c53030;
         }
 
-        /* Mobile Nav */
-        .mobile-nav {
-            display: none;
+        .tutorial-modal {
             position: fixed;
-            bottom: 0;
+            top: 0;
             left: 0;
-            right: 0;
-            background-color: var(--card);
-            border-top: 1px solid var(--border);
-            padding: 8px;
-            z-index: 1000;
-            box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .nav-button {
-            padding: 10px;
-            background: none;
-            border: none;
-            font-size: 14px;
-            color: var(--text);
-            cursor: pointer;
-            border-radius: 8px;
-            flex: 1;
-            margin: 0 4px;
-        }
-
-        .nav-button.active {
-            background-color: #e2e8f0;
-            font-weight: 500;
-        }
-
-        /* Modals */
-        .tutorial-modal, .install-prompt {
-            position: fixed;
-            z-index: 2000;
-            background: rgba(0,0,0,0.5);
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
             display: none;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2000;
         }
 
-        .tutorial-content, .install-prompt > div {
-            background: var(--card);
+        .tutorial-content {
+            background-color: #ffffff;
             padding: 20px;
             border-radius: 12px;
-            max-width: 500px;
             width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
             text-align: center;
         }
 
+        .tutorial-content h2 {
+            font-size: 24px;
+            color: #2b6cb0;
+            margin-bottom: 15px;
+        }
+
+        .tutorial-content p {
+            font-size: 16px;
+            color: #4a5568;
+            margin-bottom: 10px;
+        }
+
+        .tutorial-content ul {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .tutorial-content button {
+            padding: 10px 20px;
+            background-color: #3182ce;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .tutorial-content button:hover {
+            background-color: #2b6cb0;
+        }
+
         .install-prompt {
-            bottom: 70px;
-            top: auto;
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            display: none;
             z-index: 1001;
         }
 
-        .install-prompt > div {
-            padding: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        .install-prompt button {
+            padding: 5px 15px;
+            background-color: #3182ce;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
+        .install-prompt button:hover {
+            background-color: #2b6cb0;
+        }
+
+        @media (max-width: 600px) {
             .sidebar {
                 display: none;
             }
-            .content {
-                padding: 15px;
+
+            .topbar {
+                padding: 0 15px;
             }
+
+            .topbar .logo {
+                font-size: 20px;
+            }
+
+            .topbar .search-bar input {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 70px 15px 70px;
+            }
+
             .articles {
                 grid-template-columns: 1fr;
             }
+
+            .article {
+                border-radius: 10px;
+                padding: 10px;
+            }
+
+            .article h2 {
+                font-size: 18px;
+            }
+
+            .article div, .article .author, .article .likes, .article .like-button {
+                font-size: 14px;
+            }
+
+            .article-fullscreen-content {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .article-fullscreen-content h2 {
+                font-size: 22px;
+            }
+
+            .article-fullscreen-content div, .article-fullscreen-content .author, .article-fullscreen-content .likes {
+                font-size: 14px;
+            }
+
+            .article-fullscreen-content .like-button {
+                font-size: 16px;
+            }
+
+            .tutorial-content {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .tutorial-content h2 {
+                font-size: 20px;
+            }
+
+            .tutorial-content p, .tutorial-content ul {
+                font-size: 14px;
+            }
+
+            .tutorial-content button {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            .install-prompt {
+                bottom: 60px;
+                left: 5px;
+                right: 5px;
+                padding: 8px;
+            }
+
+            .install-prompt button {
+                padding: 4px 12px;
+                font-size: 14px;
+            }
+
             .mobile-nav {
                 display: block;
             }
-            .install-prompt {
-                bottom: 70px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .topbar { padding: 0 12px; }
-            .topbar .logo { font-size: 20px; }
-            .topbar .search-bar input { font-size: 14px; padding: 8px 12px; }
         }
     </style>
 </head>
 <body>
     <div class="topbar">
-        <a href="index.html" class="logo">Газета</a>
+        <div class="logo">Газета</div>
         <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Пошук статей..." aria-label="Пошук">
+            <input type="text" id="searchInput" placeholder="Пошук статей...">
         </div>
     </div>
-
     <div class="container">
         <div class="sidebar">
-            <button class="active" onclick="location.href='index.html'">Головна</button>
-            <button onclick="location.href='topgazet.html'">ТОП-10 Тижня 🏆</button>
-            <button id="createArticleBtn" style="display: none;" onclick="location.href='word.html'">+ Створити</button>
-            <button onclick="location.href='account.html'">Акаунт</button>
-            <button id="adminBtn" style="display: none;" onclick="location.href='admin.html'">Адмін-панель</button>
-            <button id="loginBtn" onclick="location.href='login.html'">Увійти</button>
-            <button id="registerBtn" onclick="location.href='register.html'">Зареєструватися</button>
+            <button class="active" onclick="window.location.href='index.html'">Головна</button>
+            <button onclick="window.location.href='topgazet.html'">ТОП-10 Тижня 🏆</button>
+            <button id="createArticleBtn" style="display: none;" onclick="window.location.href='word.html'">+</button>
+            <button onclick="window.location.href='account.html'">Акаунт</button>
+            <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін-панель</button>
+            <button id="loginBtn" onclick="window.location.href='login.html'">Увійти</button>
+            <button id="registerBtn" onclick="window.location.href='register.html'">Зареєструватися</button>
             <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
         </div>
-
         <div class="content">
             <h1 id="welcomeMessage">Електронна газета</h1>
             <div id="articles" class="articles"></div>
             <div id="error" class="error"></div>
         </div>
     </div>
-
-    <!-- Fullscreen Article -->
-    <div id="articleFullscreen" class="article-fullscreen" role="dialog" aria-modal="true">
+    <div id="articleFullscreen" class="article-fullscreen">
         <div class="article-fullscreen-content">
             <h2 id="fullscreenTitle"></h2>
             <div id="fullscreenContent"></div>
             <p id="fullscreenAuthor" class="author"></p>
             <p id="fullscreenLikes" class="likes"></p>
-            <button id="fullscreenLikeButton" class="like-button" style="display: none;">👍 Лайкнути</button>
+            <button id="fullscreenLikeButton" class="like-button" style="display: none;" onclick="toggleLike()">👍</button>
             <button class="close-button" onclick="closeFullscreen()">Закрити</button>
         </div>
     </div>
-
-    <!-- Tutorial Modal -->
     <div id="tutorialModal" class="tutorial-modal">
         <div class="tutorial-content">
-            <h2>Ласкаво просимо!</h2>
-            <p>Ознайомтеся з основними функціями:</p>
+            <h2>Ласкаво просимо до Електронної газети!</h2>
+            <p>Це ваш перший візит? Ознайомтеся з основними функціями:</p>
             <ul>
-                <li>Переглядайте статті</li>
-                <li>Ставте лайки (потрібен вхід)</li>
-                <li>Створюйте статті через "+"</li>
-                <li>Встановіть додаток на екран!</li>
+                <li>Переглядайте статті, натискаючи на картки у головному розділі.</li>
+                <li>Натисніть кнопку "Лайкнути" (👍), щоб оцінити статтю (потрібен вхід).</li>
+                <li>Створюйте власні статті через кнопку "+" у бічній панелі (після входу).</li>
+                <li>Увійдіть або зареєструйтесь, щоб отримати доступ до всіх функцій.</li>
+                <li>Перейдіть до "Акаунт", щоб редагувати свій профіль.</li>
+                <li>Встановіть додаток на домашній екран для зручного доступу!</li>
             </ul>
             <button onclick="closeTutorial()">Розумію</button>
         </div>
     </div>
-
-    <!-- Install Prompt -->
     <div id="installPrompt" class="install-prompt">
-        <div>
-            <p>Встановіть додаток для зручного доступу!</p>
-            <button onclick="installPWA()">Встановити</button>
-            <button onclick="hideInstallPrompt()" style="margin-left:8px; background:#718096;">Пізніше</button>
-        </div>
+        <p>Встановіть Електронну газету на домашній екран для кращого досвіду!</p>
+        <button onclick="installPWA()">Встановити</button>
     </div>
-
-    <!-- Mobile Nav -->
     <div class="mobile-nav">
         <div class="nav-buttons">
-            <button class="nav-button active" onclick="location.href='index.html'">Головна</button>
-            <button class="nav-button" id="navCreateArticle" style="display: none;" onclick="location.href='word.html'">+ Створити</button>
-            <button class="nav-button" onclick="location.href='account.html'">Акаунт</button>
-            <button class="nav-button" id="navAdminBtn" style="display: none;" onclick="location.href='admin.html'">Адмін</button>
+            <button class="nav-button active" onclick="window.location.href='index.html'">Головна</button>
+            <button class="nav-button" id="navCreateArticle" style="display: none;" onclick="window.location.href='word.html'">+</button>
+            <button class="nav-button" onclick="window.location.href='account.html'">Акаунт</button>
+            <button class="nav-button" id="navAdminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
@@ -412,148 +570,174 @@
             projectId: "newpaper-6cb18",
             storageBucket: "newpaper-6cb18.firebasestorage.app",
             messagingSenderId: "284037128087",
-            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2"
+            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
+            measurementId: "G-0EMERY88FL"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
         let currentArticleId = null;
-        let deferredPrompt = null;
 
-        // PWA Install Logic
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            if (!localStorage.getItem('installPromptShown')) {
-                document.getElementById('installPrompt').style.display = 'flex';
-            }
-        });
-
-        window.installPWA = () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then(() => {
-                    deferredPrompt = null;
-                    hideInstallPrompt();
-                });
-            }
-        };
-
-        window.hideInstallPrompt = () => {
-            localStorage.setItem('installPromptShown', 'true');
-            document.getElementById('installPrompt').style.display = 'none';
-        };
-
-        // Auth State
         onAuthStateChanged(auth, async (user) => {
-            const els = {
-                welcome: document.getElementById('welcomeMessage'),
-                loginBtn: document.getElementById('loginBtn'),
-                registerBtn: document.getElementById('registerBtn'),
-                logoutBtn: document.getElementById('logoutBtn'),
-                createBtn: document.getElementById('createArticleBtn'),
-                navCreate: document.getElementById('navCreateArticle'),
-                adminBtn: document.getElementById('adminBtn'),
-                navAdmin: document.getElementById('navAdminBtn'),
-                likeBtn: document.getElementById('fullscreenLikeButton'),
-                tutorial: document.getElementById('tutorialModal')
-            };
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const createArticleBtn = document.getElementById('createArticleBtn');
+            const navCreateArticle = document.getElementById('navCreateArticle');
+            const adminBtn = document.getElementById('adminBtn');
+            const navAdminBtn = document.getElementById('navAdminBtn');
+            const errorDiv = document.getElementById('error');
+            const fullscreenLikeButton = document.getElementById('fullscreenLikeButton');
+            const tutorialModal = document.getElementById('tutorialModal');
+            const installPrompt = document.getElementById('installPrompt');
 
             if (user) {
-                const snap = await get(ref(db, 'users/' + user.uid));
-                const data = snap.val();
-                els.welcome.textContent = `Вітаємо, ${data?.username || 'Користувач'}!`;
-                [els.loginBtn, els.registerBtn].forEach(el => el.style.display = 'none');
-                [els.logoutBtn, els.createBtn, els.navCreate, els.likeBtn].forEach(el => el.style.display = 'block');
-                if (user.email === 'petro.hryhorenko@gmail.com') {
-                    [els.adminBtn, els.navAdmin].forEach(el => el.style.display = 'block');
-                }
-                if (!localStorage.getItem('tutorialShown')) {
-                    els.tutorial.style.display = 'flex';
-                    localStorage.setItem('tutorialShown', 'true');
+                try {
+                    const userRef = ref(db, 'users/' + user.uid);
+                    const snapshot = await get(userRef);
+                    const userData = snapshot.val();
+                    const username = userData?.username || 'Користувач';
+                    welcomeMessage.textContent = `Вітаємо, ${username}!`;
+                    loginBtn.style.display = 'none';
+                    registerBtn.style.display = 'none';
+                    logoutBtn.style.display = 'block';
+                    createArticleBtn.style.display = 'block';
+                    navCreateArticle.style.display = 'block';
+                    fullscreenLikeButton.style.display = 'block';
+                    if (user.email === 'petro.hryhorenko@gmail.com') {
+                        adminBtn.style.display = 'block';
+                        navAdminBtn.style.display = 'block';
+                    }
+
+                    if (!localStorage.getItem('tutorialShown')) {
+                        tutorialModal.style.display = 'flex';
+                        localStorage.setItem('tutorialShown', 'true');
+                    }
+                } catch (error) {
+                    errorDiv.textContent = 'Помилка завантаження даних: ' + error.message;
                 }
             } else {
-                els.welcome.textContent = 'Електронна газета';
-                [els.loginBtn, els.registerBtn].forEach(el => el.style.display = 'block');
-                [els.logoutBtn, els.createBtn, els.navCreate, els.adminBtn, els.navAdmin, els.likeBtn].forEach(el => el.style.display = 'none');
+                welcomeMessage.textContent = 'Електронна газета';
+                loginBtn.style.display = 'block';
+                registerBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                createArticleBtn.style.display = 'none';
+                navCreateArticle.style.display = 'none';
+                adminBtn.style.display = 'none';
+                navAdminBtn.style.display = 'none';
+                fullscreenLikeButton.style.display = 'none';
             }
+
+            let deferredPrompt;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                if (!localStorage.getItem('installPromptShown')) {
+                    installPrompt.style.display = 'block';
+                    localStorage.setItem('installPromptShown', 'true');
+                }
+            });
         });
 
-        // Load Articles
         let allArticles = [];
-        onValue(ref(db, 'articles'), (snapshot) => {
-            const container = document.getElementById('articles');
-            container.innerHTML = '';
+        const articlesRef = ref(db, 'articles');
+        onValue(articlesRef, (snapshot) => {
+            const articlesDiv = document.getElementById('articles');
+            articlesDiv.innerHTML = '';
             allArticles = [];
-            const data = snapshot.val();
-            if (data) {
-                allArticles = Object.entries(data)
-                    .filter(([_, a]) => a.status === 'approved')
-                    .map(([id, a]) => ({ id, ...a }));
+            const articles = snapshot.val();
+            if (articles) {
+                allArticles = Object.entries(articles)
+                    .filter(([_, article]) => article.status === 'approved')
+                    .map(([id, article]) => ({ id, ...article }));
                 renderArticles(allArticles);
             } else {
-                container.innerHTML = '<p style="text-align:center;color:#718096;">Статей поки немає.</p>';
+                articlesDiv.innerHTML = '<p>Статей поки немає.</p>';
             }
         });
 
         function renderArticles(articles) {
-            const container = document.getElementById('articles');
-            container.innerHTML = '';
-            articles.forEach(a => {
-                const el = document.createElement('div');
-                el.className = 'article';
-                el.innerHTML = `
-                    <h2>${a.title}</h2>
-                    <div>${a.content}</div>
-                    <p class="author"><span onclick="openAuthorProfile('${a.author}')">Автор: ${a.author}</span></p>
-                    <p class="likes">Лайки: ${a.likes || 0}</p>
-                    <button class="like-button" onclick="event.stopPropagation(); toggleLike('${a.id}')">👍</button>
+            const articlesDiv = document.getElementById('articles');
+            articlesDiv.innerHTML = '';
+            articles.forEach(article => {
+                const articleElement = document.createElement('div');
+                articleElement.className = 'article';
+                articleElement.innerHTML = `
+                    <h2>${article.title}</h2>
+                    <div>${article.content}</div>
+                    <p class="author"><span onclick="openAuthorProfile('${article.author}')">Автор: ${article.author}</span></p>
+                    <p class="likes">Лайки: ${article.likes || 0}</p>
+                    <button class="like-button" onclick="toggleLike('${article.id}')">👍</button>
                 `;
-                el.onclick = (e) => {
-                    if (!e.target.closest('button, span')) openFullscreen(a);
-                };
-                container.appendChild(el);
+                articleElement.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'SPAN' && e.target.tagName !== 'BUTTON') {
+                        openFullscreen(article);
+                    }
+                });
+                articlesDiv.appendChild(articleElement);
             });
         }
 
-        // Search
         document.getElementById('searchInput').addEventListener('input', (e) => {
-            const q = e.target.value.toLowerCase();
-            const filtered = allArticles.filter(a =>
-                a.title.toLowerCase().includes(q) || a.content.toLowerCase().includes(q)
+            const query = e.target.value.toLowerCase();
+            const articlesDiv = document.getElementById('articles');
+            articlesDiv.innerHTML = '';
+            const filteredArticles = allArticles.filter(article =>
+                article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query)
             );
-            renderArticles(filtered.length ? filtered : []);
-            if (!filtered.length) {
-                document.getElementById('articles').innerHTML = '<p style="text-align:center;color:#718096;">Нічого не знайдено.</p>';
+            if (filteredArticles.length > 0) {
+                renderArticles(filteredArticles);
+            } else {
+                articlesDiv.innerHTML = '<p>Нічого не знайдено.</p>';
             }
         });
 
-        // Like
-        window.toggleLike = async (id) => {
+        async function toggleLike(articleId) {
             const user = auth.currentUser;
-            if (!user) return alert('Увійдіть, щоб лайкнути!');
-            const userLikeRef = ref(db, `user_likes/${user.uid}/${id}`);
-            if ((await get(userLikeRef)).exists()) return alert('Вже лайкнуто!');
-            const artRef = ref(db, `articles/${id}`);
-            const snap = await get(artRef);
-            const art = snap.val();
-            await set(ref(db, `articles/${id}/likes`), (art.likes || 0) + 1);
-            await set(userLikeRef, true);
-            allArticles = allArticles.map(a => a.id === id ? { ...a, likes: (a.likes || 0) + 1 } : a);
-            if (currentArticleId === id) {
-                document.getElementById('fullscreenLikes').textContent = `Лайки: ${(art.likes || 0) + 1}`;
+            if (!user) {
+                alert('Увійдіть, щоб поставити лайк!');
+                return;
             }
+            try {
+                const likesRef = ref(db, `articles/${articleId}/likes`);
+                const userLikesRef = ref(db, `user_likes/${user.uid}/${articleId}`);
+                const snapshot = await get(userLikesRef);
+                if (snapshot.exists()) {
+                    alert('Ви вже лайкнули цю статтю!');
+                    return;
+                }
+                const articleSnapshot = await get(ref(db, `articles/${articleId}`));
+                const currentLikes = articleSnapshot.val()?.likes || 0;
+                await set(likesRef, currentLikes + 1);
+                await set(userLikesRef, true);
+                const updatedArticle = { ...articleSnapshot.val(), likes: currentLikes + 1 };
+                openFullscreen(updatedArticle);
+                renderArticles(allArticles.map(a => a.id === articleId ? { ...a, likes: currentLikes + 1 } : a));
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка лайку: ' + error.message;
+            }
+        }
+
+        window.toggleLike = async () => {
+            await toggleLike(currentArticleId);
+            const articleSnapshot = await get(ref(db, `articles/${currentArticleId}`));
+            const article = articleSnapshot.val();
+            document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
         };
 
-        // Fullscreen
-        window.openFullscreen = (article) => {
+        function openFullscreen(article) {
             currentArticleId = article.id;
             document.getElementById('fullscreenTitle').textContent = article.title;
             document.getElementById('fullscreenContent').innerHTML = article.content;
             document.getElementById('fullscreenAuthor').innerHTML = `<span onclick="openAuthorProfile('${article.author}')">Автор: ${article.author}</span>`;
             document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
             document.getElementById('articleFullscreen').style.display = 'flex';
+        }
+
+        window.openAuthorProfile = (author) => {
+            window.location.href = `accountpeople.html?author=${encodeURIComponent(author)}`;
         };
 
         window.closeFullscreen = () => {
@@ -561,23 +745,37 @@
             currentArticleId = null;
         };
 
-        window.openAuthorProfile = (author) => {
-            location.href = `accountpeople.html?author=${encodeURIComponent(author)}`;
-        };
-
         window.closeTutorial = () => {
             document.getElementById('tutorialModal').style.display = 'none';
         };
 
-        window.logout = async () => {
-            await signOut(auth);
-            location.href = 'index.html';
+        window.installPWA = () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    }
+                    deferredPrompt = null;
+                    document.getElementById('installPrompt').style.display = 'none';
+                });
+            }
         };
 
-        // Service Worker
+        window.logout = async () => {
+            try {
+                await signOut(auth);
+                alert('Вихід успішний!');
+                window.location.href = 'index.html';
+            } catch (error) {
+                document.getElementById('error').textContent = 'Помилка виходу: ' + error.message;
+            }
+        };
+
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js', { scope: '/' })
-                .catch(err => console.error('SW registration failed:', err));
+            navigator.serviceWorker.register('/sw.js')
+                .then(() => console.log('Service Worker registered'))
+                .catch((error) => console.error('Service Worker registration failed:', error));
         }
     </script>
 </body>
