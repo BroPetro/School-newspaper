@@ -1,4 +1,4 @@
-const CACHE_NAME = 'newspaper-cache-v2'; // Оновлено версію для очищення старого кешу
+const CACHE_NAME = 'newspaper-cache-v2'; // Оновлена версія для очищення старого кешу
 const urlsToCache = [
   '/',
   '/index.html',
@@ -36,75 +36,74 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
+    caches.keys()
+      .then((cacheNames) => Promise.all(
         cacheNames.map((cacheName) => {
           if (!cacheWhitelist.includes(cacheName)) {
             console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
+          return Promise.resolve(); // Повертаємо resolved Promise для пропущених кешів
         })
-      );
-    })
-    .then(() => {
-      // Активувати новий сервіс-воркер для всіх клієнтів
-      return self.clients.claim();
-    })
-    .catch((error) => {
-      console.error('Activation failed:', error);
-    })
+      ))
+      .then(() => self.clients.claim())
+      .catch((error) => {
+        console.error('Activation failed:', error);
+      })
   );
 });
 
+// Уніфікована функція для кешування успішної відповіді
+const cacheSuccessfulResponse = (request, response, cache) => {
+  if (response && response.status === 200 && response.type !== 'opaque') {
+    const responseToCache = response.clone();
+    cache.put(request, responseToCache);
+  }
+};
+
 // Обробка запитів
 self.addEventListener('fetch', (event) => {
-  // Перевірка, чи запит стосується Firebase (динамічні дані)
-  const isFirebaseRequest = event.request.url.includes('firebasedatabase.app') ||
-                           event.request.url.includes('firebasestorage.app');
+  const { request } = event;
+  const requestUrl = request.url;
+
+  // Визначення типу запиту
+  const isFirebaseRequest = requestUrl.includes('firebasedatabase.app') ||
+                            requestUrl.includes('firebasestorage.googleapis.com');
+
+  // Пропускаємо не-GET запити та запити до chrome-extension
+  if (request.method !== 'GET' || requestUrl.startsWith('chrome-extension://')) {
+    return;
+  }
 
   if (isFirebaseRequest) {
-    // Для Firebase використовуємо "Network, falling back to cache"
+    // Стратегія: Network → Cache → Offline
     event.respondWith(
-      fetch(event.request)
+      fetch(request)
         .then((networkResponse) => {
-          // Кешуємо успішну відповідь
-          if (networkResponse && networkResponse.status === 200) {
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          }
+          caches.open(CACHE_NAME).then((cache) => {
+            cacheSuccessfulResponse(request, networkResponse, cache);
+          });
           return networkResponse;
         })
-        .catch(() => {
-          // Якщо мережа недоступна, повертаємо з кешу
-          return caches.match(event.request)
-            .then((cachedResponse) => {
-              return cachedResponse || caches.match('/offline.html');
-            });
-        })
+        .catch(() => caches.match(request)
+          .then((cachedResponse) => cachedResponse || caches.match('/offline.html')))
     );
   } else {
-    // Для статичних ресурсів використовуємо "Cache, falling back to network"
+    // Стратегія: Cache → Network → Offline (для статичних ресурсів)
     event.respondWith(
-      caches.match(event.request)
+      caches.match(request)
         .then((cachedResponse) => {
           if (cachedResponse) {
             return cachedResponse;
           }
-          return fetch(event.request)
+          return fetch(request)
             .then((networkResponse) => {
-              if (networkResponse && networkResponse.status === 200) {
-                const responseToCache = networkResponse.clone();
-                caches.open(CACHE_NAME).then((cache) => {
-                  cache.put(event.request, responseToCache);
-                });
-              }
+              caches.open(CACHE_NAME).then((cache) => {
+                cacheSuccessfulResponse(request, networkResponse, cache);
+              });
               return networkResponse;
             })
-            .catch(() => {
-              return caches.match('/offline.html');
-            });
+            .catch(() => caches.match('/offline.html'));
         })
     );
   }
