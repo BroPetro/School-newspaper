@@ -165,58 +165,6 @@
             background-color: #2b6cb0;
         }
 
-        .coauthors-container {
-            margin: 15px 0;
-            padding: 10px;
-            background-color: #f8fafc;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .coauthors-container h3 {
-            margin: 0 0 10px 0;
-            font-size: 16px;
-            color: #2d3748;
-        }
-
-        .coauthor-input {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .coauthor-input input {
-            flex: 1;
-            margin: 0;
-        }
-
-        .coauthor-input button {
-            padding: 0 12px;
-            background-color: #e53e3e;
-            color: white;
-            font-weight: bold;
-        }
-
-        .coauthor-input button:hover {
-            background-color: #c53030;
-        }
-
-        .add-coauthor {
-            font-size: 14px;
-            color: #3182ce;
-            background: none;
-            border: none;
-            cursor: pointer;
-            text-decoration: underline;
-            margin-top: 5px;
-        }
-
-        .add-coauthor:disabled {
-            color: #a0aec0;
-            cursor: not-allowed;
-            text-decoration: none;
-        }
-
         .preview {
             margin-top: 20px;
             padding: 15px;
@@ -231,11 +179,15 @@
             margin-bottom: 10px;
         }
 
-        .preview .authors {
+        .preview p {
+            font-size: 16px;
+            color: #4a5568;
+        }
+
+        .preview .author {
             font-size: 14px;
             color: #718096;
             font-style: italic;
-            margin-bottom: 10px;
         }
 
         .error {
@@ -275,18 +227,119 @@
             font-weight: bold;
         }
 
+        #charCount {
+            font-size: 14px;
+            color: #718096;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .image-upload {
+            margin: 15px 0;
+        }
+
+        .image-upload label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #1a202c;
+        }
+
+        .image-upload input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            border: 1px dashed #e2e8f0;
+            border-radius: 8px;
+            background-color: #f9fafb;
+        }
+
+        #imagePreview {
+            margin-top: 10px;
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            display: none;
+        }
+
         @media (max-width: 600px) {
-            .sidebar { display: none; }
-            .topbar { padding: 0 15px; }
-            .topbar .logo { font-size: 20px; }
-            .content { margin-left: 0; width: 100%; padding: 70px 15px 70px; }
-            .create-article { padding: 15px; border-radius: 10px; box-shadow: none; }
-            .create-article h1 { font-size: 24px; color: #2b6cb0; }
-            .create-article input, .create-article textarea { font-size: 16px; padding: 10px; border: 2px solid #e2e8f0; background-color: #fff; }
-            .create-article .toolbar { padding: 5px; gap: 5px; }
-            .create-article .toolbar button { font-size: 12px; padding: 3px 6px; }
-            .create-article button[type="submit"], .create-article button[type="button"] { font-size: 16px; padding: 10px; background-color: #4299e1; border-radius: 10px; }
-            .mobile-nav { display: block; }
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                padding: 0 15px;
+            }
+
+            .topbar .logo {
+                font-size: 20px;
+            }
+
+            .content {
+                margin-left: 0;
+                width: 100%;
+                padding: 70px 15px 70px;
+            }
+
+            .create-article {
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: none;
+            }
+
+            .create-article h1 {
+                font-size: 24px;
+                color: #2b6cb0;
+            }
+
+            .create-article input, .create-article textarea {
+                font-size: 16px;
+                padding: 10px;
+                border: 2px solid #e2e8f0;
+                background-color: #fff;
+            }
+
+            .create-article .toolbar {
+                padding: 5px;
+                gap: 5px;
+            }
+
+            .create-article .toolbar button {
+                font-size: 12px;
+                padding: 3px 6px;
+            }
+
+            .create-article button[type="submit"], .create-article button[type="button"] {
+                font-size: 16px;
+                padding: 10px;
+                background-color: #4299e1;
+                border-radius: 10px;
+            }
+
+            .create-article button[type="submit"]:hover, .create-article button[type="button"]:hover {
+                background-color: #2b6cb0;
+            }
+
+            .preview h2 {
+                font-size: 18px;
+            }
+
+            .preview p, .preview .author {
+                font-size: 14px;
+            }
+
+            .error {
+                font-size: 14px;
+                font-weight: bold;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            #charCount {
+                font-size: 13px;
+            }
         }
     </style>
 </head>
@@ -309,14 +362,13 @@
             <div class="create-article">
                 <h1>Створити нову статтю</h1>
                 <form id="articleForm">
-                    <input type="text" id="articleTitle" placeholder="Заголовок статті" required>
-
-                    <div class="coauthors-container">
-                        <h3>Співучасники (макс. 3)</h3>
-                        <div id="coauthorsList"></div>
-                        <button type="button" id="addCoauthorBtn" class="add-coauthor">+ Додати співучасника</button>
+                    <input type="text" id="articleTitle" placeholder="Заголовок статті (макс. 100 символів)" maxlength="100" required>
+                    <div id="charCount">0/100</div>
+                    <div class="image-upload">
+                        <label for="articleImage">Обкладинка статті (одне фото, JPEG/PNG, макс. 500 КБ)</label>
+                        <input type="file" id="articleImage" accept="image/jpeg,image/png">
+                        <img id="imagePreview" src="" alt="Попередній перегляд зображення">
                     </div>
-
                     <div class="toolbar">
                         <button type="button" onclick="formatText('bold')">Жирний</button>
                         <button type="button" onclick="formatText('italic')">Курсив</button>
@@ -325,21 +377,19 @@
                         <button type="button" onclick="formatText('h3')">Заголовок 3</button>
                     </div>
                     <textarea id="articleContent" placeholder="Текст статті" required></textarea>
-
                     <button type="button" onclick="previewArticle()">Попередній перегляд</button>
                     <button type="submit">Відправити на перевірку</button>
                 </form>
-
                 <div id="preview" class="preview" style="display: none;">
                     <h2 id="previewTitle"></h2>
+                    <img id="previewImage" src="" alt="Обкладинка" style="max-width: 100%; border-radius: 8px; margin-bottom: 15px; display: none;">
                     <div id="previewContent"></div>
-                    <p id="previewAuthors" class="authors"></p>
+                    <p id="previewAuthor" class="author"></p>
                 </div>
                 <div id="error" class="error"></div>
             </div>
         </div>
     </div>
-
     <div class="mobile-nav">
         <div class="nav-buttons">
             <button class="nav-button" onclick="window.location.href='index.html'">Головна</button>
@@ -352,7 +402,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
@@ -361,7 +411,7 @@
             projectId: "newpaper-6cb18",
             storageBucket: "newpaper-6cb18.firebasestorage.app",
             messagingSenderId: "284037128087",
-            appId: "1:284037128087:web:9f4f227bbdaab2eeadaed2",
+            appId: "1:284047128087:web:9f4f227bbdaab2eeadaed2",
             measurementId: "G-0EMERY88FL"
         };
 
@@ -369,9 +419,76 @@
         const auth = getAuth(app);
         const db = getDatabase(app);
 
-        let coAuthors = [];
+        // Оновлення лічильника символів для заголовка
+        const titleInput = document.getElementById('articleTitle');
+        const charCount = document.getElementById('charCount');
+        titleInput.addEventListener('input', () => {
+            charCount.textContent = `${titleInput.value.length}/100`;
+        });
 
-        // Ініціалізація
+        // Обробка завантаження та стиснення зображення
+        const imageInput = document.getElementById('articleImage');
+        const imagePreview = document.getElementById('imagePreview');
+        let compressedBase64 = null;
+
+        imageInput.addEventListener('change', () => {
+            const file = imageInput.files[0];
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '';
+            imagePreview.style.display = 'none';
+            compressedBase64 = null;
+
+            if (!file) return;
+
+            if (!['image/jpeg', 'image/png'].includes(file.type)) {
+                errorDiv.textContent = 'Дозволено лише JPEG або PNG.';
+                imageInput.value = '';
+                return;
+            }
+
+            if (file.size > 500 * 1024) {
+                errorDiv.textContent = 'Розмір зображення не повинен перевищувати 500 КБ.';
+                imageInput.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 600;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Сильне стиснення (якість 0.5)
+                    compressedBase64 = canvas.toDataURL(file.type, 0.5);
+                    imagePreview.src = compressedBase64;
+                    imagePreview.style.display = 'block';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
         onAuthStateChanged(auth, async (user) => {
             const loginBtn = document.getElementById('loginBtn');
             const registerBtn = document.getElementById('registerBtn');
@@ -392,100 +509,22 @@
             }
         });
 
-        // Додавання співучасника
-        document.getElementById('addCoauthorBtn').addEventListener('click', () => {
-            if (coAuthors.length >= 3) {
-                document.getElementById('error').textContent = 'Максимум 3 співучасники!';
-                return;
-            }
-
-            const list = document.getElementById('coauthorsList');
-            const index = list.children.length;
-
-            const div = document.createElement('div');
-            div.className = 'coauthor-input';
-            div.innerHTML = `
-                <input type="text" placeholder="Ім'я користувача (username)" data-index="${index}">
-                <button type="button" onclick="removeCoauthor(this)">−</button>
-            `;
-            list.appendChild(div);
-
-            updateAddButton();
-        });
-
-        window.removeCoauthor = (btn) => {
-            btn.parentElement.remove();
-            updateAddButton();
-        };
-
-        function updateAddButton() {
-            const btn = document.getElementById('addCoauthorBtn');
-            btn.disabled = document.querySelectorAll('.coauthor-input').length >= 3;
-        }
-
-        // Форматування
-        window.formatText = (command) => {
-            const textarea = document.getElementById('articleContent');
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const selectedText = textarea.value.substring(start, end);
-            if (!selectedText) return;
-
-            let formatted = '';
-            switch (command) {
-                case 'bold': formatted = `<b>${selectedText}</b>`; break;
-                case 'italic': formatted = `<i>${selectedText}</i>`; break;
-                case 'underline': formatted = `<u>${selectedText}</u>`; break;
-                case 'h2': formatted = `<h2>${selectedText}</h2>`; break;
-                case 'h3': formatted = `<h3>${selectedText}</h3>`; break;
-            }
-
-            const newText = textarea.value.substring(0, start) + formatted + textarea.value.substring(end);
-            textarea.value = newText;
-            const pos = start + formatted.length - selectedText.length;
-            textarea.setSelectionRange(pos, pos);
-            textarea.focus();
-        };
-
-        // Попередній перегляд
-        window.previewArticle = async () => {
-            const title = document.getElementById('articleTitle').value;
-            const content = document.getElementById('articleContent').value;
-            if (!title || !content) {
-                document.getElementById('error').textContent = 'Заповніть заголовок та текст!';
-                return;
-            }
-
-            const user = auth.currentUser;
-            const userRef = ref(db, 'users/' + user.uid);
-            const snapshot = await get(userRef);
-            const mainAuthor = snapshot.val()?.username || user.email;
-
-            const coInputs = document.querySelectorAll('#coauthorsList input');
-            const coNames = Array.from(coInputs).map(i => i.value.trim()).filter(Boolean);
-
-            document.getElementById('previewTitle').textContent = title;
-            const temp = document.createElement('div');
-            temp.innerHTML = content.replace(/\n/g, '<br>');
-            document.getElementById('previewContent').innerHTML = temp.innerHTML;
-
-            const authors = [mainAuthor, ...coNames].filter(Boolean).join(', ');
-            document.getElementById('previewAuthors').textContent = `Автори: ${authors}`;
-            document.getElementById('preview').style.display = 'block';
-        };
-
-        // Відправка статті
         document.getElementById('articleForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const errorDiv = document.getElementById('error');
             errorDiv.textContent = '';
 
             const title = document.getElementById('articleTitle').value.trim();
-            const content = document.getElementById('articleContent').value.trim();
+            const content = document.getElementById('articleContent').value;
             const user = auth.currentUser;
 
-            if (!title || !content) {
-                errorDiv.textContent = 'Заповніть усі поля!';
+            if (!user) {
+                errorDiv.textContent = 'Ви повинні увійти, щоб створити статтю.';
+                return;
+            }
+
+            if (title.length > 100) {
+                errorDiv.textContent = 'Заголовок не може перевищувати 100 символів.';
                 return;
             }
 
@@ -493,58 +532,97 @@
                 const userRef = ref(db, 'users/' + user.uid);
                 const snapshot = await get(userRef);
                 const userData = snapshot.val();
-                const mainAuthor = userData?.username || user.email;
-
-                // Перевірка співучасників
-                const coInputs = document.querySelectorAll('#coauthorsList input');
-                const coNames = [];
-                for (let input of coInputs) {
-                    const name = input.value.trim();
-                    if (name) {
-                        const userSnap = await get(child(ref(db), 'users'));
-                        const users = userSnap.val() || {};
-                        const exists = Object.values(users).some(u => u.username === name);
-                        if (!exists) {
-                            errorDiv.textContent = `Користувач "${name}" не знайдений!`;
-                            return;
-                        }
-                        if (name === mainAuthor) {
-                            errorDiv.textContent = 'Ви не можете додати себе як співучасника!';
-                            return;
-                        }
-                        if (coNames.includes(name)) {
-                            errorDiv.textContent = 'Співучасник вже доданий!';
-                            return;
-                        }
-                        coNames.push(name);
-                    }
-                }
-
-                if (coNames.length > 3) {
-                    errorDiv.textContent = 'Максимум 3 співучасники!';
-                    return;
-                }
+                const username = userData?.username || 'Користувач';
 
                 const articleId = Date.now().toString();
-                await set(ref(db, 'pending_articles/' + articleId), {
+                const articleData = {
                     title,
                     content,
-                    author: mainAuthor,
-                    coAuthors: coNames, // ← Зберігаємо масив співучасників
+                    author: username,
                     createdAt: new Date().toISOString(),
                     status: 'pending',
                     likes: 0
-                });
+                };
+
+                if (compressedBase64) {
+                    articleData.image = compressedBase64;
+                }
+
+                await set(ref(db, 'pending_articles/' + articleId), articleData);
 
                 alert('Статтю відправлено на перевірку!');
                 document.getElementById('articleForm').reset();
-                document.getElementById('coauthorsList').innerHTML = '';
                 document.getElementById('preview').style.display = 'none';
-                updateAddButton();
+                charCount.textContent = '0/100';
+                imagePreview.style.display = 'none';
+                compressedBase64 = null;
             } catch (error) {
-                errorDiv.textContent = 'Помилка: ' + error.message;
+                errorDiv.textContent = 'Помилка відправлення статті: ' + error.message;
             }
         });
+
+        window.previewArticle = () => {
+            const title = document.getElementById('articleTitle').value.trim();
+            const content = document.getElementById('articleContent').value;
+            const user = auth.currentUser;
+
+            if (!title || !content) {
+                document.getElementById('error').textContent = 'Заповніть заголовок та текст для попереднього перегляду.';
+                return;
+            }
+
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewAuthor').textContent = `Автор: ${user ? user.email : 'Користувач'}`;
+
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content.replace(/\n/g, '<br>');
+            document.getElementById('previewContent').innerHTML = tempDiv.innerHTML;
+
+            const previewImg = document.getElementById('previewImage');
+            if (compressedBase64) {
+                previewImg.src = compressedBase64;
+                previewImg.style.display = 'block';
+            } else {
+                previewImg.style.display = 'none';
+            }
+
+            document.getElementById('preview').style.display = 'block';
+        };
+
+        window.formatText = (command) => {
+            const textarea = document.getElementById('articleContent');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let formattedText = '';
+
+            if (selectedText) {
+                switch (command) {
+                    case 'bold':
+                        formattedText = `<b>${selectedText}</b>`;
+                        break;
+                    case 'italic':
+                        formattedText = `<i>${selectedText}</i>`;
+                        break;
+                    case 'underline':
+                        formattedText = `<u>${selectedText}</u>`;
+                        break;
+                    case 'h2':
+                        formattedText = `<h2>${selectedText}</h2>`;
+                        break;
+                    case 'h3':
+                        formattedText = `<h3>${selectedText}</h3>`;
+                        break;
+                }
+
+                const newText = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+                textarea.value = newText;
+
+                const newCursorPos = start + formattedText.length;
+                textarea.setSelectionRange(newCursorPos, newCursorPos);
+                textarea.focus();
+            }
+        };
 
         window.logout = async () => {
             try {
@@ -552,7 +630,7 @@
                 alert('Вихід успішний!');
                 window.location.href = 'index.html';
             } catch (error) {
-                document.getElementById('error').textContent = 'Помилка: ' + error.message;
+                document.getElementById('error').textContent = 'Помилка виходу: ' + error.message;
             }
         };
     </script>

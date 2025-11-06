@@ -166,6 +166,8 @@
             padding: 15px;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
         }
 
         .article:hover {
@@ -176,10 +178,11 @@
         .article h2 {
             font-size: 20px;
             color: #2b6cb0;
-            margin-bottom: 10px;
+            margin: 0 0 10px 0;
+            flex-grow: 1;
         }
 
-        .article div {
+        .article-preview {
             font-size: 16px;
             color: #4a5568;
             margin-bottom: 10px;
@@ -187,12 +190,14 @@
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            flex-grow: 1;
         }
 
         .article .author {
             font-size: 14px;
             color: #718096;
             font-style: italic;
+            margin: 8px 0 0 0;
         }
 
         .article .author span {
@@ -209,7 +214,7 @@
         .article .likes {
             font-size: 14px;
             color: #3182ce;
-            margin-top: 10px;
+            margin: 8px 0 0 0;
         }
 
         .article .like-button {
@@ -218,7 +223,8 @@
             color: #3182ce;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 5px;
+            margin-top: 8px;
+            align-self: flex-start;
         }
 
         .article .like-button:hover {
@@ -250,27 +256,38 @@
             padding: 20px;
             border-radius: 12px;
             width: 90%;
-            max-width: 700px;
-            max-height: 80vh;
+            max-width: 800px;
+            max-height: 85vh;
             overflow-y: auto;
+        }
+
+        .fullscreen-image {
+            width: 100%;
+            max-height: 400px; /* Максимальна висота для великих зображень */
+            object-fit: contain; /* Повністю видно, без обрізки */
+            background-color: #f1f5f9; /* Фон для прозорих зображень */
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: block;
         }
 
         .article-fullscreen-content h2 {
             font-size: 24px;
             color: #2b6cb0;
-            margin-bottom: 15px;
+            margin: 0 0 15px 0;
         }
 
-        .article-fullscreen-content div {
+        .article-fullscreen-content .content-text {
             font-size: 16px;
             color: #4a5568;
+            line-height: 1.6;
         }
 
         .article-fullscreen-content .author {
             font-size: 14px;
             color: #718096;
             font-style: italic;
-            margin-top: 10px;
+            margin: 15px 0 0 0;
         }
 
         .article-fullscreen-content .author span {
@@ -287,7 +304,7 @@
         .article-fullscreen-content .likes {
             font-size: 14px;
             color: #3182ce;
-            margin-top: 10px;
+            margin: 10px 0 0 0;
         }
 
         .article-fullscreen-content .like-button {
@@ -298,6 +315,7 @@
             font-size: 18px;
             padding: 5px 10px;
             border-radius: 6px;
+            margin-top: 10px;
         }
 
         .article-fullscreen-content .like-button:hover {
@@ -313,6 +331,7 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            width: 100%;
         }
 
         .close-button:hover {
@@ -440,7 +459,7 @@
                 font-size: 18px;
             }
 
-            .article div, .article .author, .article .likes, .article .like-button {
+            .article-preview, .article .author, .article .likes, .article .like-button {
                 font-size: 14px;
             }
 
@@ -449,11 +468,15 @@
                 padding: 15px;
             }
 
+            .fullscreen-image {
+                max-height: 250px; /* Зменшено для мобільних */
+            }
+
             .article-fullscreen-content h2 {
                 font-size: 22px;
             }
 
-            .article-fullscreen-content div, .article-fullscreen-content .author, .article-fullscreen-content .likes {
+            .article-fullscreen-content .content-text, .article-fullscreen-content .author, .article-fullscreen-content .likes {
                 font-size: 14px;
             }
 
@@ -507,7 +530,7 @@
     <div class="container">
         <div class="sidebar">
             <button class="active" onclick="window.location.href='index.html'">Головна</button>
-            <button onclick="window.location.href='topgazet.html'">ТОП-10 Тижня 🏆</button>
+            <button onclick="window.location.href='topgazet.html'">ТОП-10 Тижня</button>
             <button id="createArticleBtn" style="display: none;" onclick="window.location.href='word.html'">+</button>
             <button onclick="window.location.href='account.html'">Акаунт</button>
             <button id="adminBtn" style="display: none;" onclick="window.location.href='admin.html'">Адмін-панель</button>
@@ -523,8 +546,9 @@
     </div>
     <div id="articleFullscreen" class="article-fullscreen">
         <div class="article-fullscreen-content">
+            <img id="fullscreenImage" class="fullscreen-image" src="" alt="Обкладинка статті" style="display: none;">
             <h2 id="fullscreenTitle"></h2>
-            <div id="fullscreenContent"></div>
+            <div id="fullscreenContent" class="content-text"></div>
             <p id="fullscreenAuthor" class="author"></p>
             <p id="fullscreenLikes" class="likes"></p>
             <button id="fullscreenLikeButton" class="like-button" style="display: none;" onclick="toggleLike()">👍</button>
@@ -562,7 +586,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-        import { getDatabase, ref, onValue, get, set, push } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+        import { getDatabase, ref, onValue, get, set } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCaifYiHxWGilT9umEgkVF6xjHMEJ4KDy8",
@@ -667,10 +691,10 @@
                 articleElement.className = 'article';
                 articleElement.innerHTML = `
                     <h2>${article.title}</h2>
-                    <div>${article.content}</div>
-                    <p class="author"><span onclick="openAuthorProfile('${article.author}')">Автор: ${article.author}</span></p>
+                    <div class="article-preview">${article.content.replace(/<[^>]*>/g, '').substring(0, 150)}${article.content.replace(/<[^>]*>/g, '').length > 150 ? '...' : ''}</div>
+                    <p class="author"><span onclick="event.stopPropagation(); openAuthorProfile('${article.author}')">Автор: ${article.author}</span></p>
                     <p class="likes">Лайки: ${article.likes || 0}</p>
-                    <button class="like-button" onclick="toggleLike('${article.id}')">👍</button>
+                    <button class="like-button" onclick="event.stopPropagation(); toggleLike('${article.id}')">👍</button>
                 `;
                 articleElement.addEventListener('click', (e) => {
                     if (e.target.tagName !== 'SPAN' && e.target.tagName !== 'BUTTON') {
@@ -683,16 +707,11 @@
 
         document.getElementById('searchInput').addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            const articlesDiv = document.getElementById('articles');
-            articlesDiv.innerHTML = '';
             const filteredArticles = allArticles.filter(article =>
-                article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query)
+                article.title.toLowerCase().includes(query) || 
+                article.content.toLowerCase().includes(query)
             );
-            if (filteredArticles.length > 0) {
-                renderArticles(filteredArticles);
-            } else {
-                articlesDiv.innerHTML = '<p>Нічого не знайдено.</p>';
-            }
+            renderArticles(filteredArticles);
         });
 
         async function toggleLike(articleId) {
@@ -702,20 +721,27 @@
                 return;
             }
             try {
-                const likesRef = ref(db, `articles/${articleId}/likes`);
                 const userLikesRef = ref(db, `user_likes/${user.uid}/${articleId}`);
                 const snapshot = await get(userLikesRef);
                 if (snapshot.exists()) {
                     alert('Ви вже лайкнули цю статтю!');
                     return;
                 }
+                const articleRef = ref(db, `articles/${articleId}/likes`);
                 const articleSnapshot = await get(ref(db, `articles/${articleId}`));
                 const currentLikes = articleSnapshot.val()?.likes || 0;
-                await set(likesRef, currentLikes + 1);
+                await set(articleRef, currentLikes + 1);
                 await set(userLikesRef, true);
-                const updatedArticle = { ...articleSnapshot.val(), likes: currentLikes + 1 };
-                openFullscreen(updatedArticle);
-                renderArticles(allArticles.map(a => a.id === articleId ? { ...a, likes: currentLikes + 1 } : a));
+
+                allArticles = allArticles.map(a => a.id === articleId ? { ...a, likes: currentLikes + 1 } : a);
+                renderArticles(allArticles.filter(a => 
+                    a.title.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase()) ||
+                    a.content.toLowerCase().includes(document.getElementById('searchInput').value.toLowerCase())
+                ));
+
+                if (currentArticleId === articleId) {
+                    document.getElementById('fullscreenLikes').textContent = `Лайки: ${currentLikes + 1}`;
+                }
             } catch (error) {
                 document.getElementById('error').textContent = 'Помилка лайку: ' + error.message;
             }
@@ -723,9 +749,6 @@
 
         window.toggleLike = async () => {
             await toggleLike(currentArticleId);
-            const articleSnapshot = await get(ref(db, `articles/${currentArticleId}`));
-            const article = articleSnapshot.val();
-            document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
         };
 
         function openFullscreen(article) {
@@ -734,6 +757,15 @@
             document.getElementById('fullscreenContent').innerHTML = article.content;
             document.getElementById('fullscreenAuthor').innerHTML = `<span onclick="openAuthorProfile('${article.author}')">Автор: ${article.author}</span>`;
             document.getElementById('fullscreenLikes').textContent = `Лайки: ${article.likes || 0}`;
+
+            const fullscreenImg = document.getElementById('fullscreenImage');
+            if (article.image) {
+                fullscreenImg.src = article.image;
+                fullscreenImg.style.display = 'block';
+            } else {
+                fullscreenImg.style.display = 'none';
+            }
+
             document.getElementById('articleFullscreen').style.display = 'flex';
         }
 
